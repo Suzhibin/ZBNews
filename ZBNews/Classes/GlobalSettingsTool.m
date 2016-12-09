@@ -9,6 +9,7 @@
 #import "GlobalSettingsTool.h"
 #import "AppDelegate.h"
 #import "Constants.h"
+#import "sys/utsname.h"
 @implementation GlobalSettingsTool
 + (GlobalSettingsTool*)sharedSetting
 {
@@ -88,5 +89,12 @@
 
 - (NSString *)appBuildVersion {
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+}
+- (NSString*)machineName {
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+    
+    return deviceString;
 }
 @end

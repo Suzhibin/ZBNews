@@ -37,4 +37,6 @@
 - (NSString *)appVersion;
 
 - (NSString *)appBuildVersion;
+
+- (NSString*)machineName;
 @end

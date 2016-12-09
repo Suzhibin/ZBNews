@@ -14,7 +14,6 @@
 #import "Constants.h"
 @interface SettingsViewController ()<MFMailComposeViewControllerDelegate>
 
-
 @end
 
 @implementation SettingsViewController
@@ -195,13 +194,13 @@
     __weak typeof(self) weakSelf = self;
 
     //意见反馈
-    ZBSettingItem *feedback = [ZBSettingItem itemWithIcon:@"MoreMessage" title:@"意见反馈" type:ZBSettingItemTypeNone];
+    ZBSettingItem *feedback = [ZBSettingItem itemWithIcon:@"MoreMessage" title:@"意见反馈" type:ZBSettingItemTypeArrow];
     feedback.operation = ^{
         [weakSelf createMail];
     };
     
     // 分享
-    ZBSettingItem *share = [ZBSettingItem itemWithIcon:@"MoreShare" title:@"分享" type:ZBSettingItemTypeNone];
+    ZBSettingItem *share = [ZBSettingItem itemWithIcon:@"MoreShare" title:@"分享" type:ZBSettingItemTypeArrow];
     share.operation = ^{
         NSArray *activityItems=@[@"ZB新闻"];
         UIActivityViewController *activityController =
@@ -268,11 +267,12 @@
     //判断是否支持发送邮件的功能
     if ([MFMailComposeViewController canSendMail]) {
         //设置邮件的主题
-        [mail setSubject:@"ZB新闻-意见反馈"];
+        [mail setSubject:@"ZB新闻iOS反馈"];
         //设置收件人(设置一组)
         [mail  setToRecipients:[NSArray arrayWithObjects:@"szb2323@163.com",nil]];
         //设置邮件的正文,是否解析正文中的html标签
-        [mail setMessageBody:@"请详细描述下您遇到的问题？" isHTML:NO];
+         NSString *aboutString=[NSString stringWithFormat:@"%@%@/%@/%@",[[GlobalSettingsTool sharedSetting]appBundleName],[[GlobalSettingsTool sharedSetting]appVersion],[[UIDevice currentDevice] systemVersion],[[GlobalSettingsTool sharedSetting]machineName]];
+        [mail setMessageBody:aboutString isHTML:NO];
         //设置代理
         mail.mailComposeDelegate = self;
         //添加图片附件
