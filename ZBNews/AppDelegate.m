@@ -7,7 +7,10 @@
 //
 
 #import "AppDelegate.h"
-
+#import "CustomTabBarController.h"
+#import "Constants.h"
+#import "GlobalSettingsTool.h"
+#import <UMMobClick/MobClick.h>
 @interface AppDelegate ()
 
 @end
@@ -17,9 +20,49 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NEWSLog(@"Caches = %@",caches);
+
+    UMConfigInstance.appKey = @"584a53957f2c7414430003f6";
+    UMConfigInstance.channelId = @"App Store";
+     [MobClick startWithConfigure:UMConfigInstance];//配置以上参数后调用此方法初始化SDK！
+    
+    [self setlanguages];
+    [self  enablePush:[GlobalSettingsTool sharedSetting].enabledPush];
+    CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
+    self.window.rootViewController = tabbar;
+    
+    [self.window makeKeyAndVisible];
+
     return YES;
 }
-
+- (void)enablePush:(BOOL)bEnable
+{
+    if(bEnable)
+    {
+        NSLog(@"应用内开启推送／不知道系统是否开启");
+        //[self createPush];
+        
+    }else
+    {
+        NSLog(@"应用内关闭推送／不知道系统是否开启");
+      //  [UMessage unregisterForRemoteNotifications];
+    }
+}
+- (void)setlanguages{
+    if (![[NSUserDefaults standardUserDefaults]objectForKey:LanguageKey]) {
+    NSArray *languages = [NSLocale preferredLanguages];
+    NSString *language = [languages objectAtIndex:0];
+    NEWSLog(@"language:%@",language);
+    if ([language hasPrefix:Chinese]) {//开头匹配
+        [[NSUserDefaults standardUserDefaults] setObject:Chinese forKey:LanguageKey];
+    }else{
+        [[NSUserDefaults standardUserDefaults] setObject:English forKey:LanguageKey];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

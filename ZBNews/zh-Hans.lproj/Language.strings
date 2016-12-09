@@ -1,0 +1,17 @@
+/* 
+  Language.strings
+  ZBNews
+
+  Created by NQ UEC on 16/11/18.
+  Copyright © 2016年 Suzhibin. All rights reserved.
+*/
+"content"="大苏";
+
+"clearcache"="清除缓存";
+"language"="语言切换";
+"nightmode"="夜间模式";
+"daytimemode"="日间模式";
+
+"content1"="跟随手机系统";
+"content2"="中文";
+"content3"="英文";

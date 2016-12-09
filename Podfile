@@ -1,0 +1,15 @@
+platform:ios,'8.0'
+target :'ZBNews' do
+pod 'VTMagic'
+pod 'SDWebImage'
+pod 'XRCarouselView'
+pod 'MJRefresh'
+pod 'UITableView+FDTemplateLayoutCell'
+pod 'Masonry'
+pod 'FMDB'
+pod 'JTCalendar'
+pod 'SDAutoLayout'
+pod 'PYSearch'
+pod 'AFNetworking'
+pod 'UMengAnalytics'
+end
