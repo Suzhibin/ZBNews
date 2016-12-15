@@ -72,7 +72,7 @@
 }
 
 -(NSString *)imagePathForKey:(NSString *)key{
-    NSString *libraryDirectory=[[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]stringByAppendingPathComponent:key];
+    NSString *libraryDirectory=[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]stringByAppendingPathComponent:key];
     return libraryDirectory;
 }
 

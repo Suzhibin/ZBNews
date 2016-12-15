@@ -35,12 +35,11 @@
     
     // 1.第0租
     [self add0SectionItems];
-    
     // 2.第1组
     [self add1SectionItems];
-     // 3.第2组
+    // 3.第2组
     [self add2SectionItems];
-     // 4.第3组
+    // 4.第3组
     [self add3SectionItems];
 
 }

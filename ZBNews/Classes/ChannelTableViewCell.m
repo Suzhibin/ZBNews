@@ -35,11 +35,11 @@
 
 - (void)createUI{
     self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.font=[UIFont systemFontOfSize:12];
+    self.titleLabel.font=[UIFont systemFontOfSize:14];
     self.titleLabel.textColor=[UIColor redColor];
     
     self.descLabel = [[UILabel alloc] init];
-    self.descLabel.font=[UIFont systemFontOfSize:8];
+    self.descLabel.font=[UIFont systemFontOfSize:10];
     self.descLabel.numberOfLines=0;
     
     self.pubDate = [[UILabel alloc] init];
