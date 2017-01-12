@@ -45,8 +45,8 @@
 }
 - (void)createTabBar{
     NSArray *vcArr=@[@"MainViewController",@"MeViewController"];
-    NSArray *images=@[@"tab_c0",@"tab_c1",@"tab_c2",@"tab_c3"];
-    NSArray *seleImages=@[@"tab_0",@"tab_1",@"tab_2",@"tab_3"];
+    NSArray *images=@[@"tab_0",@"tab_1",@"tab_2",@"tab_3"];
+    NSArray *seleImages=@[@"tab_c0",@"tab_c1",@"tab_c2",@"tab_c3"];
     NSArray *titleArr=[NSArray arrayWithObjects:@"首页",@"个人中心",nil];
     NSMutableArray *viewControllers=[NSMutableArray array];
     for (int i=0; i<vcArr.count; i++) {
@@ -62,7 +62,7 @@
         
         // ios7 增加了一个新的方法
         // 显示真实的图片的内容!!
-       nc.tabBarItem.image=[[UIImage imageNamed:image]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        nc.tabBarItem.image=[[UIImage imageNamed:image]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         nc.tabBarItem.selectedImage=[[UIImage imageNamed:seleImage]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         [viewControllers addObject:nc];
         
@@ -70,9 +70,9 @@
     self.viewControllers=viewControllers;
     if ([GlobalSettingsTool getNightPattern]==YES) {
       //  self.tabBar.backgroundColor=[UIColor colorWithRed:0.07 green:0.11 blue:0.07 alpha:1.00];
-          self.tabBar.backgroundImage=[UIImage imageNamed:@"tabbg"];
+        self.tabBar.backgroundImage=[UIImage imageNamed:@"tabbg"];
     }else{
-          self.tabBar.backgroundImage=nil;
+        self.tabBar.backgroundImage=nil;
         self.tabBar.backgroundColor=[UIColor whiteColor];
     }
   

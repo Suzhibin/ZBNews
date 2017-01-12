@@ -148,6 +148,6 @@ typedef void (^progressBlock)(NSProgress * progress);
 /**
  *  网络状态监测
  */
-- (NSInteger)startNetWorkMonitoring;
++ (NSInteger)startNetWorkMonitoring;
 
 @end

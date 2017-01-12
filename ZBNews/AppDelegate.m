@@ -40,11 +40,9 @@
     //广告
     [ZBAdvertiseInfo getAdvertising:^(NSString *filePath,BOOL isExist){
         if (isExist) {
-            
             ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
             advertiseView.filePath = filePath;
             [advertiseView show];
-            
         }else{
             NSLog(@"无图片");
         }

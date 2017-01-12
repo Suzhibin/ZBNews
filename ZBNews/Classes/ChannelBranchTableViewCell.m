@@ -11,7 +11,7 @@
 #import "Constants.h"
 #import "GlobalSettingsTool.h"
 #import <UIImageView+WebCache.h>
-#import "ZBNetworkTool.h"
+#import "ZBNetworking.h"
 @interface ChannelBranchTableViewCell()
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *descLabel;
@@ -71,17 +71,13 @@
         _channelModel=channelModel;
         if ([GlobalSettingsTool downloadImagePattern]==YES) {
             
-            NSInteger netStatus=[[ZBNetworkTool sharedManager] startNetWorkMonitoring];
+            NSInteger netStatus=[ZBNetworkManager startNetWorkMonitoring];
             if (netStatus==AFNetworkReachabilityStatusReachableViaWiFi) {
-                
                  [self.ImageViewUrl sd_setImageWithURL:[NSURL URLWithString:_channelModel.url] placeholderImage:[UIImage imageNamed:@"back"]];
             }else{
-                
                  [self.ImageViewUrl sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"back"]];
             }
-
         }else{
-          
             [self.ImageViewUrl sd_setImageWithURL:[NSURL URLWithString:_channelModel.url] placeholderImage:[UIImage imageNamed:@"back"]];
         }
         

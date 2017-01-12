@@ -25,13 +25,13 @@
     info ? info(filePath,isExist) : nil;
     
     // 2.无论沙盒中是否存在广告图片，都需要重新调用广告接口，判断广告是否更新
-    [ZBAdvertiseInfo getAdvertisingImage];
+    [ZBAdvertiseInfo requestAdvertising];
 }
 
 /**
  *  请求广告页面
  */
-+ (void)getAdvertisingImage{
++ (void)requestAdvertising{
     
     NSArray *imageArray = @[@"http://imgsrc.baidu.com/forum/pic/item/9213b07eca80653846dc8fab97dda144ad348257.jpg", @"http://pic.paopaoche.net/up/2012-2/20122220201612322865.png", @"http://img5.pcpop.com/ArticleImages/picshow/0x0/20110801/2011080114495843125.jpg", @"http://www.mangowed.com/uploads/allimg/130410/1-130410215449417.jpg"];
     NSString *imageUrl = imageArray[arc4random() % imageArray.count];

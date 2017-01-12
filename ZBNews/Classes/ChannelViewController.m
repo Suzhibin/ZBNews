@@ -43,6 +43,8 @@
     [super viewDidAppear:animated];
     self.automaticallyAdjustsScrollViewInsets=NO;
     self.tabBarController.tabBar.hidden=NO;
+      [[NSNotificationCenter defaultCenter] removeObserver:self name:NIGHT object:nil];
+     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushtoad" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushToAd:) name:@"pushtoad" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editNightView) name:NIGHT object:nil];//夜间模式通知
     //VTMagic框架 数据 UI 要放到viewDidAppear里
@@ -71,7 +73,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NIGHT object:nil];
   
     [self getNightPattern];
     [self.view addSubview:self.tableView];

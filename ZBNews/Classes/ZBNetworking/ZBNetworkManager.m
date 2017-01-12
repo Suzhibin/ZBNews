@@ -159,13 +159,13 @@ static const NSInteger timeOut = 60*60;
     [[ZBNetworkManager sharedManager].AFmanager invalidateSessionCancelingTasks:cancelPendingTasks];
 }
 
-- (NSInteger)startNetWorkMonitoring{
-    self.netStatus=[AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
++ (NSInteger)startNetWorkMonitoring{
+    [ZBNetworkManager sharedManager].netStatus=[AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
     // 设置网络状态改变后的处理
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         // 当网络状态改变了, 就会调用这个block
-        self.netStatus=status;
-        switch (self.netStatus)
+        [ZBNetworkManager sharedManager].netStatus=status;
+        switch ([ZBNetworkManager sharedManager].netStatus)
         {
             case AFNetworkReachabilityStatusUnknown: // 未知网络
                 
@@ -182,7 +182,7 @@ static const NSInteger timeOut = 60*60;
         }
     }];
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-    return self.netStatus;
+    return [ZBNetworkManager sharedManager].netStatus;
 }
 
 - (AFHTTPSessionManager*)AFmanager{

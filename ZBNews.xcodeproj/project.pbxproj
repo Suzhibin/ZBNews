@@ -56,7 +56,6 @@
 		7DD9D6091E27584500CFA0A9 /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9D6031E27584500CFA0A9 /* ZBURLRequest.m */; };
 		7DD9D60A1E27584500CFA0A9 /* ZBURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9D6051E27584500CFA0A9 /* ZBURLSessionManager.m */; };
 		7DFC38281DFA524600E34464 /* ChannelViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DFC38271DFA524600E34464 /* ChannelViewModel.m */; };
-		7DFC382B1DFA534000E34464 /* ZBNetworkTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DFC382A1DFA534000E34464 /* ZBNetworkTool.m */; };
 		7DFC382E1DFA968900E34464 /* DatabaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DFC382D1DFA968900E34464 /* DatabaseViewController.m */; };
 		7DFC38311DFA986F00E34464 /* NSObject+JKCoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DFC38301DFA986F00E34464 /* NSObject+JKCoding.m */; };
 		8E1ED1E7BF1CAB234D1B2E9E /* libPods-ZBNews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84AD4B59FDF1478CCE78E2B6 /* libPods-ZBNews.a */; };
@@ -181,8 +180,6 @@
 		7DD9D6051E27584500CFA0A9 /* ZBURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBURLSessionManager.m; sourceTree = "<group>"; };
 		7DFC38261DFA524600E34464 /* ChannelViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelViewModel.h; sourceTree = "<group>"; };
 		7DFC38271DFA524600E34464 /* ChannelViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelViewModel.m; sourceTree = "<group>"; };
-		7DFC38291DFA534000E34464 /* ZBNetworkTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBNetworkTool.h; sourceTree = "<group>"; };
-		7DFC382A1DFA534000E34464 /* ZBNetworkTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBNetworkTool.m; sourceTree = "<group>"; };
 		7DFC382C1DFA968900E34464 /* DatabaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseViewController.h; sourceTree = "<group>"; };
 		7DFC382D1DFA968900E34464 /* DatabaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseViewController.m; sourceTree = "<group>"; };
 		7DFC382F1DFA986F00E34464 /* NSObject+JKCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JKCoding.h"; sourceTree = "<group>"; };
@@ -371,8 +368,6 @@
 				7D27497A1DF68F7800A4205D /* UIViewAdditions.m */,
 				7D10D95D1DF961DA0095D56C /* MyViewTool.h */,
 				7D10D95E1DF961DA0095D56C /* MyViewTool.m */,
-				7DFC38291DFA534000E34464 /* ZBNetworkTool.h */,
-				7DFC382A1DFA534000E34464 /* ZBNetworkTool.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -743,7 +738,6 @@
 				7D0339B41DDECC37001C48A8 /* LanguageViewController.m in Sources */,
 				7D0339771DDEB8E5001C48A8 /* MeTableViewCell.m in Sources */,
 				7D0339331DDEB4A3001C48A8 /* ViewController.m in Sources */,
-				7DFC382B1DFA534000E34464 /* ZBNetworkTool.m in Sources */,
 				7D1F83C11DED89B000D1E70F /* SearchListViewController.m in Sources */,
 				7DFC382E1DFA968900E34464 /* DatabaseViewController.m in Sources */,
 				7DD9D6081E27584500CFA0A9 /* ZBNetworkManager.m in Sources */,
