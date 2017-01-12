@@ -18,12 +18,12 @@
 
 - (void)getDataWithUrl:(NSString *)url type:(apiType)type{
     [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:url target:self apiType:type];
+    [[ZBURLSessionManager sharedManager]getRequestWithURL:url target:self apiType:type];
 
 }
 #pragma mark - ZBURLSessionDelegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request{
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+- (void)urlRequestFinished:(ZBURLRequest *)request{
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
     NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
     NSDictionary *pagebean=[body objectForKey:@"pagebean"];
     NSMutableArray *contentlist=[pagebean objectForKey:@"contentlist"];

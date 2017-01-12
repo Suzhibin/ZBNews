@@ -26,7 +26,7 @@
 #import "MyViewTool.h"
 #import "ZBNetworking.h"
 #import <UMMobClick/MobClick.h>
-@interface ChannelViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLSessionDelegate>
+@interface ChannelViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,assign) NSInteger page;
@@ -43,6 +43,8 @@
     [super viewDidAppear:animated];
     self.automaticallyAdjustsScrollViewInsets=NO;
     self.tabBarController.tabBar.hidden=NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushToAd:) name:@"pushtoad" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editNightView) name:NIGHT object:nil];//夜间模式通知
     //VTMagic框架 数据 UI 要放到viewDidAppear里
     _page=1;
     [self getData];//加载数据
@@ -54,7 +56,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     // 取消不必要的网络请求
-    [[ZBURLSessionManager sharedManager]requestToCancel:YES];
+    [ZBNetworkManager requestToCancel:YES];
     [[SDWebImageManager sharedManager] cancelAll];
     [self.tableView.mj_header endRefreshing]; // 下拉结束刷新
     [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
@@ -70,10 +72,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NIGHT object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editNightView) name:NIGHT object:nil];//夜间模式通知
+  
     [self getNightPattern];
     [self.view addSubview:self.tableView];
 }
+- (void)pushToAd:(NSNotification *)noti {
+    
+     [self pushController:noti.userInfo];
+}
+
 #pragma mark -data
 - (void)getData{
     static const NSInteger timeOut = 60*60;
@@ -84,13 +91,14 @@
     }
     _mainModel.lastTime = currentStamp;
     
+    
     NSString *httpArg =[NSString stringWithFormat:NEWS_ARG,_mainModel.channelId,(long)_page];
     NSString *urlString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpArg];
     NEWSLog(@"urlString:%@",urlString);
     NEWSLog(@"正常请求栏目名字:%@ 正常请求栏目名字id:%@",_mainModel.name,_mainModel.channelId);
-   
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:urlString target:self apiType:ZBRequestTypeDefault];
+    
+    [self request:urlString apiType:ZBRequestTypeDefault];
+
      //=====================================================
     __weak __typeof(self) weakSelf = self;
     self.tableView.mj_header= [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -99,7 +107,7 @@
     }];
     self.tableView.mj_header.automaticallyChangeAlpha = YES;
     if (self.dataArray.count>0) {
-        [self.tableView.mj_header beginRefreshing];// 马上进入刷新状态
+        //[self.tableView.mj_header beginRefreshing];// 马上进入刷新状态
     }
     //=====================================================
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];  // 上拉加载
@@ -108,59 +116,63 @@
 - (void)loadRefresh{
     NSString *httpArg =[NSString stringWithFormat:NEWS_ARG,_mainModel.channelId,(long)_page];
     NSString *urlString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpArg];
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:urlString target:self apiType:ZBRequestTypeRefresh];
+    [self request:urlString apiType:ZBRequestTypeRefresh];
 }
 - (void)loadMoreData{
     _page++;
     NSString *httpMoreArg =[NSString stringWithFormat:NEWS_ARG,_mainModel.channelId,(long)_page];
     NSString *urlMoreString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpMoreArg];
     NEWSLog(@"上拉加载栏目名字:%@ 上拉加载url:%@",_mainModel.name,urlMoreString);
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:urlMoreString target:self apiType:ZBRequestTypeLoadMore];
+    [self request:urlMoreString apiType:ZBRequestTypeLoadMore];
 }
-#pragma mark - ZBURLSessionDelegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request{
-    if (request.apiType==ZBRequestTypeRefresh) {
-        [self.dataArray removeAllObjects];//清除数据 等待新数据的到来
-        [self.tableView.mj_header endRefreshing];// 下拉结束刷新
-    }
-    if (request.apiType==ZBRequestTypeLoadMore) {
-        [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
-    }
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
-       // NSLog(@"dict:%@",dict);
-    NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
-    NSDictionary *pagebean=[body objectForKey:@"pagebean"];
-    NSMutableArray *contentlist=[pagebean objectForKey:@"contentlist"];
-   // NSLog(@"contentlist:%@",contentlist);
-    for (NSDictionary *dic in contentlist) {
-        ChannelModel *model=[[ChannelModel alloc]initWithDict:dic];
-        model.imageurls=[dic objectForKey:@"imageurls"];
-        if ( model.imageurls.count>0) {
-            for (NSDictionary *imagedict in model.imageurls) {
-                model.url=[imagedict objectForKey:@"url"];
-            }
-        }
-         [self.dataArray addObject:model];
-    }
-    [self.tableView reloadData];
-}
-- (void)urlRequestFailed:(ZBURLSessionManager *)request{
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        NEWSLog(@"请求超时");
-        if (request.apiType==ZBRequestTypeRefresh) {
-            [self TimedOutAlert];
+- (void)request:(NSString *)urlString apiType:(apiType)requestType{
+  
+    [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
+        request.urlString=urlString;
+        request.apiType=requestType;
+        request.timeoutInterval=10;
+        [request setValue:APIKEY forHeaderField:@"apikey"];
+    }  success:^(id responseObj,apiType type){
+        NSLog(@"type:%zd",type);
+        //如果是刷新的数据
+        if (type==ZBRequestTypeRefresh) {
+            [self.dataArray removeAllObjects];//清除数据 等待新数据的到来
             [self.tableView.mj_header endRefreshing];// 下拉结束刷新
-        }else if (request.apiType==ZBRequestTypeLoadMore){
-            [self TimedOutAlert];
+        }
+        if (type==ZBRequestTypeLoadMore) {
             [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
         }
-    }else{
-        NEWSLog(@"请求失败");
-    }
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+        // NSLog(@"dict:%@",dict);
+        NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
+        NSDictionary *pagebean=[body objectForKey:@"pagebean"];
+        NSMutableArray *contentlist=[pagebean objectForKey:@"contentlist"];
+        // NSLog(@"contentlist:%@",contentlist);
+        for (NSDictionary *dic in contentlist) {
+            ChannelModel *model=[[ChannelModel alloc]initWithDict:dic];
+            model.imageurls=[dic objectForKey:@"imageurls"];
+            if ( model.imageurls.count>0) {
+                for (NSDictionary *imagedict in model.imageurls) {
+                    model.url=[imagedict objectForKey:@"url"];
+                }
+            }
+            [self.dataArray addObject:model];
+        }
+        [self.tableView reloadData];
+
+    } failed:^(NSError *error){
+        if (error.code==NSURLErrorCancelled)return;
+        if (error.code==NSURLErrorTimedOut) {
+            NEWSLog(@"请求超时");
+            [self TimedOutAlert];
+            [self.tableView.mj_header endRefreshing];// 下拉结束刷新
+            [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
+        }else{
+            NEWSLog(@"请求失败");
+        }
+    }];
 }
+
 #pragma mark tableView
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
@@ -185,13 +197,19 @@
         return cell;
     }
 }
+- (void)pushController:(id)model
+{
+    DetailViewController *detailsVC=[[DetailViewController alloc]init];
+    // detailsVC.urlString=model.link; //detailsVC.html=model.html;
+    detailsVC.model=model;
+    [self.navigationController pushViewController:detailsVC animated:YES];
+
+}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];
-    DetailViewController *detailsVC=[[DetailViewController alloc]init];
-   // detailsVC.urlString=model.link; //detailsVC.html=model.html;
-    detailsVC.model=model;
-    [self.navigationController pushViewController:detailsVC animated:YES];
+    
+    [self pushController:model];
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     //ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];

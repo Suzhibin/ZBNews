@@ -153,7 +153,9 @@
      self.wkWebView.UIDelegate = self;
      self.wkWebView.navigationDelegate = self;
     self.wkWebView.backgroundColor=[UIColor whiteColor];
-    
+    if (!self.model.link) {
+        self.model.link = @"https://github.com/Suzhibin/ZBNews";
+    }
     
     [self.wkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.model.link]]];
     [self.view addSubview:self.wkWebView];

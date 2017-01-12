@@ -85,7 +85,6 @@
    // NEWSLog(@"_menuList:%@",_menuList);
         for (MainModel *menu in _menuList) {
             // NEWSLog(@"name:%@",menu.name);
-            // 判断一个字符串对象，是否以@"mp3"结尾
             if ([menu.name hasSuffix:@"最新"]||[menu.name hasSuffix:@"焦点"]) {
                 menu.name = [menu.name substringToIndex:[menu.name length] - 2];
             }
@@ -217,11 +216,11 @@
 - (void)generateData{
     _menuList=[[NSMutableArray alloc]init];
     [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:MENU_URL target:self apiType:ZBRequestTypeDefault];
+    [[ZBURLSessionManager sharedManager]getRequestWithURL:MENU_URL target:self apiType:ZBRequestTypeDefault];
     NEWSLog(@"栏目数据");
 }
-- (void)urlRequestFinished:(ZBURLSessionManager *)request{
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+- (void)urlRequestFinished:(ZBURLRequest *)request{
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
    // NEWSLog(@"dict%@",dict);
     if ([dict count] == 0) {
       NEWSLog(@"网络请求失败");
@@ -246,7 +245,7 @@
     [self.magicView reloadData];
     
 }
-- (void)urlRequestFailed:(ZBURLSessionManager *)request{
+- (void)urlRequestFailed:(ZBURLRequest *)request{
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
         NEWSLog(@"请求超时");

@@ -33,7 +33,7 @@
     NEWSLog(@"urlString:%@",urlString);
     NEWSLog(@"正常请求栏目名字:%@ ",self.urlString);
     [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:urlString target:self apiType:ZBRequestTypeRefresh];
+    [[ZBURLSessionManager sharedManager]getRequestWithURL:urlString target:self apiType:ZBRequestTypeRefresh];
     
     [self.view addSubview:self.tableView];
     
@@ -48,11 +48,11 @@
 
     NEWSLog(@" 上拉加载url:%@",urlMoreString);
     [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:urlMoreString target:self apiType:ZBRequestTypeLoadMore];
+    [[ZBURLSessionManager sharedManager]getRequestWithURL:urlMoreString target:self apiType:ZBRequestTypeLoadMore];
 }
 
 #pragma mark - ZBURLSessionDelegate
-- (void)urlRequestFinished:(ZBURLSessionManager *)request{
+- (void)urlRequestFinished:(ZBURLRequest *)request{
     if (request.apiType==ZBRequestTypeRefresh) {
         [self.dataArray removeAllObjects];//清除数据 等待新数据的到来
       //  [self.tableView.mj_header endRefreshing];// 下拉结束刷新
@@ -60,7 +60,7 @@
     if (request.apiType==ZBRequestTypeLoadMore) {
         [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
     }
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
     NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
     NSDictionary *pagebean=[body objectForKey:@"pagebean"];
     NSArray *contentlist=[pagebean objectForKey:@"contentlist"];
@@ -78,7 +78,7 @@
     [self.tableView reloadData];
     [self.aiv removeFromSuperview];
 }
-- (void)urlRequestFailed:(ZBURLSessionManager *)request{
+- (void)urlRequestFailed:(ZBURLRequest *)request{
    // [self.tableView.mj_header endRefreshing];  // 下拉结束刷新
    // [self.tableView.mj_footer endRefreshing]; // 上拉结束刷新
     if (request.error.code==NSURLErrorCancelled)return;

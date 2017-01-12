@@ -11,6 +11,8 @@
 #import "Constants.h"
 #import "GlobalSettingsTool.h"
 #import <UMMobClick/MobClick.h>
+#import "ZBAdvertiseView.h"
+#import "ZBAdvertiseInfo.h"
 @interface AppDelegate ()
 
 @end
@@ -34,6 +36,20 @@
     self.window.rootViewController = tabbar;
     
     [self.window makeKeyAndVisible];
+    
+    //广告
+    [ZBAdvertiseInfo getAdvertising:^(NSString *filePath,BOOL isExist){
+        if (isExist) {
+            
+            ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
+            advertiseView.filePath = filePath;
+            [advertiseView show];
+            
+        }else{
+            NSLog(@"无图片");
+        }
+    }];
+
 
     return YES;
 }

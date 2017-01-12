@@ -20,7 +20,7 @@
     return networkTool;
 }
 - (void )getUrlString:(NSString *)string target:(id<ZBURLSessionDelegate>)delegate apiType:(apiType)type{
-    [[ZBURLSessionManager sharedManager] getRequestWithUrlString:string target:self apiType:type];
+    [[ZBURLSessionManager sharedManager] getRequestWithURL:string target:self apiType:type];
     
 }
 - (void)urlRequestFinished:(ZBURLSessionManager *)request{

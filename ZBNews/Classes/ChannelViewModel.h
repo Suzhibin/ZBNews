@@ -11,7 +11,7 @@
 #import "ChannelModel.h"
 @protocol channelViewModelDelegate <NSObject>
 @required
-- (void)requestFinished:(ZBURLSessionManager *)request sendModel:(ChannelModel *)model;
+- (void)requestFinished:(ZBURLRequest *)request sendModel:(ChannelModel *)model;
 @optional
 - (void)requestFailed:(ZBURLSessionManager *)request;
 @end

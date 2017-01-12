@@ -15,7 +15,7 @@
 @property (nonatomic,strong)NSMutableArray *dataArray;
 
 @property (nonatomic,strong)ZBURLSessionManager *manager;
-
+@property (nonatomic,strong)ZBURLRequest *request;
 @end
 
 @implementation offlineViewController
@@ -32,18 +32,15 @@
     }
     return self;
 }
-- (ZBURLSessionManager *)session {
-    
-    return [ZBURLSessionManager sharedManager];
-    
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.dataArray=[[NSMutableArray alloc]init];
     
+    self.request=[[ZBURLRequest alloc]init];
     //创建单例
-    self.manager=[self session];
+
     [self generateData];
     [self.view addSubview:self.tableView];
     [self addItemWithTitle:@"离线下载" selector:@selector(offlineBtnClick) location:NO];
@@ -51,11 +48,11 @@
 - (void)generateData{
     //保证频道是最新的 不要取缓存
     [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithUrlString:MENU_URL target:self apiType:ZBRequestTypeDefault];
+    [[ZBURLSessionManager sharedManager]getRequestWithURL:MENU_URL target:self apiType:ZBRequestTypeDefault];
 
 }
-- (void)urlRequestFinished:(ZBURLSessionManager *)request{
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.downloadData options:NSJSONReadingMutableContainers error:nil];
+- (void)urlRequestFinished:(ZBURLRequest *)request{
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
     // NEWSLog(@"dict%@",dict);
 
         NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
@@ -71,7 +68,7 @@
     [self.tableView reloadData];
     
 }
-- (void)urlRequestFailed:(ZBURLSessionManager *)request{
+- (void)urlRequestFailed:(ZBURLRequest *)request{
     if (request.error.code==NSURLErrorCancelled)return;
     if (request.error.code==NSURLErrorTimedOut) {
         NEWSLog(@"请求超时");
@@ -110,32 +107,32 @@
     NSString *url=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpheadArg];
     if (sw.isOn == YES) {
         //添加请求列队
-        [self.manager addObjectWithUrl:url];
-        [self.manager addObjectWithName:model.name];
-        NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
+        [self.request addObjectWithUrl:url];
+        [self.request addObjectWithKey:model.name];
+        NSLog(@"离线请求的url:%@",self.request.offlineUrlArray);
     }else{
         //删除请求列队
-        [self.manager removeObjectWithUrl:url];
-        [self.manager removeObjectWithName:model.name];
-        NSLog(@"离线请求的url:%@",self.manager.offlineUrlArray);
+        [self.request removeObjectWithUrl:url];
+        [self.request removeObjectWithKey:model.name];
+        NSLog(@"离线请求的url:%@",self.request.offlineUrlArray);
     }
 }
 
 
 - (void)offlineBtnClick{
     
-    if (self.manager.offlineUrlArray.count==0) {
+    if (self.request.offlineUrlArray.count==0) {
         NSLog(@"请添加栏目");
 
     }else{
         
-        NSLog(@"离线请求的栏目/url个数:%ld",self.manager.offlineUrlArray.count);
+        NSLog(@"离线请求的栏目/url个数:%ld",self.request.offlineUrlArray.count);
         
-        for (NSString *name in self.manager.offlineNameArray) {
+        for (NSString *name in self.request.offlineKeyArray) {
             NSLog(@"离线请求的name:%@",name);
         }
         
-        [self.delegate downloadWithArray:self.manager.offlineUrlArray];
+        [self.delegate downloadWithArray:self.request.offlineUrlArray];
         
         [self.navigationController popViewControllerAnimated:YES];
         
