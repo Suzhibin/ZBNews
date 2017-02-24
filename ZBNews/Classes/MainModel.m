@@ -20,8 +20,12 @@
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
-    //  NEWSLog(@"undefinedKey:%@",key);
-    
+    /*
+    NSLog(@"undefinedKey:%@",key);
+    if ([key isEqualToString:@"id"]) {
+        self.menu_id=key;
+    }
+     */
 }
 
 @end

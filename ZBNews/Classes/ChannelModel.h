@@ -7,23 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSObject+JKCoding.h"
+#import "NSObject+ZBCoding.h"
 @interface ChannelModel : NSObject
-@property (nonatomic,copy)NSString *channelId;//频道id
-@property (nonatomic,copy)NSString *channelName;//频道名字
-@property (nonatomic,copy)NSString *content;//json数据
-@property (nonatomic,copy)NSString *html;//html数据
-@property (nonatomic,copy)NSString *link;//分享html页面
-@property (nonatomic,copy)NSString *nid;//id
-@property (nonatomic,copy)NSString *source;//来源
-@property (nonatomic,copy)NSString *pubDate;//时间
+@property (nonatomic,copy)NSString *newslId;//新闻id
 @property (nonatomic,copy)NSString *title;//新闻名字
-@property (nonatomic,copy)NSString *desc;//新闻描述
-@property (nonatomic,copy)NSString *havePic;//有图片
-@property (nonatomic,copy)NSArray *imageurls;//图片数组
-@property (nonatomic,copy)NSString *url;//图片url
-@property (nonatomic,copy)NSString *i;//测试使用
-
+//@property (nonatomic,strong)NSDictionary *iconDict;//图片
+@property (nonatomic,copy)id icon;//图片
+@property (nonatomic,copy)NSString *online;//时间
+@property (nonatomic,copy)NSString *icon_small1;//图片icon_small1
+@property (nonatomic,copy)NSString *icon_small2;//图片icon_small2
+@property (nonatomic,copy)NSString *icon_small3;//图片icon_small3
+@property (nonatomic,copy)NSString *type;//展示类型
+@property (nonatomic,copy)NSString *hits;//浏览数量
 
 -(instancetype)initWithDict:(NSDictionary *)dict;
 @end

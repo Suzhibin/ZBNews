@@ -10,12 +10,15 @@
 #import "MyControlTool.h"
 #import <WebKit/WebKit.h>
 #import "ZBDataBaseManager.h"
+NSString *const collection =@"collection";
+NSString *const calendar =@"calendar";
 @interface DetailViewController ()<WKScriptMessageHandler,WKNavigationDelegate,WKUIDelegate>
 //,
 /** 浏览器 */
 @property (nonatomic, strong) WKWebView *wkWebView;
 @property (nonatomic, strong) UIProgressView *progressView;
 @property (nonatomic,strong )UIView *toobarView;
+@property (strong, nonatomic) NSDateFormatter *dateFormatter;
 @end
 
 @implementation DetailViewController
@@ -29,7 +32,6 @@
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
- 
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
@@ -41,6 +43,17 @@
     //Helper
     [[MyControlTool sharedManager] loading:self.view];
 
+    [[ZBDataBaseManager sharedInstance]createTable:collection];
+ 
+    
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    self.dateFormatter.dateFormat = @"yyyy/MM/dd";
+    
+    [[ZBDataBaseManager sharedInstance]createTable:calendar];
+    //储存的model 对象必须准守Codeing协议  这里用了MJExtension 的宏定义
+    NEWSLog(@"阅读时间：%@",[self getDate]);
+    [[ZBDataBaseManager sharedInstance]table:calendar insertDataWithObj:self.model ItemId:[self getDate]];
+
     
     NEWSLog(@"urlString:%@",self.urlString);
     NEWSLog(@"html:%@",self.html);
@@ -49,6 +62,19 @@
     [self createToobar];
    
 
+}
+- (NSString *)getDate{
+    NSDate *date = [NSDate date];
+    NSLog(@"日期:%@", date);
+    // 时区类
+    // 获取系统时区
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    // 返回我们这个时区和GMT时间相差的秒数
+    NSInteger seconds = [zone secondsFromGMTForDate:date];
+    // 返回一个NSDate的对象，从date时间开始，间隔sconds秒后的时间!
+    NSDate *localDate = [NSDate dateWithTimeInterval:seconds sinceDate:date];
+    NSString *readCalendar= [self.dateFormatter stringFromDate:localDate];
+    return readCalendar;
 }
 - (void)createToobar
 {
@@ -75,7 +101,7 @@
         if (i==1) {
             //看该条数据是否被收藏过
             
-            if ([[ZBDataBaseManager sharedManager] isCollectedWithItemId:self.model.title]) {
+            if ([[ZBDataBaseManager sharedInstance] isCollectedWithTable:collection itemId:self.model.newslId]) {
                 
                 btn.selected=YES;
                 //  [btn setTitleColor:[UIColor brownColor] forState:UIControlStateSelected];
@@ -99,10 +125,11 @@
             if (btn.selected==NO) {
                 btn.selected = YES;
                 NSLog(@"收藏文章:%@",_model.title);
-                 NSLog(@"nid:%@",_model.nid);
-                //收藏
+                 NSLog(@"nid:%@",_model.newslId);
                 //收藏数据
-                [[ZBDataBaseManager sharedManager] insertDataWithObj:self.model ItemId:self.model.title];
+                //储存的model 对象必须准守Codeing协议  
+                [[ZBDataBaseManager sharedInstance]table:collection insertDataWithObj:self.model ItemId:self.model.newslId];
+    
                 //  btn.enabled = NO;
                 // [btn setTitleColor:[UIColor brownColor] forState:UIControlStateSelected];
                 //为了区分按钮的状态
@@ -111,7 +138,7 @@
                 btn.selected =NO;
                 NSLog(@"删除文章:%@",_model.title);
                 //删除数据
-                [[ZBDataBaseManager sharedManager] deleteDataWithItemId:self.model.title];
+                [[ZBDataBaseManager sharedInstance]table:collection deleteDataWithItemId:self.model.newslId];
                 //btn.enabled = YES;
                 //  [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
                 //为了区分按钮的状态
@@ -153,11 +180,11 @@
      self.wkWebView.UIDelegate = self;
      self.wkWebView.navigationDelegate = self;
     self.wkWebView.backgroundColor=[UIColor whiteColor];
-    if (!self.model.link) {
-        self.model.link = @"https://github.com/Suzhibin/ZBNews";
-    }
+   // if (!self.model.link) {
+     //   self.model.link = @"https://github.com/Suzhibin/ZBNews";
+   // }
     
-    [self.wkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.model.link]]];
+    [self.wkWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:Datail_URL,self.model.newslId]]]];
     [self.view addSubview:self.wkWebView];
     [self.view addSubview:self.progressView];
     [self.view insertSubview:[[MyControlTool sharedManager]loadingLabel] aboveSubview:self.wkWebView];

@@ -14,7 +14,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>JTCalendar.xcscheme</key>
+		<key>FSCalendar.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MJExtension.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -67,12 +72,27 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>440A6EB83C7FD82808A42D03E2053333</key>
+		<key>0B2A859DD19214CBF63C7B9DCADB26ED</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4E01E93B7CF05C49F3AE1DEB81F3D029</key>
+		<key>39239B6C480159FA1D77C0287E82AF5F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4AB2C822C4F9F375525E129BC204D584</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4D70540979D0D203ACA13E9C5DEE6CCE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>52E24F9C7F5FBA51CA634749857E774A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -82,17 +102,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>5EAF54000FABD7B00C9EC30737A090F4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>70BC44266C6FFE30D2C57129458E070B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>847B90EFA510E8488008184961A05C4C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9266BAB82A9C86F194C629575B054268</key>
+		<key>73542A60E05877D0A662A57462155EF6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,27 +122,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>93E066C4BCA99B46509935592A0E7824</key>
+		<key>95E3FF5DC5092FE70693D909F5F89856</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9EAB3E42EF957541E6C3C76D35FD008E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C3AD7E342840A1BEA026D1D3A2D9C1A7</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>D7A0D087B5BEC587DBF3E6DCF6757ACF</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>F06705A9F6C77A18EE39FD0EF973559C</key>
 		<dict>
 			<key>primary</key>
 			<true/>

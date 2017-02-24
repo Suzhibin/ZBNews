@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface MainModel : NSObject
-@property (nonatomic,copy)NSString *channelId;
-@property (nonatomic,copy)NSString *name;
+@property (nonatomic,copy)NSString *menu_id;
+@property (nonatomic,copy)NSString *title;
 -(instancetype)initWithDict:(NSDictionary *)dict;
 
 /**

@@ -12,6 +12,7 @@
 #import "ChannelTableViewCell.h"
 #import "ChannelBranchTableViewCell.h"
 #import "DetailViewController.h"
+
 @interface DatabaseViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)NSArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
@@ -35,7 +36,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor=[UIColor whiteColor];
-    self.dataArray = [[ZBDataBaseManager sharedManager] fetchAllUsers];
+    self.dataArray = [[ZBDataBaseManager sharedInstance]getAllDataWithTable:@"collection"];
     [self.view addSubview:self.tableView];
     [self.tableView reloadData];
     NSLog(@"收藏新闻个数:%ld",self.dataArray.count );
@@ -72,7 +73,7 @@
         NSMutableArray *array = (NSMutableArray *)self.dataArray;
         [array removeObjectAtIndex:indexPath.row];
         
-        [[ZBDataBaseManager sharedManager] deleteDataWithItemId:model.title];//删除对应文章id
+        [[ZBDataBaseManager sharedInstance]table:@"collection" deleteDataWithItemId:model.newslId];//删除对应文章id
         // [tableView beginUpdates];
         // 用_tableView 删除行刷新方法刷新显示
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
@@ -84,17 +85,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ChannelModel *model=self.dataArray[indexPath.row];
-    if (model.url==nil) {
-        static NSString *channelCell=@"channelCell";
-        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
-        if (cell==nil) {
-            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
-        }
-        [cell setChannelModel:model];
-        return cell;
-    }else{
+    
+    if ([model.icon isKindOfClass:[NSDictionary class]]){
         static NSString *ChannelBranchCell=@"channelBranchCell";
         ChannelBranchTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
         if (cell==nil) {
@@ -102,8 +97,18 @@
         }
         [cell setChannelModel:model];
         return cell;
+        
+    }else{
+        static NSString *channelCell=@"channelCell";
+        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
+        if (cell==nil) {
+            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
+        }
+        [cell setChannelModel:model];
+        return cell;
     }
 }
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];

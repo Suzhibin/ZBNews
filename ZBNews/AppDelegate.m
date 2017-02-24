@@ -32,17 +32,19 @@
     
     [self setlanguages];
     [self  enablePush:[GlobalSettingsTool sharedSetting].enabledPush];
+    
     CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
     self.window.rootViewController = tabbar;
     
     [self.window makeKeyAndVisible];
     
     //广告
-    [ZBAdvertiseInfo getAdvertising:^(NSString *filePath,BOOL isExist){
+    [ZBAdvertiseInfo getAdvertising:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
         if (isExist) {
             ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
             advertiseView.filePath = filePath;
-            [advertiseView show];
+            advertiseView.linkdict = urlDict;
+
         }else{
             NSLog(@"无图片");
         }

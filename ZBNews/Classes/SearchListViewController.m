@@ -14,7 +14,7 @@
 #import "DetailViewController.h"
 #import <MJRefresh.h>
 @interface SearchListViewController ()<ZBURLSessionDelegate,UITableViewDelegate,UITableViewDataSource>
-@property (nonatomic,assign) NSInteger page;
+@property (nonatomic,assign)NSInteger page;
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)UIActivityIndicatorView *aiv;
@@ -28,12 +28,12 @@
     self.view.backgroundColor=[UIColor whiteColor];
     _page=1;
     NEWSLog(@"urlString:%@",self.urlString);
-    NSString *httpArg =[NSString stringWithFormat:search_ARG,self.urlString,(long)_page];
-    NSString *urlString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpArg];
-    NEWSLog(@"urlString:%@",urlString);
-    NEWSLog(@"正常请求栏目名字:%@ ",self.urlString);
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithURL:urlString target:self apiType:ZBRequestTypeRefresh];
+  //  NSString *httpArg =[NSString stringWithFormat:search_ARG,self.urlString,(long)_page];
+  //  NSString *urlString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpArg];
+ //   NEWSLog(@"urlString:%@",urlString);
+ //   NEWSLog(@"正常请求栏目名字:%@ ",self.urlString);
+//    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
+ //   [[ZBURLSessionManager sharedManager]getRequestWithURL:urlString target:self apiType:ZBRequestTypeRefresh];
     
     [self.view addSubview:self.tableView];
     
@@ -43,12 +43,12 @@
 }
 - (void)loadMoreData{
     _page++;
-    NSString *httpMoreArg =[NSString stringWithFormat:search_ARG,self.urlString,(long)_page];
-    NSString *urlMoreString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpMoreArg];
+  //  NSString *httpMoreArg =[NSString stringWithFormat:search_ARG,self.urlString,(long)_page];
+ //   NSString *urlMoreString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpMoreArg];
 
-    NEWSLog(@" 上拉加载url:%@",urlMoreString);
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithURL:urlMoreString target:self apiType:ZBRequestTypeLoadMore];
+  //  NEWSLog(@" 上拉加载url:%@",urlMoreString);
+  //  [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
+  //  [[ZBURLSessionManager sharedManager]getRequestWithURL:urlMoreString target:self apiType:ZBRequestTypeLoadMore];
 }
 
 #pragma mark - ZBURLSessionDelegate
@@ -60,6 +60,7 @@
     if (request.apiType==ZBRequestTypeLoadMore) {
         [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
     }
+    /*
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
     NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
     NSDictionary *pagebean=[body objectForKey:@"pagebean"];
@@ -75,6 +76,7 @@
         }
         [self.dataArray addObject:model];
     }
+     */
     [self.tableView reloadData];
     [self.aiv removeFromSuperview];
 }
@@ -97,17 +99,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ChannelModel *model=self.dataArray[indexPath.row];
-    if (model.url==nil) {
-        static NSString *channelCell=@"channelCell";
-        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
-        if (cell==nil) {
-            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
-        }
-        [cell setChannelModel:model];
-        return cell;
-    }else{
+    
+    if ([model.icon isKindOfClass:[NSDictionary class]]){
         static NSString *ChannelBranchCell=@"channelBranchCell";
         ChannelBranchTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
         if (cell==nil) {
@@ -115,8 +111,21 @@
         }
         [cell setChannelModel:model];
         return cell;
+        
+    }else{
+        
+        static NSString *channelCell=@"channelCell";
+        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
+        if (cell==nil) {
+            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
+        }
+        [cell setChannelModel:model];
+        return cell;
+        
     }
+
 }
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];

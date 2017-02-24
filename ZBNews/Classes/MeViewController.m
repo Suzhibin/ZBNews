@@ -71,7 +71,7 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    return 7;
+    return 6;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -80,25 +80,26 @@
     if (!cell) {
         cell=[[MeTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIde];
     }
+    /*
      if (indexPath.row==0) {
         cell.titleLabel.text=@"搜索新闻";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
      }
-    
-    if (indexPath.row==1) {
+    */
+    if (indexPath.row==0) {
         cell.titleLabel.text=@"阅读日历";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    if (indexPath.row==2) {
+    if (indexPath.row==1) {
          cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         cell.titleLabel.text=@"我的收藏";
         
     }
-    if (indexPath.row==3) {
+    if (indexPath.row==2) {
         cell.titleLabel.text=Localized(@"language");
         
     }
-    if (indexPath.row==4) {
+    if (indexPath.row==3) {
         
         if ([GlobalSettingsTool getNightPattern]==YES) {
             
@@ -108,13 +109,13 @@
             cell.titleLabel.text=Localized(@"nightmode");
         }
     }
-    if (indexPath.row==5) {
+    if (indexPath.row==4) {
         cell.titleLabel.text=@"离线下载";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     
 
     }
-    if (indexPath.row==6) {
+    if (indexPath.row==5) {
         cell.titleLabel.text=@"设置";
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
@@ -124,6 +125,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    /*
     if (indexPath.row==0) {
         
         NSArray*hotArr=@[@"特朗普",@"朴槿惠"];
@@ -143,21 +145,22 @@
         [self presentViewController:nav  animated:YES completion:nil];
         
     }
-    if (indexPath.row==1) {
+     */
+    if (indexPath.row==0) {
   
         CalendarViewController *calendar=[[CalendarViewController alloc]init];
         [self.navigationController pushViewController:calendar animated:YES];
     }
-    if (indexPath.row==2) {
+    if (indexPath.row==1) {
         DatabaseViewController *databaseVC=[[DatabaseViewController alloc]init];
         [self.navigationController pushViewController:databaseVC animated:YES];
         
     }
-    if (indexPath.row==3) {
+    if (indexPath.row==2) {
         LanguageViewController *langVC=[[LanguageViewController alloc]init];
         [self.navigationController pushViewController:langVC animated:YES];
     }
-    if (indexPath.row==4) {
+    if (indexPath.row==3) {
         BOOL night = [[NSUserDefaults standardUserDefaults]boolForKey:@"readStyle"];
         [[NSUserDefaults standardUserDefaults]setBool:!night forKey:@"readStyle"];
         
@@ -167,13 +170,13 @@
         [self meVCgetNightPattern];
         [self.tableView reloadData];
     }
-    if (indexPath.row==5) {
+    if (indexPath.row==4) {
         offlineViewController *offlineVC=[[offlineViewController alloc]init];
         offlineVC.delegate=self;
         [self.navigationController pushViewController:offlineVC animated:YES];
         
     }
-    if (indexPath.row==6) {
+    if (indexPath.row==5) {
         SettingsViewController *settingVC=[[SettingsViewController alloc]init]; 
         [self.navigationController pushViewController:settingVC animated:YES];
     }
@@ -200,67 +203,105 @@
         //如果是离线请求的数据
         if (type==ZBRequestTypeOffline) {
             NSLog(@"添加了几个url  就会走几遍");
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-            NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
-            NSDictionary *pagebean=[body objectForKey:@"pagebean"];
-            NSArray *contentlist=[pagebean objectForKey:@"contentlist"];
+            NSArray *array = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
+    
             //NEWSLog(@"contentlist:%@",contentlist);
-            for (NSDictionary *dic in contentlist) {
+            for (NSDictionary *dic in array) {
                 ChannelModel *model=[[ChannelModel alloc]initWithDict:dic];
-                model.imageurls=[dic objectForKey:@"imageurls"];
-                if ( model.imageurls.count>0) {
-                    for (NSDictionary *imagedict in model.imageurls) {
-                        model.url=[imagedict objectForKey:@"url"];
-                    }
+                model.icon=[dic objectForKey:@"icon"];
+                if ([model.icon isKindOfClass:[NSDictionary class]]){
+                    model.icon_small1=[model.icon objectForKey:@"icon_small1"];
+                    model.icon_small2=[model.icon objectForKey:@"icon_small2"];
+                    model.icon_small3=[model.icon objectForKey:@"icon_small3"];
                 }
                 [self.imageArray addObject:model];
-                //使用SDWebImage 下载图片
-                BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.url];
-                if (isKey) {
-                    
-                    NSLog(@"已经下载了");
-                    self.offlineView.progressLabel.text=@"已经下载了";
-                    
-                } else{
-                    
-                    [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.url] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-                        
-                        NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
-                        
-                        self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
-                        
-                        self.offlineView.pv.progress =(double)receivedSize/expectedSize;
-                        
-                    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
-                        
-                        NSLog(@"单个图片下载完成");
-                        
-                        self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
-                        
-                        self.offlineView.pv.progress = 0.0;
-                        
-                        //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
-                        NSString *imageURLStr = [imageURL absoluteString];
-                        NSString *lastImage=[NSString stringWithFormat:@"%@",((ChannelModel *)[self.imageArray lastObject]).url];
-                        
-                        if ([imageURLStr isEqualToString:lastImage]) {
-                            NSLog(@"下载完成");
-                            [self.offlineView hide];
-                            self.imageArray=nil;
-                        }
-                        
-                        if (error) {
-                            NSLog(@"下载失败");
-                            
-                        }
-                    }];
-                    
-                }
                 
+                if ([model.icon isKindOfClass:[NSDictionary class]]){
+                    NSArray *imageArray=[NSArray arrayWithObjects:model.icon_small1,model.icon_small2,model.icon_small3, nil];
+                    for (NSInteger i=0; i<imageArray.count; i++) {
+                        
+                        BOOL isKey1=[[SDImageCache sharedImageCache]diskImageExistsWithKey:[imageArray objectAtIndex:i]];
+                        if (isKey1) {
+                            
+                            NSLog(@"已经下载了");
+                            self.offlineView.progressLabel.text=@"已经下载了";
+                        }else{
+                            [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:[imageArray objectAtIndex:i]] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                                
+                                NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
+                                
+                                self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
+                                
+                                self.offlineView.pv.progress =(double)receivedSize/expectedSize;
+                                
+                            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
+                                
+                                NSLog(@"单个图片下载完成");
+                                
+                                self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+                                
+                                self.offlineView.pv.progress = 0.0;
+                                
+                                //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
+                                NSString *imageURLStr = [imageURL absoluteString];
+                                NSString *lastImage=[NSString stringWithFormat:@"%@",((ChannelModel *)[self.imageArray lastObject]).icon_small3];
+                                
+                                if ([imageURLStr isEqualToString:lastImage]) {
+                                    NSLog(@"下载完成");
+                                    [self.offlineView hide];
+                                    self.imageArray=nil;
+                                }
+                                
+                                if (error) {
+                                    NSLog(@"下载失败");
+                                    
+                                }
+                            }];
+
+                        
+                        }
+                    }
+                }else{
+                     BOOL isKey=[[SDImageCache sharedImageCache]diskImageExistsWithKey:model.icon];
+                    if (isKey) {
+                        NSLog(@"已经下载了");
+                        self.offlineView.progressLabel.text=@"已经下载了";
+                    }else{
+                        [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:model.icon] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
+                            
+                            NSLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
+                            
+                            self.offlineView.progressLabel.text=[self progressStrWithSize:(double)receivedSize/expectedSize];
+                            
+                            self.offlineView.pv.progress =(double)receivedSize/expectedSize;
+                            
+                        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType,BOOL finished,NSURL *imageURL){
+                            
+                            NSLog(@"单个图片下载完成");
+                            
+                            self.offlineView.progressLabel.text=[self progressStrWithSize:0.0];
+                            
+                            self.offlineView.pv.progress = 0.0;
+                            
+                            //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
+                            NSString *imageURLStr = [imageURL absoluteString];
+                            NSString *lastImage=[NSString stringWithFormat:@"%@",((ChannelModel *)[self.imageArray lastObject]).icon];
+                            
+                            if ([imageURLStr isEqualToString:lastImage]) {
+                                NSLog(@"下载完成");
+                                [self.offlineView hide];
+                                self.imageArray=nil;
+                            }
+                            
+                            if (error) {
+                                NSLog(@"下载失败");
+                                
+                            }
+                        }];
+                    }
+                }
             }
-            
         }
-        
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
@@ -275,7 +316,7 @@
 
 
 - (void)cancelClick{
-    [[ZBURLSessionManager sharedManager] requestToCancel:YES];
+    [[ZBURLSessionManager sharedInstance] requestToCancel:YES];
     [[SDWebImageManager sharedManager] cancelAll];
     [self.offlineView hide];
     self.imageArray=nil;

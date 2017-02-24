@@ -19,7 +19,7 @@
 #import "ZBWeatherAnimatedView.h"
 #import "HeaderAnimatedView.h"
 #import "YYFPSLabel.h"
-@interface MainViewController ()<ZBURLSessionDelegate>
+@interface MainViewController ()
 @property (nonatomic, strong)  UIImageView *imageView;
 @property (nonatomic, strong)  NSMutableArray *menuList;
 @property (nonatomic, assign)  BOOL autoSwitch;
@@ -85,10 +85,7 @@
    // NEWSLog(@"_menuList:%@",_menuList);
         for (MainModel *menu in _menuList) {
             // NEWSLog(@"name:%@",menu.name);
-            if ([menu.name hasSuffix:@"最新"]||[menu.name hasSuffix:@"焦点"]) {
-                menu.name = [menu.name substringToIndex:[menu.name length] - 2];
-            }
-            [titleList addObject:menu.name];
+            [titleList addObject:menu.title];
         }
 
     return titleList;
@@ -214,45 +211,21 @@
 }
 #pragma mark - menuListdata
 - (void)generateData{
+    
+     NSString *path=[[NSBundle mainBundle]pathForResource:@"menu" ofType:@"plist"];
     _menuList=[[NSMutableArray alloc]init];
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithURL:MENU_URL target:self apiType:ZBRequestTypeDefault];
-    NEWSLog(@"栏目数据");
-}
-- (void)urlRequestFinished:(ZBURLRequest *)request{
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
-   // NEWSLog(@"dict%@",dict);
-    if ([dict count] == 0) {
-      NEWSLog(@"网络请求失败");
-        NSArray *array=@[@{@"channelId":@"5572a108b3cdc86cf39001cd",@"name":@"国内"}];
-        for (NSDictionary *dic in array) {
-            MainModel *model=[[MainModel alloc]initWithDict:dic];
-            [_menuList addObject:model];
-         //   NEWSLog(@"栏目:%@",model.name);
-        }
+    //将plist中的信息读到数组中
+    NSArray *plistArray = [NSArray arrayWithContentsOfFile:path];
 
-    }else{
-        NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
-        NSArray *array=[body objectForKey:@"channelList"];
-        //    NEWSLog(@"%@",array);
-        for (NSDictionary *dic in array) {
-            MainModel *model=[[MainModel alloc]initWithDict:dic];
-            [_menuList addObject:model];
-           // NEWSLog(@"栏目:%@",model.name);
-        }
+    for (NSDictionary *dic in plistArray) {
+        MainModel *model=[[MainModel alloc]initWithDict:dic];
+        [_menuList addObject:model];
 
     }
     [self.magicView reloadData];
-    
+  
 }
-- (void)urlRequestFailed:(ZBURLRequest *)request{
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        NEWSLog(@"请求超时");
-    }else{
-        NEWSLog(@"请求失败");
-    }
-}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

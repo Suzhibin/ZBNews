@@ -167,7 +167,7 @@
         NSLog(@"清除缓存");
         [[SDImageCache sharedImageCache]clearDiskOnCompletion:^{
             
-            [[ZBCacheManager sharedCacheManager]clearCache];
+            [[ZBCacheManager sharedInstance]clearCache];
             
             [[SDImageCache sharedImageCache] clearMemory];
             //清除系统内存文件
@@ -198,6 +198,11 @@
         [weakSelf createMail];
     };
     
+    ZBSettingItem *openURL = [ZBSettingItem itemWithIcon:@"MoreShare" title:@"去评论" type:ZBSettingItemTypeArrow];
+    openURL.operation = ^{
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=APPID"]];
+    };
+    
     // 分享
     ZBSettingItem *share = [ZBSettingItem itemWithIcon:@"MoreShare" title:@"分享" type:ZBSettingItemTypeArrow];
     share.operation = ^{
@@ -224,7 +229,7 @@
     };
     
     ZBSettingGroup *group3 = [[ZBSettingGroup alloc] init];
-    group3.items = @[ feedback, share , about];
+    group3.items = @[ feedback, openURL,share , about];
     group3.headerHeight=5;
     group3.footerHeight=5;
     [_allGroups addObject:group3];
@@ -251,7 +256,7 @@
 }
 
 - (NSString *)getCacheSize{
-    float cacheSize=[[ZBCacheManager sharedCacheManager]getCacheSize];//json缓存文件大小
+    float cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
     float imageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
     float AppCacheSize=cacheSize+imageSize;
     AppCacheSize=AppCacheSize/1000.0/1000.0;

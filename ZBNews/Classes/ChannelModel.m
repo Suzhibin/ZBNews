@@ -9,6 +9,8 @@
 #import "ChannelModel.h"
 
 @implementation ChannelModel
+// NSCoding实现
+ZBCodingImplementation
 -(instancetype)initWithDict:(NSDictionary *)dict
 {
     if (self=[super init]) {
@@ -18,7 +20,11 @@
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
-    //     NEWSLog(@"undefinedKey:%@",key);
-    
+  /*
+    NSLog(@"undefinedKey:%@",key);
+    if ([key isEqualToString:@"id"]) {
+        self.channelId=key;
+    }
+   */
 }
 @end

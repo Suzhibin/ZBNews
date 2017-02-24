@@ -43,17 +43,15 @@
     [super viewDidAppear:animated];
     self.automaticallyAdjustsScrollViewInsets=NO;
     self.tabBarController.tabBar.hidden=NO;
-      [[NSNotificationCenter defaultCenter] removeObserver:self name:NIGHT object:nil];
-     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushtoad" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushToAd:) name:@"pushtoad" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editNightView) name:NIGHT object:nil];//夜间模式通知
+    
+    [self Notification];
     //VTMagic框架 数据 UI 要放到viewDidAppear里
     _page=1;
     [self getData];//加载数据
     self.tableView.mj_footer.hidden = NO;    //显示当前的上拉刷新控件
     self.tableView.scrollsToTop = YES;
     NSInteger pageIndex = [self vtm_pageIndex]; NEWSLog(@"当前页面索引: %ld", (long)pageIndex);
-    [MobClick beginLogPageView:_mainModel.name];
+    [MobClick beginLogPageView:_mainModel.title];
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -64,7 +62,7 @@
     [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
     self.tableView.mj_footer.hidden = YES;// 隐藏当前的上拉刷新控件
     self.tableView.scrollsToTop = NO;
-    [MobClick endLogPageView:_mainModel.name];
+    [MobClick endLogPageView:_mainModel.title];
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -81,7 +79,13 @@
     
      [self pushController:noti.userInfo];
 }
+- (void)Notification{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NIGHT object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pushtoad" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushToAd:) name:@"pushtoad" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(editNightView) name:NIGHT object:nil];//夜间模式通知
 
+}
 #pragma mark -data
 - (void)getData{
     static const NSInteger timeOut = 60*60;
@@ -92,14 +96,13 @@
     }
     _mainModel.lastTime = currentStamp;
     
+    _page=1;
     
-    NSString *httpArg =[NSString stringWithFormat:NEWS_ARG,_mainModel.channelId,(long)_page];
-    NSString *urlString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpArg];
+    NSString *urlString=[NSString stringWithFormat:NEWS_URL,_mainModel.menu_id,_page];
     NEWSLog(@"urlString:%@",urlString);
-    NEWSLog(@"正常请求栏目名字:%@ 正常请求栏目名字id:%@",_mainModel.name,_mainModel.channelId);
+    NEWSLog(@"正常请求栏目名字:%@ 正常请求栏目名字id:%@",_mainModel.title,_mainModel.menu_id);
     
     [self request:urlString apiType:ZBRequestTypeDefault];
-
      //=====================================================
     __weak __typeof(self) weakSelf = self;
     self.tableView.mj_header= [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -113,26 +116,26 @@
     //=====================================================
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];  // 上拉加载
     self.tableView.mj_footer.automaticallyChangeAlpha = YES;
+
 }
 - (void)loadRefresh{
-    NSString *httpArg =[NSString stringWithFormat:NEWS_ARG,_mainModel.channelId,(long)_page];
-    NSString *urlString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpArg];
+    _page=1;
+    NSString *urlString=[NSString stringWithFormat:NEWS_URL,_mainModel.menu_id,_page];
     [self request:urlString apiType:ZBRequestTypeRefresh];
 }
 - (void)loadMoreData{
     _page++;
-    NSString *httpMoreArg =[NSString stringWithFormat:NEWS_ARG,_mainModel.channelId,(long)_page];
-    NSString *urlMoreString=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpMoreArg];
-    NEWSLog(@"上拉加载栏目名字:%@ 上拉加载url:%@",_mainModel.name,urlMoreString);
+    NSString *urlMoreString=[NSString stringWithFormat:NEWS_URL,_mainModel.menu_id,_page];
+    NEWSLog(@"上拉加载栏目名字:%@ 上拉加载url:%@",_mainModel.title,urlMoreString);
     [self request:urlMoreString apiType:ZBRequestTypeLoadMore];
 }
+
 - (void)request:(NSString *)urlString apiType:(apiType)requestType{
   
     [ZBNetworkManager requestWithConfig:^(ZBURLRequest *request){
         request.urlString=urlString;
         request.apiType=requestType;
         request.timeoutInterval=10;
-        [request setValue:APIKEY forHeaderField:@"apikey"];
     }  success:^(id responseObj,apiType type){
         NSLog(@"type:%zd",type);
         //如果是刷新的数据
@@ -143,24 +146,25 @@
         if (type==ZBRequestTypeLoadMore) {
             [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
         }
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-        // NSLog(@"dict:%@",dict);
-        NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
-        NSDictionary *pagebean=[body objectForKey:@"pagebean"];
-        NSMutableArray *contentlist=[pagebean objectForKey:@"contentlist"];
-        // NSLog(@"contentlist:%@",contentlist);
-        for (NSDictionary *dic in contentlist) {
-            ChannelModel *model=[[ChannelModel alloc]initWithDict:dic];
-            model.imageurls=[dic objectForKey:@"imageurls"];
-            if ( model.imageurls.count>0) {
-                for (NSDictionary *imagedict in model.imageurls) {
-                    model.url=[imagedict objectForKey:@"url"];
-                }
+        NSArray *array = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];        
+        for (NSDictionary *dic in array) {
+            ChannelModel *model=[[ChannelModel alloc]init];
+            model.title=[dic objectForKey:@"title"];
+            model.newslId=[dic objectForKey:@"id"];
+            model.type=[dic objectForKey:@"type"];
+            model.hits=[dic objectForKey:@"hits"];
+            model.icon=[dic objectForKey:@"icon"];
+            if ([model.icon isKindOfClass:[NSDictionary class]]){
+                model.icon_small1=[model.icon objectForKey:@"icon_small1"];
+                model.icon_small2=[model.icon objectForKey:@"icon_small2"];
+                model.icon_small3=[model.icon objectForKey:@"icon_small3"];
             }
+            model.online=[dic objectForKey:@"online"];
+          
             [self.dataArray addObject:model];
         }
         [self.tableView reloadData];
-
+        
     } failed:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut) {
@@ -178,17 +182,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
      ChannelModel *model=self.dataArray[indexPath.row];
-    if (model.url==nil) {
-        static NSString *channelCell=@"channelCell";
-        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
-        if (cell==nil) {
-            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
-        }
-        [cell setChannelModel:model];
-        return cell;
-    }else{
+ 
+    if ([model.icon isKindOfClass:[NSDictionary class]]){
         static NSString *ChannelBranchCell=@"channelBranchCell";
         ChannelBranchTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
         if (cell==nil) {
@@ -196,8 +194,21 @@
         }
         [cell setChannelModel:model];
         return cell;
+
+    }else{
+    
+        static NSString *channelCell=@"channelCell";
+        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
+        if (cell==nil) {
+            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
+        }
+        [cell setChannelModel:model];
+        return cell;
+
     }
+
 }
+
 - (void)pushController:(id)model
 {
     DetailViewController *detailsVC=[[DetailViewController alloc]init];
@@ -213,8 +224,12 @@
     [self pushController:model];
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    //ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];
-    return 80;
+    ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    if ([model.icon isKindOfClass:[NSDictionary class]]){
+        return 100;
+    }else{
+        return 70;
+    }
 }
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     float deltY = scrollView.contentOffset.y;
@@ -271,10 +286,10 @@
     [self.tableView setContentOffset:CGPointZero];
 }
 - (void)savePageInfo {
-    [[DataManager sharedInstance] savePageInfo:self.dataArray menuId:_mainModel.channelId];
+    [[DataManager sharedInstance] savePageInfo:self.dataArray menuId:_mainModel.menu_id];
 }
 - (void)loadLocalData {
-    NSArray *cacheList = [[DataManager sharedInstance] pageInfoWithMenuId:_mainModel.channelId];
+    NSArray *cacheList = [[DataManager sharedInstance] pageInfoWithMenuId:_mainModel.menu_id];
     [self.dataArray addObjectsFromArray:cacheList];
     [self.tableView reloadData];
 }

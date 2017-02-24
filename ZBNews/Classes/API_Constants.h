@@ -9,32 +9,32 @@
 #ifndef API_Constants_h
 #define API_Constants_h
 
-// 0 -- 不加载html,  1 -- 加载
+
 #define SERVERTYPE 0
 
 #if(SERVERTYPE == 0)
 
-#define APIKEY @"f9a63da22c1a152f1355a2c00ba18f4c"
 
-#define MENU_URL @"https://apis.baidu.com/showapi_open_bus/channel_news/channel_news"
+#define NEWS_URL @"http://h5.jp.51wnl.com/wnl/tag/page?id=%@&p=%zd"
 
-#define NEWS_URL @"https://apis.baidu.com/showapi_open_bus/channel_news/search_news"
-
-#define NEWS_ARG @"channelId=%@&page=%ld&needContent=0&needHtml=0"
-#define search_ARG @"title=%@&page=%ld&needContent=0&needHtml=0"
+#define Datail_URL @"http://h5.jp.51wnl.com/wnl/info/view?id=%@"
 
 #elif(SERVERTYPE == 1)
 
-#define APIKEY @"f9a63da22c1a152f1355a2c00ba18f4c"
 
-#define MENU_URL @"https://apis.baidu.com/showapi_open_bus/channel_news/channel_news"
 
-#define NEWS_URL @"https://apis.baidu.com/showapi_open_bus/channel_news/search_news"
-
-#define NEWS_ARG @"channelId=%@&page=%ld&needContent=1&needHtml=1"
-#define search_ARG @"title=%@&page=%ld&needContent=1&needHtml=1"
 #endif
 
+//http://h5.jp.51wnl.com/wnl/jp/page?p=1%20HTTP/1.1 //推荐
+//http://h5.jp.51wnl.com/wnl/tag/page?id=52&p=1
+//http://h5.jp.51wnl.com/wnl/tag/page?id=104&p=1
+//http://h5.jp.51wnl.com/wnl/tag/page?id=51&p=1
+//健康52//命理104// 情感51 //68 萌宠//星座56//美文49//娱乐67//时尚63//爆笑65//生肖125//美食59//测一测66//风水74//历史75//小窍门209//家具62//育儿58//
 
+
+//http://h5.jp.51wnl.com/wnl/info/view?id=640253
+
+//http://h5.jp.51wnl.com/wnl/info/view?id=531972
+//http://h5.jp.51wnl.com/wnl/info/view?id=531682
 
 #endif /* API_Constants_h */

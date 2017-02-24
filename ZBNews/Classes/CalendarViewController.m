@@ -7,27 +7,28 @@
 //
 
 #import "CalendarViewController.h"
-#import <JTCalendar/JTCalendar.h>
-@interface CalendarViewController ()<JTCalendarDelegate>{
-    
-    NSDate *_todayDate;
-    NSDate *_minDate;
-    NSDate *_maxDate;
-    
-    NSDate *_dateSelected;
-
+#import <FSCalendar.h>
+#import "ZBDataBaseManager.h"
+#import "ChannelModel.h"
+#import "ChannelTableViewCell.h"
+#import "ChannelBranchTableViewCell.h"
+@interface CalendarViewController ()<UITableViewDataSource, UITableViewDelegate, FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance>{
+    CGFloat height;
 }
-@property(nonatomic,assign)float contentViewHeight;
-//是JTCalendarMenuView，他代表着月份。
-@property (nonatomic,strong)JTCalendarMenuView *calendarMenuView;
-//是JTCalendarContentView，这个是日历本身。
-@property (nonatomic,strong)JTHorizontalCalendarView *calendarContentView;
+@property (weak , nonatomic) FSCalendar *calendar;
+@property (strong, nonatomic) NSDateFormatter *dateFormatter;
+@property (strong, nonatomic) UITableView *tableView;
+@property (strong, nonatomic) NSCalendar *gregorian;
+@property (nonatomic, strong) NSArray* dataArray;
 
-@property (strong, nonatomic) JTCalendarManager *calendarManager;
+@property (strong, nonatomic) NSMutableArray *datesWithEvent;
 @end
 
 @implementation CalendarViewController
-
+- (void)dealloc
+{
+    NSLog(@"%s",__FUNCTION__);
+}
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -39,174 +40,197 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _contentViewHeight=300;
-    self.calendarMenuView=[[JTCalendarMenuView alloc]initWithFrame:CGRectMake(10, 70, SCREEN_WIDTH-20, 20)];
-    [self.view addSubview:self.calendarMenuView];
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    self.dataArray = [[NSMutableArray alloc] init];
     
-    self.calendarContentView=[[JTHorizontalCalendarView alloc]initWithFrame:CGRectMake(0, 100, SCREEN_WIDTH,_contentViewHeight)];
-    [self.view addSubview:self.calendarContentView];
+    self.datesWithEvent=[[NSMutableArray array]init];
     
-    _calendarManager = [JTCalendarManager new];
-    _calendarManager.delegate = self;
+    height=390;
+    FSCalendar *calendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 300)];
+    calendar.dataSource = self;
+    calendar.delegate = self;
+    calendar.appearance.caseOptions = FSCalendarCaseOptionsWeekdayUsesSingleUpperCase;//周一、一
+   // calendar.scrollDirection = FSCalendarScrollDirectionVertical;//滚动方向
+    [self.view addSubview:calendar];
+    self.calendar = calendar;
+
+
+    [_calendar selectDate:[NSDate date]];
+    _calendar.scopeGesture.enabled = YES;
     
-  
-       [self createMinAndMaxDate];
-    //_calendarMenuView.contentRatio = .75;
-    //_calendarManager.settings.weekDayFormat = JTCalendarWeekDayFormatFull;
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    self.dateFormatter.dateFormat = @"yyyy/MM/dd";
     
-  //  _calendarManager.dateHelper.calendar.locale = [NSLocale localeWithLocaleIdentifier:@"fr_FR"];
-    [_calendarManager setMenuView:_calendarMenuView];
-    [_calendarManager setContentView:_calendarContentView];
-    [_calendarManager setDate:_todayDate];
-    
-    
+    [self.view addSubview:self.tableView];
 }
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+
+#pragma mark - <FSCalendarDelegate>
+- (BOOL)calendar:(FSCalendar *)calendar shouldSelectDate:(NSDate *)date atMonthPosition:(FSCalendarMonthPosition)monthPosition
 {
-    [UIView animateWithDuration:0.4 animations:^{
-        
-        _calendarManager.settings.weekModeEnabled = !_calendarManager.settings.weekModeEnabled;
-        
-        [_calendarManager reload];
-        CGFloat newHeight =300;
-        if(_calendarManager.settings.weekModeEnabled){
-            newHeight = 85.;
-        }
-        
-        _contentViewHeight = newHeight;
-        [self.view layoutIfNeeded];
-        
+    NSLog(@"should select date %@",[self.dateFormatter stringFromDate:date]);
+    NSLog(@"should  %@",[self.dateFormatter stringFromDate:calendar.currentPage]);
+
+    return YES;
+}
+
+- (void)calendar:(FSCalendar *)calendar boundingRectWillChange:(CGRect)bounds animated:(BOOL)animated
+{
+    calendar.frame = (CGRect){calendar.frame.origin,bounds.size};
+
+    self.tableView.frame=CGRectMake(0, CGRectGetMaxY(calendar.frame), self.view.frame.size.width, SCREEN_HEIGHT-64);
+}
+
+- (void)calendar:(FSCalendar *)calendar didSelectDate:(NSDate *)date atMonthPosition:(FSCalendarMonthPosition)monthPosition
+{
+    NSLog(@"did select date %@",[self.dateFormatter stringFromDate:date]);
+    
+    NSMutableArray *selectedDates = [NSMutableArray arrayWithCapacity:calendar.selectedDates.count];
+    [calendar.selectedDates enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [selectedDates addObject:[self.dateFormatter stringFromDate:obj]];
     }];
+    NSLog(@"selected dates is %@",selectedDates);
+    if (monthPosition == FSCalendarMonthPositionNext || monthPosition == FSCalendarMonthPositionPrevious) {
+        [calendar setCurrentPage:date animated:YES];
+    }
+    
+    [[ZBDataBaseManager sharedInstance]getAllDataWithTable:@"calendar" itemId:[self.dateFormatter stringFromDate:date] data:^(NSArray *dataArray,BOOL isExist){
+        if (isExist) {
+            NSLog(@"存在");
+        }
+        self.dataArray =dataArray;
+        [self.tableView reloadData];
+    }];
+    
 }
 
-#pragma mark - CalendarManager delegate
-
-// Exemple of implementation of prepareDayView method
-// Used to customize the appearance of dayView
-- (void)calendar:(JTCalendarManager *)calendar prepareDayView:(JTCalendarDayView *)dayView
+- (void)calendarCurrentPageDidChange:(FSCalendar *)calendar
 {
-    // Today
-    if([_calendarManager.dateHelper date:[NSDate date] isTheSameDayThan:dayView.date]){
-        dayView.circleView.hidden = NO;
-         // 当日的颜色
-        dayView.textLabel.text=@"今天";
+    NSLog(@"%s %@", __FUNCTION__, [self.dateFormatter stringFromDate:calendar.currentPage]);
+}
+#pragma mark - <FSCalendarDataSource>
+/*
+- (NSInteger)calendar:(FSCalendar *)calendar numberOfEventsForDate:(NSDate *)date
+{
+    return 2;
+}
+ */
+
+#pragma mark - <FSCalendarDelegateAppearance>
+
+- (UIColor *)calendar:(FSCalendar *)calendar appearance:(FSCalendarAppearance *)appearance eventColorForDate:(NSDate *)date
+{
+    NSString *dateString = [self.dateFormatter stringFromDate:date];
+    if ([_datesWithEvent containsObject:dateString]) {
+        return [UIColor blackColor];
+    }
+    return nil;
+ 
+}
+
+#pragma mark - <UITableViewDataSource>
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.dataArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ChannelModel *model=self.dataArray[indexPath.row];
+    
+    if ([model.icon isKindOfClass:[NSDictionary class]]){
+        static NSString *ChannelBranchCell=@"channelBranchCell";
+        ChannelBranchTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
+        if (cell==nil) {
+            cell=[[ChannelBranchTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ChannelBranchCell];
+        }
+        [cell setChannelModel:model];
+        return cell;
+        
+    }else{
+        static NSString *channelCell=@"channelCell";
+        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
+        if (cell==nil) {
+            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
+        }
+        [cell setChannelModel:model];
+        return cell;
+    }
+}
+#pragma mark - <UITableViewDelegate>
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 30)];
+    view.backgroundColor = [UIColor clearColor];
+
+    UILabel *InfoLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 0, view.frame.size.width, 30)];
+    InfoLabel.textAlignment=NSTextAlignmentCenter;
+    
+    NSString *count=[NSString stringWithFormat:@"您今天阅读了%zd条新闻",[self.dataArray count]];
+    NSString *lengthStr=[NSString stringWithFormat:@"%zd",[self.dataArray count]];
+
+    NSMutableAttributedString *AttributedStr = [[NSMutableAttributedString alloc]initWithString:count];
+    
+    [AttributedStr addAttribute:NSFontAttributeName
+     
+                          value:[UIFont systemFontOfSize:20.0]
+     
+                          range:NSMakeRange(6, [lengthStr length])];
+    
+    [AttributedStr addAttribute:NSForegroundColorAttributeName
+     
+                          value:[UIColor redColor]
+     
+                          range:NSMakeRange(6, [lengthStr length])];
+    
+    InfoLabel.attributedText = AttributedStr;    
+    
+    [view addSubview:InfoLabel];
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  
+}
+/**
+ * 当用户手松开(停止拖拽),就会调用这个代理方法
+ */
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    
+    int contentOffsety = scrollView.contentOffset.y;
+    if (contentOffsety<30) {
+        [self.calendar setScope:FSCalendarScopeMonth animated:YES];
+    }else{
+        [self.calendar setScope:FSCalendarScopeWeek animated:YES];
        
-        dayView.circleView.backgroundColor = [UIColor blueColor];
-        dayView.dotView.backgroundColor = [UIColor whiteColor];
-        dayView.textLabel.textColor = [UIColor whiteColor];
     }
-    // Selected date
-    else if(_dateSelected && [_calendarManager.dateHelper date:_dateSelected isTheSameDayThan:dayView.date]){
-        dayView.circleView.hidden = NO;
-        // 点击后日期的颜色
-        dayView.circleView.backgroundColor = [UIColor redColor];
-        dayView.dotView.backgroundColor = [UIColor whiteColor];
-        dayView.textLabel.textColor = [UIColor whiteColor];
-    }
-    // Other month
-    else if(![_calendarManager.dateHelper date:_calendarContentView.date isTheSameMonthThan:dayView.date]){
-        dayView.circleView.hidden = YES;
-        dayView.dotView.backgroundColor = [UIColor redColor];
-        dayView.textLabel.textColor = [UIColor lightGrayColor];
-    }
-    // Another day of the current month
-    else{
-        dayView.circleView.hidden = YES;
-        dayView.dotView.backgroundColor = [UIColor redColor];
-        dayView.textLabel.textColor = [UIColor blackColor];
-    }
-    /*
-    if([self haveEventForDay:dayView.date]){
-        dayView.dotView.hidden = NO;
-    }
-    else{
-        dayView.dotView.hidden = YES;
-    }
-     */
 }
-
-
-- (void)calendar:(JTCalendarManager *)calendar didTouchDayView:(JTCalendarDayView *)dayView
+- (UITableView *)tableView
 {
-    _dateSelected = dayView.date;
-    
-    // Animation for the circleView
-    dayView.circleView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.1, 0.1);
-    [UIView transitionWithView:dayView
-                      duration:.3
-                       options:0
-                    animations:^{
-                        dayView.circleView.transform = CGAffineTransformIdentity;
-                        [_calendarManager reload];
-                    } completion:nil];
-    
-    
-    // Don't change page in week mode because block the selection of days in first and last weeks of the month
-    if(_calendarManager.settings.weekModeEnabled){
-        return;
+    if (!_tableView) {
+      
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(_calendar.frame), self.view.frame.size.width, SCREEN_HEIGHT-64) style:UITableViewStyleGrouped];
+        _tableView.delegate=self;
+        _tableView.dataSource=self;
+        _tableView.backgroundColor=[UIColor groupTableViewBackgroundColor];
+        _tableView.tableFooterView=[[UIView alloc]init];
     }
-    
-    // Load the previous or next page if touch a day from another month
-    
-    if(![_calendarManager.dateHelper date:_calendarContentView.date isTheSameMonthThan:dayView.date]){
-        if([_calendarContentView.date compare:dayView.date] == NSOrderedAscending){
-            [_calendarContentView loadNextPageWithAnimation];
-        }
-        else{
-            [_calendarContentView loadPreviousPageWithAnimation];
-        }
-    }
+    return _tableView;
 }
 
-#pragma mark - CalendarManager delegate - Page mangement
-
-// Used to limit the date for the calendar, optional
-- (BOOL)calendar:(JTCalendarManager *)calendar canDisplayPageWithDate:(NSDate *)date
-{
-    return [_calendarManager.dateHelper date:date isEqualOrAfter:_minDate andEqualOrBefore:_maxDate];
-}
-
-- (void)calendarDidLoadNextPage:(JTCalendarManager *)calendar
-{
-    //滚动到下一个月
-       // NSLog(@"Next page loaded");
-    NSLog(@"滚动到下一个月");
-}
-
-- (void)calendarDidLoadPreviousPage:(JTCalendarManager *)calendar
-{
-    //滚动到上一个月
-     //  NSLog(@"Previous page loaded");
-    NSLog(@"滚动到上一个月");
-}
-
-#pragma mark - Fake data
-
-- (void)createMinAndMaxDate
-{
-    _todayDate = [NSDate date];
-    
-    // Min date will be 2 month before today
-    _minDate = [_calendarManager.dateHelper addToDate:_todayDate months:-2];
-    
-    // Max date will be 2 month after today
-    _maxDate = [_calendarManager.dateHelper addToDate:_todayDate months:2];
-}
-- (NSDateFormatter *)dateFormatter
-{
-    static NSDateFormatter *dateFormatter;
-    if(!dateFormatter){
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"dd-MM-yyyy";
-    }
-    
-    return dateFormatter;
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

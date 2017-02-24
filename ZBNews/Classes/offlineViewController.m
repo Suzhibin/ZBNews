@@ -10,11 +10,9 @@
 #import "ZBNetworking.h"
 #import "MainModel.h"
 #import "API_Constants.h"
-@interface offlineViewController ()<UITableViewDelegate,UITableViewDataSource,ZBURLSessionDelegate>
+@interface offlineViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
-
-@property (nonatomic,strong)ZBURLSessionManager *manager;
 @property (nonatomic,strong)ZBURLRequest *request;
 @end
 
@@ -39,43 +37,27 @@
     self.dataArray=[[NSMutableArray alloc]init];
     
     self.request=[[ZBURLRequest alloc]init];
-    //创建单例
 
     [self generateData];
     [self.view addSubview:self.tableView];
+    
     [self addItemWithTitle:@"离线下载" selector:@selector(offlineBtnClick) location:NO];
 }
 - (void)generateData{
-    //保证频道是最新的 不要取缓存
-    [[ZBURLSessionManager sharedManager] setValue:APIKEY forHTTPHeaderField:@"apikey"];
-    [[ZBURLSessionManager sharedManager]getRequestWithURL:MENU_URL target:self apiType:ZBRequestTypeDefault];
-
-}
-- (void)urlRequestFinished:(ZBURLRequest *)request{
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:request.responseObj options:NSJSONReadingMutableContainers error:nil];
-    // NEWSLog(@"dict%@",dict);
-
-        NSDictionary *body=[dict objectForKey:@"showapi_res_body"];
-        NSArray *array=[body objectForKey:@"channelList"];
-        //    NEWSLog(@"%@",array);
-        for (NSDictionary *dic in array) {
-            MainModel *model=[[MainModel alloc]initWithDict:dic];
-            [self.dataArray addObject:model];
-            // NEWSLog(@"栏目:%@",model.name);
-        }
-        
+ 
+    NSString *path=[[NSBundle mainBundle]pathForResource:@"menu" ofType:@"plist"];
+  
+    //将plist中的信息读到数组中
+    NSArray *plistArray = [NSArray arrayWithContentsOfFile:path];
     
-    [self.tableView reloadData];
-    
-}
-- (void)urlRequestFailed:(ZBURLRequest *)request{
-    if (request.error.code==NSURLErrorCancelled)return;
-    if (request.error.code==NSURLErrorTimedOut) {
-        NEWSLog(@"请求超时");
-    }else{
-        NEWSLog(@"请求失败");
+    for (NSDictionary *dic in plistArray) {
+        MainModel *model=[[MainModel alloc]initWithDict:dic];
+        [self.dataArray addObject:model];
+        // NEWSLog(@"栏目:%@",model.name);
     }
+      [self.tableView reloadData];
 }
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
@@ -95,25 +77,24 @@
     cell.accessoryView = sw;
     
     MainModel *model=[self.dataArray objectAtIndex:indexPath.row];
-    cell.textLabel.text=model.name;
+    cell.textLabel.text=model.title;
 
     return cell;
 }
 - (void)switchValueChanged:(UISwitch *)sw{
-    NSInteger page=1;
+
     MainModel *model=[self.dataArray objectAtIndex:sw.tag];
- 
-    NSString *httpheadArg =[NSString stringWithFormat:NEWS_ARG,model.channelId,(long)page];
-    NSString *url=[NSString stringWithFormat:@"%@?%@",NEWS_URL,httpheadArg];
+
+    NSString *url=[NSString stringWithFormat:NEWS_URL,model.menu_id,1];
     if (sw.isOn == YES) {
         //添加请求列队
         [self.request addObjectWithUrl:url];
-        [self.request addObjectWithKey:model.name];
+        [self.request addObjectWithKey:model.title];
         NSLog(@"离线请求的url:%@",self.request.offlineUrlArray);
     }else{
         //删除请求列队
         [self.request removeObjectWithUrl:url];
-        [self.request removeObjectWithKey:model.name];
+        [self.request removeObjectWithKey:model.title];
         NSLog(@"离线请求的url:%@",self.request.offlineUrlArray);
     }
 }
@@ -125,17 +106,13 @@
         NSLog(@"请添加栏目");
 
     }else{
-        
         NSLog(@"离线请求的栏目/url个数:%ld",self.request.offlineUrlArray.count);
         
         for (NSString *name in self.request.offlineKeyArray) {
             NSLog(@"离线请求的name:%@",name);
         }
-        
         [self.delegate downloadWithArray:self.request.offlineUrlArray];
-        
         [self.navigationController popViewControllerAnimated:YES];
-        
     }
 }
 

@@ -10,11 +10,12 @@
 #import <SDAutoLayout.h>
 #import "Constants.h"
 #import "GlobalSettingsTool.h"
+#import <UIImageView+WebCache.h>
+#import "ZBKit.h"
 @interface ChannelTableViewCell()
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *descLabel;
-@property (strong, nonatomic) UILabel *pubDate;//时间
-@property (strong, nonatomic) UIImageView *ImageViewUrl;
+@property (strong, nonatomic) UIImageView *ImageView1;
 @end
 @implementation ChannelTableViewCell
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -34,36 +35,56 @@
 }
 
 - (void)createUI{
+    
+    self.ImageView1 = [[UIImageView alloc]init];
+    
     self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.font=[UIFont systemFontOfSize:14];
     self.titleLabel.textColor=[UIColor redColor];
+    self.titleLabel.numberOfLines=0;
+    self.titleLabel.font=[UIFont systemFontOfSize:14];
     
     self.descLabel = [[UILabel alloc] init];
     self.descLabel.font=[UIFont systemFontOfSize:10];
-    self.descLabel.numberOfLines=0;
-    
-    self.pubDate = [[UILabel alloc] init];
-    self.pubDate.font=[UIFont systemFontOfSize:8];
+
   
    [self getNightPattern];
     
 }
 - (void)setttingViewAtuoLayout{
-    [self.contentView sd_addSubviews:@[self.titleLabel,self.descLabel,self.pubDate]];
+    [self.contentView sd_addSubviews:@[self.ImageView1,self.titleLabel,self.descLabel]];
   
-    self.titleLabel.sd_layout.leftSpaceToView(self.contentView,10).topSpaceToView(self.contentView,10).heightIs(15).rightSpaceToView(self.contentView,10);
-    self.descLabel.sd_layout.leftSpaceToView(self.contentView,10).topSpaceToView(self.contentView,25).heightIs(40).rightSpaceToView(self.contentView,20);
-    self.pubDate.sd_layout.leftSpaceToView(self.contentView,10).topSpaceToView(self.contentView,65).heightIs(10).rightSpaceToView(self.contentView,20);
+    self.ImageView1.sd_layout.leftSpaceToView(self.contentView,20).topSpaceToView(self.contentView,10).heightIs(50).widthIs(90);
+    
+    self.titleLabel.sd_layout.leftSpaceToView(self.ImageView1,10).topSpaceToView(self.contentView,10).heightIs(40).rightSpaceToView(self.contentView,10);
+    
+    self.descLabel.sd_layout.leftSpaceToView(self.ImageView1,10).topSpaceToView(self.contentView,45).heightIs(20).rightSpaceToView(self.contentView,10);
+
     // [self setupAutoHeightWithBottomView:self.titleLabel bottomMargin:10];
 }
 
 - (void)setChannelModel:(ChannelModel *)channelModel{
     if (channelModel!=nil) {
         _channelModel=channelModel;
-        // [self.ImageViewUrl sd_setImageWithURL:[NSURL URLWithString:_homeModel.url] placeholderImage:[UIImage imageNamed:@""]];
+        if ([_channelModel.icon isKindOfClass:[NSString class]]){
+            
+            if ([GlobalSettingsTool downloadImagePattern]==YES) {
+                NSInteger netStatus=[ZBNetworkManager startNetWorkMonitoring];
+                
+                if (netStatus==AFNetworkReachabilityStatusReachableViaWiFi) {
+                    
+                    [self.ImageView1 sd_setImageWithURL:[NSURL URLWithString:_channelModel.icon] placeholderImage:[UIImage imageNamed:@"back"]];
+                }else{
+                    [self.ImageView1 sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:    [UIImage imageNamed:@"back"]];
+                }
+                
+            }else{
+                [self.ImageView1 sd_setImageWithURL:[NSURL URLWithString:_channelModel.icon] placeholderImage:[UIImage imageNamed:@"back"]];
+            }
+        }
         self.titleLabel.text=_channelModel.title;
-        self.descLabel.text=_channelModel.desc;
-        self.pubDate.text=_channelModel.pubDate;
+        NSString *hitsStr=[NSString stringWithFormat:@"%@次浏览",_channelModel.hits];
+        self.descLabel.text=hitsStr;
+
     }else{
         NEWSLog(@"无数据");
     }
@@ -73,13 +94,13 @@
         self.backgroundColor=[UIColor colorWithRed:0.11 green:0.12 blue:0.13 alpha:1.00];
         self.titleLabel.textColor=[UIColor whiteColor];
         self.descLabel.textColor=[UIColor whiteColor];
-        self.pubDate.textColor=[UIColor whiteColor];
+
         
     }else{
         self.backgroundColor=[UIColor whiteColor];
         self.titleLabel.textColor=[UIColor blackColor];
         self.descLabel.textColor=[UIColor blackColor];
-        self.pubDate.textColor=[UIColor blackColor];
+
     }
     
 }
