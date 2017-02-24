@@ -39,24 +39,16 @@ NSString *const calendar =@"calendar";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor=[UIColor whiteColor];
-    //[UIApplication sharedApplication].keyWindow
-    //Helper
+
     [[MyControlTool sharedManager] loading:self.view];
 
     [[ZBDataBaseManager sharedInstance]createTable:collection];
- 
-    
-    self.dateFormatter = [[NSDateFormatter alloc] init];
-    self.dateFormatter.dateFormat = @"yyyy/MM/dd";
     
     [[ZBDataBaseManager sharedInstance]createTable:calendar];
     //储存的model 对象必须准守Codeing协议  这里用了MJExtension 的宏定义
     NEWSLog(@"阅读时间：%@",[self getDate]);
     [[ZBDataBaseManager sharedInstance]table:calendar insertDataWithObj:self.model ItemId:[self getDate]];
 
-    
-    NEWSLog(@"urlString:%@",self.urlString);
-    NEWSLog(@"html:%@",self.html);
     //创建一个WKWebView的配置对象
     [self createWebView];
     [self createToobar];
@@ -65,14 +57,18 @@ NSString *const calendar =@"calendar";
 }
 - (NSString *)getDate{
     NSDate *date = [NSDate date];
-    NSLog(@"日期:%@", date);
+
     // 时区类
     // 获取系统时区
-    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSTimeZone *zone = [NSTimeZone timeZoneWithName:@"UTC"];
     // 返回我们这个时区和GMT时间相差的秒数
     NSInteger seconds = [zone secondsFromGMTForDate:date];
+   
     // 返回一个NSDate的对象，从date时间开始，间隔sconds秒后的时间!
     NSDate *localDate = [NSDate dateWithTimeInterval:seconds sinceDate:date];
+
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setDateFormat:@"yyyy/MM/dd"];
     NSString *readCalendar= [self.dateFormatter stringFromDate:localDate];
     return readCalendar;
 }

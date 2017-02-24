@@ -12,6 +12,7 @@
 #import "ChannelModel.h"
 #import "ChannelTableViewCell.h"
 #import "ChannelBranchTableViewCell.h"
+#import "DetailViewController.h"
 @interface CalendarViewController ()<UITableViewDataSource, UITableViewDelegate, FSCalendarDataSource, FSCalendarDelegate,FSCalendarDelegateAppearance>{
     CGFloat height;
 }
@@ -65,6 +66,14 @@
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     self.dateFormatter.dateFormat = @"yyyy/MM/dd";
+    NSLog(@"aa%@",[self.dateFormatter stringFromDate:[NSDate date]]);
+    [[ZBDataBaseManager sharedInstance]getAllDataWithTable:@"calendar" itemId:[self.dateFormatter stringFromDate:[NSDate date]] data:^(NSArray *dataArray,BOOL isExist){
+        if (isExist) {
+            NSLog(@"存在");
+        }
+        self.dataArray =dataArray;
+        [self.tableView reloadData];
+    }];
     
     [self.view addSubview:self.tableView];
 }
@@ -194,7 +203,14 @@
     
     return view;
 }
-
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    if ([model.icon isKindOfClass:[NSDictionary class]]){
+        return 100;
+    }else{
+        return 70;
+    }
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 30;
@@ -203,7 +219,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-  
+    ChannelModel *model=[self.dataArray objectAtIndex:indexPath.row];
+    DetailViewController *detailsVC=[[DetailViewController alloc]init];
+    detailsVC.model=model;
+    [self.navigationController pushViewController:detailsVC animated:YES];
 }
 /**
  * 当用户手松开(停止拖拽),就会调用这个代理方法

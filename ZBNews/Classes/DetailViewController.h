@@ -11,6 +11,5 @@
 
 @interface DetailViewController : BaseViewController
 @property (nonatomic,strong)ChannelModel *model;
-@property (nonatomic,copy)NSString *urlString;
-@property (nonatomic,copy)NSString *html;
+
 @end
