@@ -30,8 +30,13 @@ NSString *const ImageDefaultPath =@"AppImage";
     self = [super init];
     if (self) {
     
-          [[ZBCacheManager sharedInstance]createDirectoryAtPath:[self imageFilePath]];
-        
+        [[ZBCacheManager sharedInstance]createDirectoryAtPath:[self imageFilePath]];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(automaticCleanImageCache) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(automaticCleanImageCache)
+                                                     name:UIApplicationWillTerminateNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(backgroundCleanImageCache) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
 }
@@ -44,20 +49,22 @@ NSString *const ImageDefaultPath =@"AppImage";
     [self downloadImageUrl:imageUrl path:[self imageFilePath] completion:completion];
 }
 
+- (void)downloadImageUrl:(NSString *)imageUrl path:(NSString *)path{
+     [self downloadImageUrl:imageUrl path:path completion:nil];
+}
+
 - (void)downloadImageUrl:(NSString *)imageUrl path:(NSString *)path completion:(downloadCompletion)completion{
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:imageUrl path:path]) {
 
-        [[ZBCacheManager sharedInstance]getCacheDataForKey:imageUrl path:path value:^(NSData *data) {
+        [[ZBCacheManager sharedInstance]getCacheDataForKey:imageUrl path:path value:^(NSData *data,NSString *filePath) {
             
              UIImage *image=[UIImage imageWithData:data];
             
             completion(image) ;
-             ZBKLog(@"image cache");
         }];
     
     }else{
-        ZBKLog(@"image request");
         [self requestImageUrl:imageUrl completion:^(UIImage *image){
     
             [[ZBCacheManager sharedInstance]storeContent:image forKey:imageUrl path:path];
@@ -68,8 +75,9 @@ NSString *const ImageDefaultPath =@"AppImage";
 }
 
 - (void)requestImageUrl:(NSString *)imageUrl completion:(downloadCompletion)completion{
+    if (!imageUrl)return;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        if (!imageUrl)return;
+       
         NSURL *url=[NSURL URLWithString:imageUrl];
         
         NSData *data=[NSData dataWithContentsOfURL:url];
@@ -106,6 +114,30 @@ NSString *const ImageDefaultPath =@"AppImage";
     [[ZBCacheManager sharedInstance]clearCacheForkey:key path:[self imageFilePath] completion:completion];
 }
 
+- (void)automaticCleanImageCache{
+
+    [[ZBCacheManager sharedInstance]automaticCleanCacheWithPath:[self imageFilePath] completion:nil];
+}
+
+- (void)backgroundCleanImageCache {
+    Class UIApplicationClass = NSClassFromString(@"UIApplication");
+    if(!UIApplicationClass || ![UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
+        return;
+    }
+    UIApplication *application = [UIApplication performSelector:@selector(sharedApplication)];
+    __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
+        // Clean up any unfinished task business by marking where you
+        // stopped or ending the task outright.
+        [application endBackgroundTask:bgTask];
+        bgTask = UIBackgroundTaskInvalid;
+    }];
+    [[ZBCacheManager sharedInstance]automaticCleanCacheWithPath:[self imageFilePath] completion:^{
+        [application endBackgroundTask:bgTask];
+        bgTask = UIBackgroundTaskInvalid;
+    }];
+    // Start the long-running task and return immediately.
+}
+/*
 - (void)saveThePhotoAlbum:(UIImage *)image{
     UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), (__bridge void *)self);
 }
@@ -118,6 +150,7 @@ NSString *const ImageDefaultPath =@"AppImage";
         
     }
 }
+ */
 
 - (NSString *)contentTypeForImageData:(NSData *)data {
     uint8_t c;

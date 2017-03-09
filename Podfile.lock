@@ -14,14 +14,13 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
+  - FDFullscreenPopGesture (1.1)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - FSCalendar (2.6.0)
   - Masonry (1.0.2)
-  - MJExtension (3.0.13)
   - MJRefresh (3.1.12)
-  - PYSearch (0.3.9)
   - SDAutoLayout (2.1.7)
   - SDWebImage (3.8.2):
     - SDWebImage/Core (= 3.8.2)
@@ -31,38 +30,33 @@ PODS:
   - VTMagic (1.2.4):
     - VTMagic/Core (= 1.2.4)
   - VTMagic/Core (1.2.4)
-  - XRCarouselView (2.5.6)
 
 DEPENDENCIES:
   - AFNetworking
+  - FDFullscreenPopGesture
   - FMDB
   - FSCalendar
   - Masonry
-  - MJExtension
   - MJRefresh
-  - PYSearch
   - SDAutoLayout
   - SDWebImage
   - UITableView+FDTemplateLayoutCell
   - UMengAnalytics
   - VTMagic
-  - XRCarouselView
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: c00fa5f4c3ec343ee6f7b804ae19322e9898bb84
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  MJExtension: 5932755f451458eefa24239358817f8d291240c7
   MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
-  PYSearch: 80b44704e9459f206b5e56b23579de17a6df4fd1
   SDAutoLayout: e9b36d04b8c0b504762a04d76fbbe5108944297a
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   UITableView+FDTemplateLayoutCell: 234e1582bcc4e18461af91155123bb96538ed030
   UMengAnalytics: 0bde5737767dfc18afb03a4cd6ba9d57bb2ad10d
   VTMagic: b49e5f456dbcbfd9a3588ba92417233a105bc193
-  XRCarouselView: 52529f924d26ee4787f9bd958150800b73e60922
 
-PODFILE CHECKSUM: c6a797a903d07d581fe39cbb74e2805a3b4c7b5d
+PODFILE CHECKSUM: a6745c6e6368cf72b39824d423f552b9e6dc41d8
 
 COCOAPODS: 1.1.0.beta.1

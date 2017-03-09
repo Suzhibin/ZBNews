@@ -31,4 +31,6 @@
 
 #import "ZBChart.h"
 
+#import "ZBAnalytics.h"
+
 #endif /* ZBKit_h */

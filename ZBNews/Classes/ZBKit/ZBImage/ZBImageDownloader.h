@@ -35,6 +35,13 @@ typedef void (^downloadCompletion)(UIImage *image);
  *  图片请求 自定义缓存路径
  *  @param imageUrl         图片请求的协议地址
  *  @param path             自定义路径
+ */
+- (void)downloadImageUrl:(NSString *)imageUrl path:(NSString *)path;
+
+/**
+ *  图片请求 自定义缓存路径
+ *  @param imageUrl         图片请求的协议地址
+ *  @param path             自定义路径
  *  @param completion       请求完成的操作
  */
 - (void)downloadImageUrl:(NSString *)imageUrl path:(NSString *)path completion:(downloadCompletion)completion;
@@ -87,7 +94,7 @@ typedef void (^downloadCompletion)(UIImage *image);
  *  图片存储路径 /Library/Caches/ZBKit/AppImage
  */
 - (NSString *)imageFilePath;
-
+/*
 - (void)saveThePhotoAlbum:(UIImage *)image;
-
+*/
 @end

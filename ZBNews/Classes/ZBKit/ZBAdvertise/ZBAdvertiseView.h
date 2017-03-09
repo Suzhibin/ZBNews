@@ -11,7 +11,7 @@
 
 @interface ZBAdvertiseView : UIView
 
-
+@property (copy, nonatomic) void (^ZBAdvertiseBlock)();
 /*
  *  创建广告视图
  */
@@ -33,8 +33,8 @@
 
 /*
  *  跳转url
- */
 @property (nonatomic, copy) NSString *linkUrl;
+*/
 
 /*
  *  跳转字典

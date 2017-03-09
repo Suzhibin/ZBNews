@@ -16,7 +16,7 @@
 
 @implementation UIImage (ZBKit)
 
-- (UIImage *)circleImage {
+- (UIImage *)zb_circleImage {
     // 开始图形上下文
     UIGraphicsBeginImageContextWithOptions(self.size, NO, 0.0);
     // 获得图形上下文
@@ -37,7 +37,7 @@
 }
 
 #pragma mark - 图片上绘制文字 水印
-- (UIImage *)editImageWithTitle:(NSString *)title fontSize:(CGFloat)fontSize{
+- (UIImage *)zb_ImageWithTitle:(NSString *)title fontSize:(CGFloat)fontSize{
     //画布大小
     CGSize size=CGSizeMake(self.size.width,self.size.height);
     //创建一个基于位图的上下文
@@ -62,8 +62,27 @@
     return newImage;
 }
 #pragma mark - Color
+- (UIColor *)zb_averageColor {
+    unsigned char rgba[4] = {};
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), self.CGImage);
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    if(rgba[3] > 0) {
+        return [UIColor colorWithRed:((CGFloat)rgba[0] / rgba[3])
+                               green:((CGFloat)rgba[1] / rgba[3])
+                                blue:((CGFloat)rgba[2] / rgba[3])
+                               alpha:((CGFloat)rgba[3] / 255.0)];
+    } else {
+        return [UIColor colorWithRed:((CGFloat)rgba[0]) / 255.0
+                               green:((CGFloat)rgba[1]) / 255.0
+                                blue:((CGFloat)rgba[2]) / 255.0
+                               alpha:((CGFloat)rgba[3]) / 255.0];
+    }
+}
 #pragma mark - 取图片某一像素点的颜色
-- (UIColor *)editColorAtPixel:(CGPoint)point
+- (UIColor *)zb_ColorAtPixel:(CGPoint)point
 {
     if (!CGRectContainsPoint(CGRectMake(0.0f, 0.0f, self.size.width, self.size.height), point))
     {
@@ -99,7 +118,7 @@
 }
 
 #pragma mark - 获得灰度图
-- (UIImage *)editGrayImage
+- (UIImage *)zb_GrayImage
 {
     int width = self.size.width;
     int height = self.size.height;
@@ -121,9 +140,20 @@
     
     return grayImage;
 }
+
+- (UIImage *)zb_imageWithAlpha:(CGFloat)alpha {
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
+    //CGContextRef context = UIGraphicsGetCurrentContext();
+    CGRect drawingRect = CGRectMake(0, 0, self.size.width, self.size.height);
+    [self drawInRect:drawingRect blendMode:kCGBlendModeNormal alpha:alpha];
+    UIImage *imageOut = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return imageOut;
+}
+
 #pragma mark - rotate
 #pragma mark - 纠正图片的方向
-- (UIImage *)fixOrientation
+- (UIImage *)zb_fixOrientation
 {
     if (self.imageOrientation == UIImageOrientationUp) return self;
     
@@ -206,7 +236,7 @@
 }
 
 #pragma mark -  按给定的方向旋转图片
-- (UIImage*)editRotate:(UIImageOrientation)orient
+- (UIImage*)zb_Rotate:(UIImageOrientation)orient
 {
     CGRect bnds = CGRectZero;
     UIImage* copy = nil;
@@ -300,19 +330,19 @@
 }
 
 #pragma mark -  垂直翻转
-- (UIImage *)editFlipVertical
+- (UIImage *)zb_FlipVertical
 {
-    return [self editRotate:UIImageOrientationDownMirrored];
+    return [self zb_Rotate:UIImageOrientationDownMirrored];
 }
 
 #pragma mark -  水平翻转
-- (UIImage *)editFlipHorizontal
+- (UIImage *)zb_FlipHorizontal
 {
-    return [self editRotate:UIImageOrientationUpMirrored];
+    return [self zb_Rotate:UIImageOrientationUpMirrored];
 }
 
 #pragma mark -  将图片旋转弧度
-- (UIImage *)imageRotatedByRadians:(CGFloat)radians
+- (UIImage *)zb_imageRotatedByRadians:(CGFloat)radians
 {
     // calculate the size of the rotated view's containing box for our drawing space
     UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
@@ -341,9 +371,9 @@
 }
 
 #pragma mark - 将图片旋转角度
-- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
+- (UIImage *)zb_imageRotatedByDegrees:(CGFloat)degrees
 {
-    return [self imageRotatedByRadians:kDegreesToRadian(degrees)];
+    return [self zb_imageRotatedByRadians:kDegreesToRadian(degrees)];
 }
 
 #pragma mark - 交换宽和高
@@ -358,7 +388,7 @@ static CGRect swapWidthAndHeight(CGRect rect)
 }
 
 #pragma mark - 截取当前image对象rect区域内的图像
-- (UIImage *)editSubImageWithRect:(CGRect)rect
+- (UIImage *)zb_SubImageWithRect:(CGRect)rect
 {
     CGImageRef newImageRef = CGImageCreateWithImageInRect(self.CGImage, rect);
     
@@ -368,9 +398,58 @@ static CGRect swapWidthAndHeight(CGRect rect)
     
     return newImage;
 }
+- (UIImage *)zb_imageWithScaleToSize:(CGSize)size{
+
+     return [self zb_imageWithScaleToSize:size contentMode:UIViewContentModeScaleAspectFit];
+}
+- (UIImage *)zb_imageWithScaleToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode {
+    return [self zb_imageWithScaleToSize:size contentMode:contentMode scale:self.scale];
+}
+
+- (UIImage *)zb_imageWithScaleToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode scale:(CGFloat)scale {
+    size = CGSizeMake(flatSpecificScale(size.width, scale), flatSpecificScale(size.height, scale));
+    CGSize imageSize = self.size;
+    CGRect drawingRect = CGRectZero;
+    
+    if (contentMode == UIViewContentModeScaleToFill) {
+        drawingRect = CGRectMake(0, 0, size.width, size.height);
+    } else {
+        CGFloat horizontalRatio = size.width / imageSize.width;
+        CGFloat verticalRatio = size.height / imageSize.height;
+        CGFloat ratio = 0;
+        if (contentMode == UIViewContentModeScaleAspectFill) {
+            ratio = fmaxf(horizontalRatio, verticalRatio);
+        } else {
+            // 默认按 UIViewContentModeScaleAspectFit
+            ratio = fminf(horizontalRatio, verticalRatio);
+        }
+        drawingRect.size.width = flatSpecificScale(imageSize.width * ratio, scale);
+        drawingRect.size.height = flatSpecificScale(imageSize.height * ratio, scale);
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(drawingRect.size, self.qmui_opaque, scale);
+    //CGContextRef context = UIGraphicsGetCurrentContext();
+    [self drawInRect:drawingRect];
+    UIImage *imageOut = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return imageOut;
+}
+- (BOOL)qmui_opaque {
+    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(self.CGImage);
+    BOOL opaque = alphaInfo == kCGImageAlphaNoneSkipLast
+    || alphaInfo == kCGImageAlphaNoneSkipFirst
+    || alphaInfo == kCGImageAlphaNone;
+    return opaque;
+}
+CG_INLINE CGFloat
+flatSpecificScale(CGFloat floatValue, CGFloat scale) {
+    scale = scale == 0 ? [[UIScreen mainScreen] scale] : scale;
+    CGFloat flattedValue = ceil(floatValue * scale) / scale;
+    return flattedValue;
+}
 
 #pragma mark - 压缩图片至指定尺寸1
-- (UIImage *)rescaleImageToSize:(CGSize)size
+- (UIImage *)zb_rescaleImageToSize:(CGSize)size
 {
     CGRect rect = (CGRect){CGPointZero, size};
     
@@ -386,7 +465,7 @@ static CGRect swapWidthAndHeight(CGRect rect)
 }
 
 #pragma mark - 压缩图片至指定像素
-- (UIImage *)rescaleImageToPX:(CGFloat )toPX
+- (UIImage *)zb_rescaleImageToPX:(CGFloat )toPX
 {
     CGSize size = self.size;
     
@@ -408,11 +487,11 @@ static CGRect swapWidthAndHeight(CGRect rect)
         size.width = size.height * scale;
     }
     
-    return [self rescaleImageToSize:size];
+    return [self zb_rescaleImageToSize:size];
 }
 
 #pragma mark - 指定大小生成一个平铺的图片
-- (UIImage *)editTiledImageWithSize:(CGSize)size
+- (UIImage *)zb_TiledImageWithSize:(CGSize)size
 {
     UIView *tempView = [[UIView alloc] init];
     tempView.bounds = (CGRect){CGPointZero, size};
@@ -427,7 +506,7 @@ static CGRect swapWidthAndHeight(CGRect rect)
 }
 
 #pragma mark - UIView转化为UIImage
-- (UIImage *)editViewConversionImage:(UIView *)view
+- (UIImage *)zb_ViewConversionImage:(UIView *)view
 {
     CGFloat scale = [UIScreen mainScreen].scale;
     UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, scale);
@@ -439,7 +518,7 @@ static CGRect swapWidthAndHeight(CGRect rect)
 }
 
 #pragma mark - 将两个图片生成一张图片
-- (UIImage*)mergeImage:(UIImage*)firstImage withImage:(UIImage*)secondImage;
+- (UIImage*)zb_mergeImage:(UIImage*)firstImage withImage:(UIImage*)secondImage;
 {
     CGImageRef firstImageRef = firstImage.CGImage;
     CGFloat firstWidth = CGImageGetWidth(firstImageRef);
@@ -456,7 +535,7 @@ static CGRect swapWidthAndHeight(CGRect rect)
     return image;
 }
 
-- (UIImage *)handleImage:(UIImage *)originalImage withSize:(CGSize)size
+- (UIImage *)zb_handleImage:(UIImage *)originalImage withSize:(CGSize)size
 {
     CGSize originalsize = [originalImage size];
     NSLog(@"改变前图片的宽度为%f,图片的高度为%f",originalsize.width,originalsize.height);
@@ -539,6 +618,18 @@ static CGRect swapWidthAndHeight(CGRect rect)
     {
         return originalImage;
     }
+}
+
++ (UIImage *)zb_imageWithAttributedString:(NSAttributedString *)attributedString {
+    CGSize stringSize = [attributedString boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
+    stringSize = CGSizeMake(ceil(stringSize.width), ceil(stringSize.height));
+    UIGraphicsBeginImageContextWithOptions(stringSize, NO, 0);
+   // CGContextRef context = UIGraphicsGetCurrentContext();
+
+    [attributedString drawInRect:CGRectMake(0, 0, stringSize.width, stringSize.height)];
+    UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return resultImage;
 }
 
 

@@ -12,8 +12,6 @@
 
 @interface ZBControlTool : NSObject
 
-+ (void)TarckingClass:(Class)cls originalSelector:(SEL)originalSelector cusSelector:(SEL)cusSelector;
-
 //字符串是否含有中文
 + (BOOL)checkIsChinese:(NSString *)string;
 

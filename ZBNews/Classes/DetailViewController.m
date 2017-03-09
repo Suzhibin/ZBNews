@@ -10,6 +10,7 @@
 #import "MyControlTool.h"
 #import <WebKit/WebKit.h>
 #import "ZBDataBaseManager.h"
+#import "CommentsViewController.h"
 NSString *const collection =@"collection";
 NSString *const calendar =@"calendar";
 @interface DetailViewController ()<WKScriptMessageHandler,WKNavigationDelegate,WKUIDelegate>
@@ -113,8 +114,11 @@ NSString *const calendar =@"calendar";
 }
 - (void)btnClicked:(UIButton *)btn
 {
+    
+    CommentsViewController *commentVC=[[CommentsViewController alloc]init];
     switch (btn.tag) {
         case 100:
+            [self.navigationController pushViewController:commentVC animated:YES];
             
             break;
         case 101:

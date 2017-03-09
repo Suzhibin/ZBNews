@@ -10,7 +10,7 @@
 #import "FMDB.h"
 #import "ZBCacheManager.h"
 
-#define DBBUG_LOG 1
+#define DBBUG_LOG 0
 #if(DBBUG_LOG == 1)
 # define DBLog(format, ...) printf("\n[%s] %s [第%d行] %s\n", __TIME__, __FUNCTION__, __LINE__, [[NSString stringWithFormat:format, ## __VA_ARGS__] UTF8String]);
 #else

@@ -21,8 +21,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef void(^ZBCacheIsExistsBlock)(BOOL isExists);
-typedef void(^ZBCacheValueBlock)(NSData *data);
+typedef void(^ZBCacheIsSuccessBlock)(BOOL isSuccess);
+typedef void(^ZBCacheValueBlock)(NSData *data,NSString *filePath);
 typedef void(^ZBCacheCompletedBlock)();
 
 /**
@@ -103,9 +103,28 @@ typedef void(^ZBCacheCompletedBlock)();
  
  @param content         数据
  @param key             url
- @param path       路径
+ @param isSuccess       是否存储成功
+ */
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key isSuccess:(ZBCacheIsSuccessBlock)isSuccess;
+
+/**
+ 把内容,存储到文件
+ 
+ @param content         数据
+ @param key             url
+ @param path            路径
  */
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path;
+
+/**
+ 把内容,存储到文件
+ 
+ @param content         数据
+ @param key             url
+ @param path            路径
+ @param isSuccess       是否存储成功
+ */
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess;
 
 /**
  把内容,写入到文件
@@ -173,7 +192,7 @@ typedef void(^ZBCacheCompletedBlock)();
  拼接路径与编码后的文件
 
  @param key             文件
- @param path       自定义路径
+ @param path            自定义路径
 
  @return 完整的文件路径
  */

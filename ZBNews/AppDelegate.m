@@ -11,8 +11,7 @@
 #import "Constants.h"
 #import "GlobalSettingsTool.h"
 #import <UMMobClick/MobClick.h>
-#import "ZBAdvertiseView.h"
-#import "ZBAdvertiseInfo.h"
+#import "ZBKit.h"
 @interface AppDelegate ()
 
 @end
@@ -32,19 +31,23 @@
     
     [self setlanguages];
     [self  enablePush:[GlobalSettingsTool sharedSetting].enabledPush];
-    
+    [ZBAnalytics sharedInstance].analyticsIdentifierBlock=^(NSString *identifier){
+        NSLog(@"追踪事件:%@",identifier);
+    };
     CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
     self.window.rootViewController = tabbar;
     
     [self.window makeKeyAndVisible];
     
     //广告
-    [ZBAdvertiseInfo getAdvertising:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
+    [ZBAdvertiseInfo getAdvertisingInfo:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
         if (isExist) {
             ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
             advertiseView.filePath = filePath;
             advertiseView.linkdict = urlDict;
-
+            advertiseView.ZBAdvertiseBlock=^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"pushtoad" object:nil userInfo:urlDict];
+            };
         }else{
             NSLog(@"无图片");
         }

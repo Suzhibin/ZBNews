@@ -10,29 +10,29 @@
 
 @interface UIView (ZBAnimation)<CAAnimationDelegate>
 
-- (void)circleView;
+- (void)zb_circleView;
 //关键帧动画
-- (void)animatedKeyframes;
+- (void)zb_animatedKeyframes;
 
 //点击移动 带弹簧效果
-- (void)animatedDampingWithCenter:(CGPoint)center;
+- (void)zb_animatedDampingWithCenter:(CGPoint)center;
 
 //图片切换 过渡动画
-- (void)animatedTransitionWithoptions:(UIViewAnimationOptions)options;
+- (void)zb_animatedTransitionWithoptions:(UIViewAnimationOptions)options;
 
 //x轴上移动视图右平移x
-- (void)animatedViewMoveWithRightX:(CGFloat)X;
+- (void)zb_animatedViewMoveWithRightX:(CGFloat)X;
 
 //x轴上移动视图左平移x
-- (void)animatedViewMoveWithLeftX:(CGFloat)X;
+- (void)zb_animatedViewMoveWithLeftX:(CGFloat)X;
 
 //y轴上移动视图上升y
-- (void)animatedViewMoveWithUpY:(CGFloat)Y;
+- (void)zb_animatedViewMoveWithUpY:(CGFloat)Y;
 
 //y轴上移动视图下降y
-- (void)animatedViewMoveWithDownY:(CGFloat)Y;
+- (void)zb_animatedViewMoveWithDownY:(CGFloat)Y;
 
 //浮动动画
--(void)AnimationFloating;
+-(void)zb_animationFloating;
 
 @end

@@ -15,7 +15,7 @@
 #import "ZBNetworking.h"
 #import "GlobalSettingsTool.h"
 #import <SDAutoLayout.h>
-#import "Masonry.h"
+#import <Masonry.h>
 #import "ZBWeatherAnimatedView.h"
 #import "HeaderAnimatedView.h"
 #import "YYFPSLabel.h"

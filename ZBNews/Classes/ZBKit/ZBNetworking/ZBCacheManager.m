@@ -128,22 +128,31 @@ static const NSInteger timeOut = 60*60;
     
     NSString *codingPath=[self cachePathForKey:key path:path];
     BOOL exists =[[NSFileManager defaultManager] fileExistsAtPath:codingPath]&&[NSFileManager isTimeOutWithPath:codingPath timeOut:timeOut]==NO;
-    
-    if(!exists){
-        exists = [[NSFileManager defaultManager] fileExistsAtPath:[codingPath stringByDeletingPathExtension]];
-    }
     return exists;
 }
 
 #pragma  mark - 存储
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key {
-    [self storeContent:content forKey:key path:self.diskCachePath];
+    [self storeContent:content forKey:key isSuccess:nil];
+}
+
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
+    [self storeContent:content forKey:key path:self.diskCachePath isSuccess:isSuccess];
 }
 
 - (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path {
+    [self storeContent:content forKey:key path:path isSuccess:nil];
+}
+
+- (void)storeContent:(NSObject *)content forKey:(NSString *)key path:(NSString *)path isSuccess:(ZBCacheIsSuccessBlock)isSuccess{
     dispatch_async(self.operationQueue,^{
-        NSString *codingPath =[[self cachePathForKey:key path:path]stringByDeletingPathExtension];
-        [self setContent:content writeToFile:codingPath];
+        NSString *codingPath =[self cachePathForKey:key path:path];
+        BOOL result=[self setContent:content writeToFile:codingPath];
+        if (isSuccess) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                isSuccess(result);
+            });
+        }
     });
 }
 
@@ -187,14 +196,17 @@ static const NSInteger timeOut = 60*60;
 }
 
 - (void)getCacheDataForKey:(NSString *)key path:(NSString *)path value:(ZBCacheValueBlock)value{
-    if (!key)return value(nil);
+    if (!key)return value(nil,nil);
     
     dispatch_async(self.operationQueue,^{
         @autoreleasepool {
-            NSData *diskdata= [NSData dataWithContentsOfFile:[[self cachePathForKey:key path:path]stringByDeletingPathExtension]];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                value(diskdata);
-            });
+            NSString *filePath=[self cachePathForKey:key path:path];
+            NSData *diskdata= [NSData dataWithContentsOfFile:filePath];
+            if (value) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    value(diskdata,filePath);
+                });
+            }
         }
     });
 }

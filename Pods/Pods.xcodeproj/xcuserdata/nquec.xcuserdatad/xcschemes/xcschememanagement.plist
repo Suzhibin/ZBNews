@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>FDFullscreenPopGesture.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>FMDB.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -19,22 +24,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>MJExtension.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>MJRefresh.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>Masonry.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PYSearch.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -64,25 +59,15 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>XRCarouselView.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0B2A859DD19214CBF63C7B9DCADB26ED</key>
+		<key>2C71DE0FB8A6E5BB6EAF9FB037D799CC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>39239B6C480159FA1D77C0287E82AF5F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>4AB2C822C4F9F375525E129BC204D584</key>
+		<key>3A0F88C8640F40C1EFE97825ABD2FE26</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -92,17 +77,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>52E24F9C7F5FBA51CA634749857E774A</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>53480ED0BE09FF49E34B1702D485CAAB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5EAF54000FABD7B00C9EC30737A090F4</key>
+		<key>624D73C3937ED2B74FC9DE448C2C326E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -112,7 +92,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>73542A60E05877D0A662A57462155EF6</key>
+		<key>7565A81665DE9ABD5D801173305E8188</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -122,17 +102,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>95E3FF5DC5092FE70693D909F5F89856</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9EAB3E42EF957541E6C3C76D35FD008E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CEFB71C6326286B065C58BF3CF2D753D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F29022B7965D05F6C564A78D010FF7C2</key>
 		<dict>
 			<key>primary</key>
 			<true/>

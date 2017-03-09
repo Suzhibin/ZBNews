@@ -139,7 +139,7 @@
     
     if ([[ZBCacheManager sharedInstance]diskCacheExistsWithKey:urlString]&&type!=ZBRequestTypeRefresh&&type!=ZBRequestTypeOffline) {
 
-         [[ZBCacheManager sharedInstance]getCacheDataForKey:urlString value:^(NSData *data) {
+         [[ZBCacheManager sharedInstance]getCacheDataForKey:urlString value:^(NSData *data,NSString * filePath) {
              [session.request.responseObj appendData:data];
              success ? success(session.request.responseObj,type) : nil;
              
@@ -301,7 +301,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             if (![mutableRequest valueForHTTPHeaderField:field]) {
                 [mutableRequest addValue: value forHTTPHeaderField:field];
             }
-            
         }];
         
         request = [mutableRequest copy];

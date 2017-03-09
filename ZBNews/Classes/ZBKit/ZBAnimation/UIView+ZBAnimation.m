@@ -10,7 +10,7 @@
 
 @implementation UIView (ZBAnimation)
 
-- (void)circleView{
+- (void)zb_circleView{
 
     CGRect rect = CGRectMake(0, 0, 100, 50);
     CGSize radio = CGSizeMake(10, 10);//圆角尺寸
@@ -22,7 +22,7 @@
     self.layer.mask = masklayer;
 }
 
-- (void)animatedKeyframes{
+- (void)zb_animatedKeyframes{
     
     [UIView animateKeyframesWithDuration:4 delay:0 options:UIViewKeyframeAnimationOptionCalculationModeLinear animations:^{
         CGPoint center = self.center;
@@ -53,21 +53,21 @@
  velocity:弹性复位的速度
  delay 延迟 秒
  */
-- (void)animatedDampingWithCenter:(CGPoint)center{
+- (void)zb_animatedDampingWithCenter:(CGPoint)center{
     
     [UIView animateWithDuration:3.0 delay:0 usingSpringWithDamping:0.8 initialSpringVelocity:5.0 options:UIViewAnimationOptionCurveLinear animations:^{
         self.center=center;
     } completion:nil];
 }
 
-- (void)animatedTransitionWithoptions:(UIViewAnimationOptions)options{
+- (void)zb_animatedTransitionWithoptions:(UIViewAnimationOptions)options{
     
     [UIView transitionWithView: self duration: 0.5 options: options animations: ^{
    
     } completion:nil];
 }
 
-- (void)animatedViewMoveWithRightX:(CGFloat)X{
+- (void)zb_animatedViewMoveWithRightX:(CGFloat)X{
 
     [UIView animateWithDuration: 0.5 delay: 0 options: UIViewAnimationOptionCurveLinear animations: ^{
         CGPoint center = self.center;
@@ -76,7 +76,7 @@
     } completion: nil];
 }
 
-- (void)animatedViewMoveWithLeftX:(CGFloat)X{
+- (void)zb_animatedViewMoveWithLeftX:(CGFloat)X{
     [UIView animateWithDuration: 0.5 delay: 0 options: UIViewAnimationOptionCurveLinear animations: ^{
         CGPoint center = self.center;
         center.x -= X;
@@ -84,7 +84,7 @@
     } completion: nil];
 }
 
-- (void)animatedViewMoveWithUpY:(CGFloat)Y{
+- (void)zb_animatedViewMoveWithUpY:(CGFloat)Y{
     
     [UIView animateWithDuration: 0.5 delay: 0 options: UIViewAnimationOptionCurveLinear animations: ^{
         CGPoint center = self.center;
@@ -93,7 +93,7 @@
     } completion: nil];
 }
 
-- (void)animatedViewMoveWithDownY:(CGFloat)Y{
+- (void)zb_animatedViewMoveWithDownY:(CGFloat)Y{
     
     [UIView animateWithDuration: 0.5 delay: 0 options: UIViewAnimationOptionCurveLinear animations: ^{
         CGPoint center = self.center;
@@ -102,7 +102,7 @@
     } completion: nil];
 }
 
-- (void)AnimationFloating{
+- (void)zb_animationFloating{
     
     int x = arc4random() % 10;//实际使用时 去掉随机数
     //1.创建关键帧动画并设置动画属性

@@ -81,13 +81,9 @@ EOM
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "MJRefresh/MJRefresh/MJRefresh.bundle"
-  install_resource "PYSearch/PYSearch/PYSearch.bundle"
-  install_resource "XRCarouselView/XRCarouselView/XRPlaceholder.png"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "MJRefresh/MJRefresh/MJRefresh.bundle"
-  install_resource "PYSearch/PYSearch/PYSearch.bundle"
-  install_resource "XRCarouselView/XRCarouselView/XRPlaceholder.png"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

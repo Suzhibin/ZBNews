@@ -10,14 +10,15 @@
 #import "ZBNetworking.h"
 #import "ZBConstants.h"                                                                                                                                                                                                             
 #import "ZBImageDownloader.h"
-
+NSString *const urlString=@"http://192.168.33.186:9080/BOSS_APD_WEB//news/ad/screen_zh_CN";
 NSString *const AdDefaultPath =@"Advertise";
 
 @implementation ZBAdvertiseInfo
 
-+ (void)getAdvertising:(AdvertisingInfo)info{
++ (void)getAdvertisingInfo:(ZBAdvertisingInfo)info{
 
     [[ZBCacheManager sharedInstance]createDirectoryAtPath:[self advertiseFilePath]];
+    
     // 1.判断沙盒中是否存在广告图片，如果存在，直接显示
     NSString *filePath = [ZBAdvertiseInfo getFilePathWithImageName:[[NSUserDefaults standardUserDefaults] valueForKey:adImageName]];
     
@@ -28,16 +29,16 @@ NSString *const AdDefaultPath =@"Advertise";
     BOOL isExist =  [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:FALSE];
     
     info ? info(filePath,dict,isExist) : nil;
-    
-    // 2.无论沙盒中是否存在广告图片，都需要重新调用广告接口，判断广告是否更新
-    [ZBAdvertiseInfo requestAdvertising];
-}
+     // 2.无论沙盒中是否存在广告图片，都需要重新调用广告接口，判断广告是否更新
+     [ZBAdvertiseInfo requestAdvertising];
+ 
 
+}
 /**
  *  请求广告页面
  */
 + (void)requestAdvertising{
-
+    
     //本地数据 正式使用请注掉
      NSString *adData = [[NSBundle mainBundle] pathForResource:@"adData" ofType:@"plist"];
     
@@ -74,6 +75,8 @@ NSString *const AdDefaultPath =@"Advertise";
             ZBKLog(@"有开屏缓存图片");
         }
     }
+    
+
     /*
     //网络数据
      [[ZBURLSessionManager sharedManager]requestWithConfig:^(ZBURLRequest *request){
@@ -141,13 +144,17 @@ NSString *const AdDefaultPath =@"Advertise";
         
         NSDictionary *linkdict=@{@"link":url};
         [ZBAdvertiseInfo deleteOldImage];//删除旧图片
+        
+        //暂时没有使用 编码方法存储
         if ( [[ZBCacheManager sharedInstance]setContent:image writeToFile:filePath]) {// 保存成功
+        
             ZBKLog(@"开屏image保存成功:%@",filePath);
             [[NSUserDefaults standardUserDefaults] setValue:imageName forKey:adImageName];
             [[NSUserDefaults standardUserDefaults] synchronize];
 
             // 如果有广告链接，将广告链接也保存下来
              [[ZBCacheManager sharedInstance]setContent:linkdict writeToFile:plistPath];
+            
             ZBKLog(@"开屏url保存成功:%@",plistPath);
             [[NSUserDefaults standardUserDefaults] setValue:urlName forKey:adUrl];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -198,6 +205,7 @@ NSString *const AdDefaultPath =@"Advertise";
     return AdvertisePath;
 }
 
+
 + (NSUInteger)advertiseFileSize{
     return [[ZBCacheManager sharedInstance]getFileSizeWithpath:[self advertiseFilePath]];
 }
@@ -205,57 +213,5 @@ NSString *const AdDefaultPath =@"Advertise";
 + (NSUInteger)advertiseFileCount{
     return [[ZBCacheManager sharedInstance]getFileCountWithpath:[self advertiseFilePath]];
 }
-
-/*
-+ (NSString *)createAdPath{
-    NSString *AdvertisePath =  [[[ZBCacheManager sharedManager]ZBKitPath]stringByAppendingPathComponent:@"AdvertiseInfo"];
-    // NSString *imagePath = [AdvertisePath stringByAppendingPathComponent:@"AdvertiseImage"];
-    return AdvertisePath;
-}
-
-+ (void)getAdvertisingInfo:(AdvertisingInfo)info{
-    
-    NSString *urlstr=@"https://appcnapd.easyxapp.com/BOSS_CS_APD/news/ad/screen_zh_CN";
-    [[ZBURLSessionManager sharedManager]requestWithConfig:^(ZBURLRequest *request){
-        request.urlString=urlstr;
-        request.timeoutInterval=5;
-        request.apiType=ZBRequestTypeRefresh;//每次重新请求 查看是否有新图片
-    } success:^(id responseObj,apiType type){
-        id result = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-        if ([result isKindOfClass:[NSArray class]]) {
-            NSArray *array = (NSArray *)result;
-            if (array.count==0) {
-                ZBKLog(@"无开屏广告数据");
-                [[ZBCacheManager sharedManager]clearDiskWithpath:[self createAdPath]];
-            }else{
-                ZBKLog(@"有开屏广告数据");
-                for (NSDictionary *dic in array) {
-                    NSString *imageUrl=[dic objectForKey:@"imgUrl"];
-                    // NSString *url=[dic objectForKey:@"url"];
-                    
-                    NSString *imagePath=[[ZBCacheManager sharedManager]cachePathForKey:imageUrl inPath:[self createAdPath]];
-                   // NSString *urlPath=[[ZBCacheManager sharedManager]pathWithFileName:urlstr];
-                    
-                    BOOL isExist=[[ZBCacheManager sharedManager]isExistsAtPath:imagePath];
-                    
-                    [ZBImageDownloader downloadImageUrl:imageUrl path:[self createAdPath] completion:^(UIImage *image){
-                        
-                        info ? info(imagePath,dic,isExist) : nil;
-                        
-                    }];
-                }
-            }
-        }
-        
-    } failed:^(NSError *error){
-        if (error.code==NSURLErrorCancelled)return;
-        if (error.code==NSURLErrorTimedOut){
-            
-        }else{
-            
-        }
-    }];
-}
-*/
 
 @end
