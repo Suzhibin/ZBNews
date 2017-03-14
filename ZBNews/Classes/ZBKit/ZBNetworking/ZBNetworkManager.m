@@ -70,7 +70,6 @@
     if (downloadArray.count==0)return;
     [downloadArray enumerateObjectsUsingBlock:^(NSString *urlString, NSUInteger idx, BOOL *stop) {
         [self GET:urlString parameters:nil apiType:type progress:nil success:success failed:failed ];
-    
     }];
 }
 

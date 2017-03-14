@@ -46,8 +46,9 @@ NSString *const calendar =@"calendar";
     [[ZBDataBaseManager sharedInstance]createTable:collection];
     
     [[ZBDataBaseManager sharedInstance]createTable:calendar];
-    //储存的model 对象必须准守Codeing协议  这里用了MJExtension 的宏定义
+    //储存的model 对象必须准守Codeing协议
     NEWSLog(@"阅读时间：%@",[self getDate]);
+
     [[ZBDataBaseManager sharedInstance]table:calendar insertDataWithObj:self.model ItemId:[self getDate]];
 
     //创建一个WKWebView的配置对象

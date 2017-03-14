@@ -58,8 +58,7 @@
     // 取消不必要的网络请求
     [ZBNetworkManager requestToCancel:YES];
     [[SDWebImageManager sharedManager] cancelAll];
-    [self.tableView.mj_header endRefreshing]; // 下拉结束刷新
-    [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
+    [self endRefresh];
     self.tableView.mj_footer.hidden = YES;// 隐藏当前的上拉刷新控件
     self.tableView.scrollsToTop = NO;
     [MobClick endLogPageView:_mainModel.title];
@@ -170,14 +169,17 @@
         if (error.code==NSURLErrorTimedOut) {
             NEWSLog(@"请求超时");
             [self TimedOutAlert];
-            [self.tableView.mj_header endRefreshing];// 下拉结束刷新
-            [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
+            [self endRefresh];
         }else{
             NEWSLog(@"请求失败");
+            [self endRefresh];
         }
     }];
 }
-
+- (void)endRefresh{
+    [self.tableView.mj_header endRefreshing];// 下拉结束刷新
+    [self.tableView.mj_footer endRefreshing];// 上拉结束刷新
+}
 #pragma mark tableView
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.dataArray.count;
@@ -191,6 +193,7 @@
         ChannelBranchTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
         if (cell==nil) {
             cell=[[ChannelBranchTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ChannelBranchCell];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         [cell setChannelModel:model];
         return cell;
@@ -201,6 +204,7 @@
         ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
         if (cell==nil) {
             cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         [cell setChannelModel:model];
         return cell;
