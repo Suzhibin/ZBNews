@@ -31,9 +31,7 @@
     
     [self setlanguages];
     [self  enablePush:[GlobalSettingsTool sharedSetting].enabledPush];
-    [ZBAnalytics sharedInstance].analyticsIdentifierBlock=^(NSString *identifier){
-        NSLog(@"追踪事件:%@",identifier);
-    };
+
     CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
     self.window.rootViewController = tabbar;
     
