@@ -70,7 +70,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-  
+     [[MyControlTool sharedManager] loading:self.view];
     [self getNightPattern];
     [self.view addSubview:self.tableView];
 }
@@ -270,10 +270,10 @@
 - (void)getNightPattern{
     if ([GlobalSettingsTool getNightPattern]==YES) {
         self.view.backgroundColor=[UIColor colorWithRed:0.07 green:0.11 blue:0.07 alpha:1.00];
-        self.tableView.backgroundColor=[UIColor colorWithRed:0.07 green:0.11 blue:0.07 alpha:1.00];
+      
     }else{
         self.view.backgroundColor=[UIColor whiteColor];
-        self.tableView.backgroundColor=[UIColor whiteColor];
+   
     }
 }
 - (void)editNightView{
@@ -312,6 +312,7 @@
          //self.aiv.color=[UIColor blackColor];
          //[self.aiv startAnimating];
        // _tableView.backgroundView=self.aiv;
+        _tableView.backgroundColor=[UIColor clearColor];
         _tableView.delegate=self;
         _tableView.dataSource=self;
         _tableView.contentInset =UIEdgeInsetsMake(0, 0,0,0);

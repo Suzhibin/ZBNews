@@ -37,19 +37,6 @@
     
     [self.window makeKeyAndVisible];
     
-    //广告
-    [ZBAdvertiseInfo getAdvertisingInfo:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
-        if (isExist) {
-            ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
-            advertiseView.filePath = filePath;
-            advertiseView.linkdict = urlDict;
-            advertiseView.ZBAdvertiseBlock=^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"pushtoad" object:nil userInfo:urlDict];
-            };
-        }else{
-            NSLog(@"无图片");
-        }
-    }];
 
 
     return YES;
@@ -100,6 +87,19 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    //广告
+    [ZBAdvertiseInfo getAdvertisingInfo:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
+        if (isExist) {
+            ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
+            advertiseView.filePath = filePath;
+            advertiseView.linkdict = urlDict;
+            advertiseView.ZBAdvertiseBlock=^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"pushtoad" object:nil userInfo:urlDict];
+            };
+        }else{
+            NSLog(@"无图片");
+        }
+    }];
 }
 
 
