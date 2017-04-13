@@ -62,6 +62,7 @@
 		7D10D9591DF90F580095D56C /* offlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D10D9581DF90F580095D56C /* offlineViewController.m */; };
 		7D10D95C1DF918F50095D56C /* OfflineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D10D95B1DF918F50095D56C /* OfflineView.m */; };
 		7D10D95F1DF961DA0095D56C /* MyViewTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D10D95E1DF961DA0095D56C /* MyViewTool.m */; };
+		7D183D8B1E9F3DC600376D0B /* CustomNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D183D8A1E9F3DC600376D0B /* CustomNavigationController.m */; };
 		7D1F83C11DED89B000D1E70F /* SearchListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1F83C01DED89B000D1E70F /* SearchListViewController.m */; };
 		7D22BB421DF1585D00208CA4 /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D22BB411DF1585D00208CA4 /* CalendarViewController.m */; };
 		7D2749761DF671AF00A4205D /* GlobalSettingsTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2749751DF671AF00A4205D /* GlobalSettingsTool.m */; };
@@ -208,6 +209,8 @@
 		7D10D95B1DF918F50095D56C /* OfflineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfflineView.m; sourceTree = "<group>"; };
 		7D10D95D1DF961DA0095D56C /* MyViewTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyViewTool.h; sourceTree = "<group>"; };
 		7D10D95E1DF961DA0095D56C /* MyViewTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyViewTool.m; sourceTree = "<group>"; };
+		7D183D891E9F3DC600376D0B /* CustomNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomNavigationController.h; sourceTree = "<group>"; };
+		7D183D8A1E9F3DC600376D0B /* CustomNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomNavigationController.m; sourceTree = "<group>"; };
 		7D1F83BF1DED89B000D1E70F /* SearchListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchListViewController.h; sourceTree = "<group>"; };
 		7D1F83C01DED89B000D1E70F /* SearchListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchListViewController.m; sourceTree = "<group>"; };
 		7D22BB401DF1585D00208CA4 /* CalendarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarViewController.h; sourceTree = "<group>"; };
@@ -357,6 +360,8 @@
 			children = (
 				7D03395F1DDEB511001C48A8 /* CustomTabBarController.h */,
 				7D0339601DDEB511001C48A8 /* CustomTabBarController.m */,
+				7D183D891E9F3DC600376D0B /* CustomNavigationController.h */,
+				7D183D8A1E9F3DC600376D0B /* CustomNavigationController.m */,
 			);
 			name = CustomTabBarController;
 			sourceTree = "<group>";
@@ -928,6 +933,7 @@
 				7D0339991DDEBF5B001C48A8 /* ZBWeatherAnimatedView.m in Sources */,
 				7D3591701DF572AB00CFB52C /* SettingsViewController.m in Sources */,
 				7D09D9151E5FCC5D00E27C05 /* ZBInteractiveTransition.m in Sources */,
+				7D183D8B1E9F3DC600376D0B /* CustomNavigationController.m in Sources */,
 				7D03392D1DDEB4A3001C48A8 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

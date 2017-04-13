@@ -10,6 +10,7 @@
 #import "MainViewController.h"
 #import "MeViewController.h"
 #import "GlobalSettingsTool.h"
+#import "CustomNavigationController.h"
 @interface CustomTabBarController ()
 
 @end
@@ -54,7 +55,7 @@
         Class cls=NSClassFromString(vcArr[i]);
         UIViewController *vc=[[cls alloc]init];
         vc.title=titleArr[i];
-        UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:vc];
+        CustomNavigationController *nc=[[CustomNavigationController alloc]initWithRootViewController:vc];
         NSString *image=[images objectAtIndex:i];
         NSString *seleImage=[seleImages objectAtIndex:i];
         //ios7不推荐用的方法
