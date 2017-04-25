@@ -41,7 +41,7 @@ NSString * const STARTANIMATING = @"startAnimating";
   
     switch (_weatherType) {
         case ZBWeatherViewTypeSunny: {
-            NSLog(@"阳光明媚🌞");
+
             for (int i = 0; i < 3; i ++) {
                 //UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"Fine%d", i]]];
                  UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Fine4"]];
@@ -58,7 +58,7 @@ NSString * const STARTANIMATING = @"startAnimating";
             self.imageDataArray = [mutArray copy];
         } break;
         case ZBWeatherViewTypeCloud: {
-              NSLog(@"多云☁️");
+
            // NSMutableArray *mutArray = [NSMutableArray array];
             for (int i = 3; i > 0; i --) {
                 UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"Cloud%d", i]];
@@ -77,7 +77,6 @@ NSString * const STARTANIMATING = @"startAnimating";
 
         } break;
         case ZBWeatherViewTypeRain: {
-            NSLog(@"有雨☔️");
           //  NSMutableArray *mutArray = [NSMutableArray array];
             NSMutableArray *rainMutArray = [NSMutableArray array];
             for (int i = 3; i > 0; i --) {

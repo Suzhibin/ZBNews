@@ -45,12 +45,12 @@
 {
     if(bEnable)
     {
-        NSLog(@"应用内开启推送／不知道系统是否开启");
+        NEWSLog(@"应用内开启推送／不知道系统是否开启");
         //[self createPush];
         
     }else
     {
-        NSLog(@"应用内关闭推送／不知道系统是否开启");
+        NEWSLog(@"应用内关闭推送／不知道系统是否开启");
       //  [UMessage unregisterForRemoteNotifications];
     }
 }
@@ -87,6 +87,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
     //广告
     [ZBAdvertiseInfo getAdvertisingInfo:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
         if (isExist) {
@@ -100,6 +101,7 @@
             NSLog(@"无图片");
         }
     }];
+    
 }
 
 

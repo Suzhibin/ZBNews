@@ -65,7 +65,7 @@
 - (void)setChannelModel:(ChannelModel *)channelModel{
     if (channelModel!=nil) {
         _channelModel=channelModel;
-        NSLog(@"_channelModel.icon%@",_channelModel.icon);
+    
         if ([_channelModel.icon isKindOfClass:[NSString class]]){
             
             if ([GlobalSettingsTool downloadImagePattern]==YES) {

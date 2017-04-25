@@ -41,16 +41,14 @@
 }
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.automaticallyAdjustsScrollViewInsets=NO;
-    self.tabBarController.tabBar.hidden=NO;
-    
-    [self Notification];
+ 
     //VTMagic框架 数据 UI 要放到viewDidAppear里
     _page=1;
     [self getData];//加载数据
     self.tableView.mj_footer.hidden = NO;    //显示当前的上拉刷新控件
     self.tableView.scrollsToTop = YES;
-    NSInteger pageIndex = [self vtm_pageIndex]; NEWSLog(@"当前页面索引: %ld", (long)pageIndex);
+    NSInteger pageIndex = [self vtm_pageIndex];
+    NEWSLog(@"当前页面索引: %ld", (long)pageIndex);
     [MobClick beginLogPageView:_mainModel.title];
 }
 - (void)viewWillDisappear:(BOOL)animated {
@@ -70,6 +68,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.automaticallyAdjustsScrollViewInsets=NO;
+  //  self.tabBarController.tabBar.hidden=NO;
+    [self Notification];
      [[MyControlTool sharedManager] loading:self.view];
     [self getNightPattern];
     [self.view addSubview:self.tableView];
@@ -102,6 +103,7 @@
     NEWSLog(@"正常请求栏目名字:%@ 正常请求栏目名字id:%@",_mainModel.title,_mainModel.menu_id);
     
     [self request:urlString apiType:ZBRequestTypeDefault];
+    
      //=====================================================
     __weak __typeof(self) weakSelf = self;
     self.tableView.mj_header= [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -109,9 +111,9 @@
     
     }];
     self.tableView.mj_header.automaticallyChangeAlpha = YES;
-    if (self.dataArray.count>0) {
-        //[self.tableView.mj_header beginRefreshing];// 马上进入刷新状态
-    }
+   
+    [self.tableView.mj_header beginRefreshing];// 马上进入刷新状态
+        
     //=====================================================
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];  // 上拉加载
     self.tableView.mj_footer.automaticallyChangeAlpha = YES;
@@ -136,7 +138,6 @@
         request.apiType=requestType;
         request.timeoutInterval=10;
     }  success:^(id responseObj,apiType type){
-        NSLog(@"type:%zd",type);
         //如果是刷新的数据
         if (type==ZBRequestTypeRefresh) {
             [self.dataArray removeAllObjects];//清除数据 等待新数据的到来

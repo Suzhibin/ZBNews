@@ -27,7 +27,7 @@ NSString *const calendar =@"calendar";
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.hidesBottomBarWhenPushed=YES;//隐藏tabbar
+     //   self.hidesBottomBarWhenPushed=YES;//隐藏tabbar
     }
     return self;
 }

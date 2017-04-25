@@ -157,7 +157,7 @@
 
     self.magicView.headerHidden =YES;
     //  self.magicView.headerView .backgroundColor=[UIColor orangeColor];
-  //  self.magicView.needPreloading=NO;//预加载开关。 等于NO 点击菜单时无过度动画
+    self.magicView.needPreloading=YES;//预加载开关。 等于NO 点击菜单时无过度动画
     self.magicView.headerHeight = 84;//头部组件的高度默认64
     // self.magicView.navigationHeight = 44;//顶部导航条的高度，默认是44
     self.magicView.againstStatusBar = YES;//顶部导航栏是否紧贴系统状态栏，即是否需要为状态栏留出20个点的区域，默认NO
@@ -199,8 +199,8 @@
   
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat scrollContentOffsetY = scrollView.contentOffset.y;
-    NEWSLog(@"scrollContentOffsetY:%f",scrollContentOffsetY);
+   // CGFloat scrollContentOffsetY = scrollView.contentOffset.y;
+   // NEWSLog(@"scrollContentOffsetY:%f",scrollContentOffsetY);
   //  [_scrollDelegate mainHomeScrollViewDidScroll2OffsetY:scrollContentOffsetY];
 }
 

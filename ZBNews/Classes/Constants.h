@@ -10,7 +10,7 @@
 #define Constants_h
 
 
-#define NEWSBUG_LOG 1
+#define NEWSBUG_LOG 0
 #if(NEWSBUG_LOG == 1)
 # define NEWSLog(format, ...) printf("\n[%s] %s [第%d行] %s\n", __TIME__, __FUNCTION__, __LINE__, [[NSString stringWithFormat:format, ## __VA_ARGS__] UTF8String]);
 #else
