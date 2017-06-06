@@ -65,15 +65,13 @@
     _calendar.scopeGesture.enabled = YES;
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
-    self.dateFormatter.dateFormat = @"yyyy/MM/dd";
-    NSLog(@"aa%@",[self.dateFormatter stringFromDate:[NSDate date]]);
-    [[ZBDataBaseManager sharedInstance]getAllDataWithTable:@"calendar" itemId:[self.dateFormatter stringFromDate:[NSDate date]] data:^(NSArray *dataArray,BOOL isExist){
-        if (isExist) {
-            NSLog(@"存在");
-        }
-        self.dataArray =dataArray;
-        [self.tableView reloadData];
-    }];
+    self.dateFormatter.dateFormat = @"yyyyMMdd";
+  // NSLog(@"时间 ：%@",[self.dateFormatter stringFromDate:[NSDate date]]);
+    NSString *TableName=[NSString stringWithFormat:@"%@%@",@"calendar",[self.dateFormatter stringFromDate:[NSDate date]]];
+   // NSLog(@"表名：%@",TableName);
+    self.dataArray=[[ZBDataBaseManager sharedInstance]getAllDataWithTable:TableName];
+    
+    [self.tableView reloadData];
     
     [self.view addSubview:self.tableView];
 }
@@ -96,25 +94,30 @@
 
 - (void)calendar:(FSCalendar *)calendar didSelectDate:(NSDate *)date atMonthPosition:(FSCalendarMonthPosition)monthPosition
 {
-    NSLog(@"did select date %@",[self.dateFormatter stringFromDate:date]);
+   // NSLog(@"did select date %@",[self.dateFormatter stringFromDate:date]);
     
     NSMutableArray *selectedDates = [NSMutableArray arrayWithCapacity:calendar.selectedDates.count];
     [calendar.selectedDates enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [selectedDates addObject:[self.dateFormatter stringFromDate:obj]];
     }];
-    NSLog(@"selected dates is %@",selectedDates);
+   // NSLog(@"selected dates is %@",selectedDates);
     if (monthPosition == FSCalendarMonthPositionNext || monthPosition == FSCalendarMonthPositionPrevious) {
         [calendar setCurrentPage:date animated:YES];
     }
-    
-    [[ZBDataBaseManager sharedInstance]getAllDataWithTable:@"calendar" itemId:[self.dateFormatter stringFromDate:date] data:^(NSArray *dataArray,BOOL isExist){
+    NSString *TableName=[NSString stringWithFormat:@"%@%@",@"calendar",[self.dateFormatter stringFromDate:date]];
+   // NSLog(@"表名：%@",TableName);
+     self.dataArray=[[ZBDataBaseManager sharedInstance]getAllDataWithTable:TableName];
+
+    [self.tableView reloadData];
+    /*
+    [[ZBDataBaseManager sharedInstance]getAllDataWithTable:TableName=[ itemId:[self.dateFormatter stringFromDate:date] data:^(NSArray *dataArray,BOOL isExist){
         if (isExist) {
             NSLog(@"存在");
         }
         self.dataArray =dataArray;
         [self.tableView reloadData];
     }];
-    
+    */
 }
 
 - (void)calendarCurrentPageDidChange:(FSCalendar *)calendar
@@ -150,26 +153,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ChannelModel *model=self.dataArray[indexPath.row];
-    
-    if ([model.icon isKindOfClass:[NSDictionary class]]){
-        static NSString *ChannelBranchCell=@"channelBranchCell";
-        ChannelBranchTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
-        if (cell==nil) {
-            cell=[[ChannelBranchTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ChannelBranchCell];
-        }
-        [cell setChannelModel:model];
-        return cell;
-        
-    }else{
-        static NSString *channelCell=@"channelCell";
-        ChannelTableViewCell*cell=[tableView dequeueReusableCellWithIdentifier:channelCell];
-        if (cell==nil) {
-            cell=[[ChannelTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:channelCell];
-        }
-        [cell setChannelModel:model];
-        return cell;
+  
+    static NSString *ChannelBranchCell=@"channelBranchCell";
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:ChannelBranchCell];
+    if (cell==nil) {
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ChannelBranchCell];
     }
+   ChannelModel *model=self.dataArray[indexPath.row];
+    NSString *hitsStr=[NSString stringWithFormat:@"%@次浏览",model.hits];
+
+    cell.textLabel.text=model.title;
+    cell.detailTextLabel.text=hitsStr;
+    return cell;
+    
 }
 #pragma mark - <UITableViewDelegate>
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section

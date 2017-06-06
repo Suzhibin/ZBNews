@@ -37,7 +37,8 @@
 - (void)createUI{
     
     self.ImageView1 = [[UIImageView alloc]init];
-    
+    self.ImageView1.contentMode=UIViewContentModeScaleAspectFill;
+    self.ImageView1.clipsToBounds=YES;
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.textColor=[UIColor redColor];
     self.titleLabel.numberOfLines=0;
@@ -65,7 +66,7 @@
 - (void)setChannelModel:(ChannelModel *)channelModel{
     if (channelModel!=nil) {
         _channelModel=channelModel;
-    
+        NSLog(@"icon:%@",channelModel.icon);
         if ([_channelModel.icon isKindOfClass:[NSString class]]){
             
             if ([GlobalSettingsTool downloadImagePattern]==YES) {

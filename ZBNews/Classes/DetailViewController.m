@@ -45,11 +45,18 @@ NSString *const calendar =@"calendar";
 
     [[ZBDataBaseManager sharedInstance]createTable:collection];
     
-    [[ZBDataBaseManager sharedInstance]createTable:calendar];
+  
     //储存的model 对象必须准守Codeing协议
     NEWSLog(@"阅读时间：%@",[self getDate]);
+    NSString *TableName=[NSString stringWithFormat:@"%@%@",calendar,[self getDate]];
+    [[ZBDataBaseManager sharedInstance]createTable:TableName];
+    NSLog(@"表名：%@",TableName);
+    if ([[ZBDataBaseManager sharedInstance] isCollectedWithTable:TableName itemId:self.model.newslId]) {
+        NEWSLog(@"已阅读");
+    }else{
+        [[ZBDataBaseManager sharedInstance] table:TableName insertDataWithObj:self.model ItemId:self.model.newslId];
+    }
 
-    [[ZBDataBaseManager sharedInstance]table:calendar insertDataWithObj:self.model ItemId:[self getDate]];
 
     //创建一个WKWebView的配置对象
     [self createWebView];
@@ -70,7 +77,7 @@ NSString *const calendar =@"calendar";
     NSDate *localDate = [NSDate dateWithTimeInterval:seconds sinceDate:date];
 
     self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setDateFormat:@"yyyy/MM/dd"];
+    [self.dateFormatter setDateFormat:@"yyyyMMdd"];
     NSString *readCalendar= [self.dateFormatter stringFromDate:localDate];
     return readCalendar;
 }
