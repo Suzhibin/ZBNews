@@ -68,8 +68,8 @@ static const void *kVTMagicView = &kVTMagicView;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self addMagicSubviews];
         [self configDefaultValues];
+        [self addMagicSubviews];
         [self addNotification];
     }
     return self;
@@ -214,6 +214,7 @@ static const void *kVTMagicView = &kVTMagicView;
 - (void)reloadDataToPage:(NSUInteger)pageIndex {
     _previousIndex = _currentPage;
     _currentPage = pageIndex;
+    _nextPageIndex = pageIndex;
     _menuBar.currentIndex = pageIndex;
     _contentView.currentPage = pageIndex;
     [self reloadDataWithDisIndex:_previousIndex];
@@ -268,6 +269,9 @@ static const void *kVTMagicView = &kVTMagicView;
 - (UIButton *)dequeueReusableItemWithIdentifier:(NSString *)identifier {
     UIButton *menuItem = [_menuBar dequeueReusableItemWithIdentifier:identifier];
     [menuItem setTitleColor:_normalColor forState:UIControlStateNormal];
+    if ([menuItem respondsToSelector:@selector(vtm_prepareForReuse)]) {
+        [(id<VTMagicReuseProtocol>)menuItem vtm_prepareForReuse];
+    }
     return menuItem;
 }
 
@@ -275,6 +279,12 @@ static const void *kVTMagicView = &kVTMagicView;
     UIViewController *viewController = [_contentView dequeueReusablePageWithIdentifier:identifier];
     if ([viewController respondsToSelector:@selector(vtm_prepareForReuse)]) {
         [(id<VTMagicReuseProtocol>)viewController vtm_prepareForReuse];
+    }
+    
+    for (UIViewController *childViewController in viewController.childViewControllers) {
+        if ([childViewController respondsToSelector:@selector(vtm_prepareForReuse)]) {
+            [(id<VTMagicReuseProtocol>)childViewController vtm_prepareForReuse];
+        }
     }
     return viewController;
 }
@@ -441,6 +451,17 @@ static const void *kVTMagicView = &kVTMagicView;
             offsetX = _menuBar.contentSize.width - CGRectGetWidth(_menuBar.frame);
         }
     }
+    
+    if (_displayCentered) {
+        CGRect currentFrme = [_menuBar itemFrameAtIndex:_currentPage];
+        CGFloat itemPoint = CGRectGetMidX(currentFrme);
+        offsetX = itemPoint - CGRectGetWidth(self.bounds)/2;
+        CGFloat menuWidth = CGRectGetWidth(_menuBar.frame);
+        CGFloat maxOffset = _menuBar.contentSize.width - menuWidth;
+        offsetX = maxOffset < offsetX ? maxOffset : offsetX;
+        offsetX = offsetX < 0 ? 0 : offsetX;
+    }
+    
     _menuBar.contentOffset = CGPointMake(offsetX, 0);
 }
 
@@ -1147,6 +1168,11 @@ static VTPanRecognizerDirection direction = VTPanRecognizerDirectionUndefined;
     _bubbleRadius = bubbleRadius;
     self.sliderView.layer.cornerRadius = bubbleRadius;
     self.sliderView.layer.masksToBounds = YES;
+}
+
+- (void)setActuralSpacing:(CGFloat)acturalSpacing {
+    _acturalSpacing = _acturalSpacing;
+    _menuBar.acturalSpacing = acturalSpacing;
 }
 
 - (void)setItemSpacing:(CGFloat)itemSpacing {

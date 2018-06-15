@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>url</key>
+		<string>https://www.baidu.com</string>
+		<key>imgUrl</key>
+		<string>https://image.baidu.com/search/detail?ct=503316480&amp;z=0&amp;ipn=d&amp;word=gif&amp;step_word=&amp;hs=2&amp;pn=176&amp;spn=0&amp;di=5996262580&amp;pi=0&amp;rn=1&amp;tn=baiduimagedetail&amp;is=0%2C0&amp;istype=0&amp;ie=utf-8&amp;oe=utf-8&amp;in=&amp;cl=2&amp;lm=-1&amp;st=undefined&amp;cs=2342376857%2C3835265882&amp;os=1573997993%2C1830640462&amp;simid=0%2C0&amp;adpicid=0&amp;lpn=0&amp;ln=1945&amp;fr=&amp;fmq=1505440210612_R&amp;fm=&amp;ic=undefined&amp;s=undefined&amp;se=&amp;sme=&amp;tab=0&amp;width=undefined&amp;height=undefined&amp;face=undefined&amp;ist=&amp;jit=&amp;cg=&amp;bdtype=0&amp;oriquery=&amp;objurl=http%3A%2F%2Fimgbdb3.bendibao.com%2Fweixinbdb%2F201610%2F10%2F20161010103546803.gif&amp;fromurl=ippr_z2C%24qAzdH3FAzdH3Ffi_z%26e3Bkjg1tkw5_z%26e3Bv54AzdH3FojtAzdH3Fda8m8a8aAzdH3F988c9_z%26e3Bfip4&amp;gsm=78&amp;rpstart=0&amp;rpnum=0</string>
+		<key>adsTitle</key>
+		<string>百度</string>
+	</dict>
+</array>
+</plist>

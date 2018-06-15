@@ -3,7 +3,7 @@
 //  FSCalendar
 //
 //  Created by dingwenchao on 4/29/16.
-//  Copyright © 2016 wenchaoios. All rights reserved.
+//  Copyright © 2016 Wenchao Ding. All rights reserved.
 //
 
 #import "FSCalendar.h"
@@ -14,7 +14,7 @@
 
 @implementation FSCalendar (Deprecated)
 
-@dynamic identifier;
+@dynamic identifier, lineHeightMultiplier;
 
 - (void)setShowsPlaceholders:(BOOL)showsPlaceholders
 {
@@ -225,7 +225,6 @@
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:identifier];
     [self setValue:gregorian forKey:@"gregorian"];
     [self fs_performSelector:NSSelectorFromString(@"invalidateDateTools") withObjects:nil, nil];
-    [self fs_performSelector:NSSelectorFromString(@"invalidateWeekdaySymbols") withObjects:nil, nil];
     
     if ([[self valueForKey:@"hasValidateVisibleLayout"] boolValue]) {
         [self reloadData];
@@ -238,6 +237,11 @@
 - (NSString *)identifier
 {
     return self.gregorian.calendarIdentifier;
+}
+
+- (void)setLineHeightMultiplier:(CGFloat)lineHeightMultiplier
+{
+    self.rowHeight = FSCalendarStandardRowHeight*MAX(1, FSCalendarDeviceIsIPad*1.5);
 }
 
 @end

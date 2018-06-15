@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>url</key>
+		<string>https://www.hao123.com</string>
+		<key>imgUrl</key>
+		<string>https://image.baidu.com/search/detail?ct=503316480&amp;z=undefined&amp;tn=baiduimagedetail&amp;ipn=d&amp;word=gif&amp;step_word=&amp;ie=utf-8&amp;in=&amp;cl=2&amp;lm=-1&amp;st=undefined&amp;cs=2342376857,3835265882&amp;os=1573997993,1830640462&amp;simid=0,0&amp;pn=176&amp;rn=1&amp;di=5996262580&amp;ln=1945&amp;fr=&amp;fmq=1505440210612_R&amp;fm=&amp;ic=undefined&amp;s=undefined&amp;se=&amp;sme=&amp;tab=0&amp;width=undefined&amp;height=undefined&amp;face=undefined&amp;is=0,0&amp;istype=0&amp;ist=&amp;jit=&amp;bdtype=0&amp;spn=0&amp;pi=0&amp;gsm=78&amp;hs=2&amp;objurl=http%3A%2F%2Fimgbdb3.bendibao.com%2Fweixinbdb%2F201610%2F10%2F20161010103546803.gif&amp;rpstart=0&amp;rpnum=0&amp;adpicid=0</string>
+		<key>adsTitle</key>
+		<string>123</string>
+	</dict>
+</array>
+</plist>

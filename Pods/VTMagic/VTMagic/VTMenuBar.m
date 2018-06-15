@@ -27,6 +27,7 @@ static NSInteger const kVTMenuBarTag = 1000;
 @implementation VTMenuBar
 @dynamic delegate;
 
+#pragma mark - Lifecycle
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -47,7 +48,8 @@ static NSInteger const kVTMenuBarTag = 1000;
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    if (_needSkipLayout && !self.isDecelerating) {
+    BOOL mandatory = _menuTitles.count && !_visibleDict.count;
+    if (!mandatory && _needSkipLayout && !self.isDecelerating) {
         return;
     }
     
@@ -184,7 +186,7 @@ static NSInteger const kVTMenuBarTag = 1000;
         }
         frame = CGRectMake(itemX, _menuInset.top, itemWidth, height);
         [_frameList addObject:[NSValue valueWithCGRect:frame]];
-        itemX += frame.size.width;
+        itemX += frame.size.width + _acturalSpacing;
     }
 }
 
@@ -194,12 +196,13 @@ static NSInteger const kVTMenuBarTag = 1000;
     CGFloat height = self.frame.size.height;
     height -= _menuInset.top + _menuInset.bottom;
     CGFloat totalSpace = _menuInset.left + _menuInset.right;
+    totalSpace += 1 < count ? (count - 1) * _acturalSpacing : 0;
     CGFloat itemWidth = (CGRectGetWidth(self.frame) - totalSpace)/count;
     frame.origin = CGPointMake(_menuInset.left, _menuInset.top);
     frame.size = CGSizeMake(itemWidth, height);
     for (int index = 0; index < count; index++) {
         [_frameList addObject:[NSValue valueWithCGRect:frame]];
-        frame.origin.x += itemWidth;
+        frame.origin.x += itemWidth + _acturalSpacing;
     }
 }
 

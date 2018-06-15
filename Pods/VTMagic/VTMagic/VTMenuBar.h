@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 当前索引对应的按钮
  */
-- (UIButton *)menuBar:(VTMenuBar *)menuBar menuItemAtIndex:(NSUInteger)itemIndex;
+- (nullable UIButton *)menuBar:(VTMenuBar *)menuBar menuItemAtIndex:(NSUInteger)itemIndex;
 
 @end
 
@@ -104,6 +104,11 @@ NS_ASSUME_NONNULL_BEGIN
  *  是否需要跳过layout，菜单栏被滑动时该属性无效，强制布局
  */
 @property (nonatomic, assign) BOOL needSkipLayout;
+
+/**
+ *  item之间的实际间距
+ */
+@property (nonatomic, assign) CGFloat acturalSpacing;
 
 /**
  *  自定义item宽度，默认0，当设置改属性时，itemSpacing的设置无效
@@ -235,7 +240,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return 缓存池中取出的category item
  */
-- (__kindof UIButton *)dequeueReusableItemWithIdentifier:(NSString *)identifier;
+- (nullable __kindof UIButton *)dequeueReusableItemWithIdentifier:(NSString *)identifier;
 
 @end
 

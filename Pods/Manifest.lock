@@ -14,49 +14,59 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - FDFullscreenPopGesture (1.1)
-  - FMDB (2.6.2):
-    - FMDB/standard (= 2.6.2)
-  - FMDB/standard (2.6.2)
-  - FSCalendar (2.6.0)
-  - Masonry (1.0.2)
-  - MJRefresh (3.1.12)
-  - SDAutoLayout (2.1.7)
-  - SDWebImage (3.8.2):
-    - SDWebImage/Core (= 3.8.2)
-  - SDWebImage/Core (3.8.2)
-  - UITableView+FDTemplateLayoutCell (1.4)
-  - UMengAnalytics (4.1.4)
+  - FMDB (2.7.2):
+    - FMDB/standard (= 2.7.2)
+  - FMDB/standard (2.7.2)
+  - FSCalendar (2.7.9)
+  - Masonry (1.1.0)
+  - MJRefresh (3.1.15)
+  - ReactiveObjC (3.0.0)
+  - SDWebImage (4.2.1):
+    - SDWebImage/Core (= 4.2.1)
+  - SDWebImage/Core (4.2.1)
   - VTMagic (1.2.4):
     - VTMagic/Core (= 1.2.4)
   - VTMagic/Core (1.2.4)
 
 DEPENDENCIES:
   - AFNetworking
-  - FDFullscreenPopGesture
   - FMDB
   - FSCalendar
   - Masonry
   - MJRefresh
-  - SDAutoLayout
+  - ReactiveObjC
   - SDWebImage
-  - UITableView+FDTemplateLayoutCell
-  - UMengAnalytics
-  - VTMagic
+  - VTMagic (from `https://github.com/tianzhuo112/VTMagic.git`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AFNetworking
+    - FMDB
+    - FSCalendar
+    - Masonry
+    - MJRefresh
+    - ReactiveObjC
+    - SDWebImage
+
+EXTERNAL SOURCES:
+  VTMagic:
+    :git: https://github.com/tianzhuo112/VTMagic.git
+
+CHECKOUT OPTIONS:
+  VTMagic:
+    :commit: b36adb592d037c438631762758c1765ec2231a02
+    :git: https://github.com/tianzhuo112/VTMagic.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
-  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
-  FSCalendar: c00fa5f4c3ec343ee6f7b804ae19322e9898bb84
-  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
-  SDAutoLayout: e9b36d04b8c0b504762a04d76fbbe5108944297a
-  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
-  UITableView+FDTemplateLayoutCell: 234e1582bcc4e18461af91155123bb96538ed030
-  UMengAnalytics: 0bde5737767dfc18afb03a4cd6ba9d57bb2ad10d
+  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+  FSCalendar: a04b09f16f811bc92e82f3cf852a15225233b9d5
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  MJRefresh: 9af70f5f9327a2cf87f0fb5929f35fcc2fa638ea
+  ReactiveObjC: ce79989e8684b9086b5f8d0c74bc7b81a8729c9e
+  SDWebImage: 1fa4c9edf525b744f002db89f3f5a38b3cd4c541
   VTMagic: b49e5f456dbcbfd9a3588ba92417233a105bc193
 
-PODFILE CHECKSUM: a6745c6e6368cf72b39824d423f552b9e6dc41d8
+PODFILE CHECKSUM: 14a4fdd8d65473b5eb9b5f0c3c915df742b473d2
 
-COCOAPODS: 1.1.0.beta.1
+COCOAPODS: 1.5.2

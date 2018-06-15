@@ -9,11 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>FDFullscreenPopGesture.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>FMDB.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -39,17 +34,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>SDAutoLayout.xcscheme</key>
+		<key>ReactiveObjC.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>SDWebImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>UITableView+FDTemplateLayoutCell.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -61,62 +51,6 @@
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
-	<dict>
-		<key>2C71DE0FB8A6E5BB6EAF9FB037D799CC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>3A0F88C8640F40C1EFE97825ABD2FE26</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>4D70540979D0D203ACA13E9C5DEE6CCE</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>53480ED0BE09FF49E34B1702D485CAAB</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>624D73C3937ED2B74FC9DE448C2C326E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>70BC44266C6FFE30D2C57129458E070B</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>7565A81665DE9ABD5D801173305E8188</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>928353533005A4198EBDA5B700D37B64</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9F12FB4A63E20F601CFB2E64A65B57C1</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CEFB71C6326286B065C58BF3CF2D753D</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>F29022B7965D05F6C564A78D010FF7C2</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
 </dict>
 </plist>

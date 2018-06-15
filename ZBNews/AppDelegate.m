@@ -7,11 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "CustomTabBarController.h"
-#import "Constants.h"
-#import "GlobalSettingsTool.h"
-#import <UMMobClick/MobClick.h>
-#import "ZBKit.h"
+#import "MainViewController.h"
+#import "CommonDefine.h"
 @interface AppDelegate ()
 
 @end
@@ -21,51 +18,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NEWSLog(@"Caches = %@",caches);
-
-    UMConfigInstance.appKey = @"584a53957f2c7414430003f6";
-    UMConfigInstance.channelId = @"App Store";
-     [MobClick startWithConfigure:UMConfigInstance];//配置以上参数后调用此方法初始化SDK！
     
-    [self setlanguages];
-    [self  enablePush:[GlobalSettingsTool sharedSetting].enabledPush];
+    NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    SLog(@"Caches = %@",caches);
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor=[UIColor whiteColor];
 
-    CustomTabBarController *tabbar = [[CustomTabBarController alloc]init];
-    self.window.rootViewController = tabbar;
+    MainViewController *mainVC = [[MainViewController alloc]init];
+    UINavigationController *nc=[[UINavigationController alloc]initWithRootViewController:mainVC];
+    self.window.rootViewController =nc;
     
     [self.window makeKeyAndVisible];
+
     
-
-
     return YES;
-}
-- (void)enablePush:(BOOL)bEnable
-{
-    if(bEnable)
-    {
-        NEWSLog(@"应用内开启推送／不知道系统是否开启");
-        //[self createPush];
-        
-    }else
-    {
-        NEWSLog(@"应用内关闭推送／不知道系统是否开启");
-      //  [UMessage unregisterForRemoteNotifications];
-    }
-}
-- (void)setlanguages{
-    if (![[NSUserDefaults standardUserDefaults]objectForKey:LanguageKey]) {
-    NSArray *languages = [NSLocale preferredLanguages];
-    NSString *language = [languages objectAtIndex:0];
-    NEWSLog(@"language:%@",language);
-    if ([language hasPrefix:Chinese]) {//开头匹配
-        [[NSUserDefaults standardUserDefaults] setObject:Chinese forKey:LanguageKey];
-    }else{
-        [[NSUserDefaults standardUserDefaults] setObject:English forKey:LanguageKey];
-    }
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -88,19 +55,6 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 
-    //广告
-    [ZBAdvertiseInfo getAdvertisingInfo:^(NSString *filePath,NSDictionary *urlDict,BOOL isExist){
-        if (isExist) {
-            ZBAdvertiseView *advertiseView = [[ZBAdvertiseView alloc] initWithFrame:self.window.bounds];
-            advertiseView.filePath = filePath;
-            advertiseView.linkdict = urlDict;
-            advertiseView.ZBAdvertiseBlock=^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"pushtoad" object:nil userInfo:urlDict];
-            };
-        }else{
-            NSLog(@"无图片");
-        }
-    }];
     
 }
 
