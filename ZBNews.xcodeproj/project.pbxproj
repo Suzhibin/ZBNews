@@ -34,6 +34,7 @@
 		7D3C5B7D1F6F65B60054964D /* adData2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D3C5AF61F6F65B60054964D /* adData2.plist */; };
 		7D3C5B7E1F6F65B60054964D /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3C5AF81F6F65B60054964D /* DataManager.m */; };
 		7D3C5B7F1F6F65B60054964D /* menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D3C5AF91F6F65B60054964D /* menu.plist */; };
+		7D3CB34420D37EE800857A35 /* APPTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D3CB34320D37EE800857A35 /* APPTool.m */; };
 		7D4084B11DE83D370076C1C8 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D4084B01DE83D370076C1C8 /* libsqlite3.tbd */; };
 		7D6B31EB20D0C86F00199CEE /* RACChannelModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6B31EA20D0C86F00199CEE /* RACChannelModel.m */; };
 		7D6B31EE20D0C89500199CEE /* RACChannelFirstCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6B31ED20D0C89500199CEE /* RACChannelFirstCell.m */; };
@@ -53,7 +54,6 @@
 		7D9D22031F7FA8A800C8C067 /* ZBRequestEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CB1F7FA8A800C8C067 /* ZBRequestEngine.m */; };
 		7D9D22041F7FA8A800C8C067 /* ZBRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CD1F7FA8A800C8C067 /* ZBRequestManager.m */; };
 		7D9D22051F7FA8A800C8C067 /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CF1F7FA8A800C8C067 /* ZBURLRequest.m */; };
-		7D9D220C1F7FA8A800C8C067 /* ZBGlobalSettingsTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21E11F7FA8A800C8C067 /* ZBGlobalSettingsTool.m */; };
 		7DC3DD0C20B297D500D28882 /* NSString+ZBUTF8Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC3DD0B20B297D500D28882 /* NSString+ZBUTF8Encoding.m */; };
 /* End PBXBuildFile section */
 
@@ -127,6 +127,8 @@
 		7D3C5AF81F6F65B60054964D /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		7D3C5AF91F6F65B60054964D /* menu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = menu.plist; sourceTree = "<group>"; };
 		7D3C5B751F6F65B60054964D /* ZBSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBSettingViewController.h; sourceTree = "<group>"; };
+		7D3CB34220D37EE800857A35 /* APPTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APPTool.h; sourceTree = "<group>"; };
+		7D3CB34320D37EE800857A35 /* APPTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APPTool.m; sourceTree = "<group>"; };
 		7D4084B01DE83D370076C1C8 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		7D6B31E920D0C86F00199CEE /* RACChannelModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RACChannelModel.h; sourceTree = "<group>"; };
 		7D6B31EA20D0C86F00199CEE /* RACChannelModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RACChannelModel.m; sourceTree = "<group>"; };
@@ -165,8 +167,6 @@
 		7D9D21CD1F7FA8A800C8C067 /* ZBRequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBRequestManager.m; sourceTree = "<group>"; };
 		7D9D21CE1F7FA8A800C8C067 /* ZBURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBURLRequest.h; sourceTree = "<group>"; };
 		7D9D21CF1F7FA8A800C8C067 /* ZBURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBURLRequest.m; sourceTree = "<group>"; };
-		7D9D21E01F7FA8A800C8C067 /* ZBGlobalSettingsTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBGlobalSettingsTool.h; sourceTree = "<group>"; };
-		7D9D21E11F7FA8A800C8C067 /* ZBGlobalSettingsTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBGlobalSettingsTool.m; sourceTree = "<group>"; };
 		7DC3DD0A20B297D500D28882 /* NSString+ZBUTF8Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ZBUTF8Encoding.h"; sourceTree = "<group>"; };
 		7DC3DD0B20B297D500D28882 /* NSString+ZBUTF8Encoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ZBUTF8Encoding.m"; sourceTree = "<group>"; };
 		9EE67E6D7E38D28153EFE933 /* Pods-ZBNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNews/Pods-ZBNews.release.xcconfig"; sourceTree = "<group>"; };
@@ -506,6 +506,8 @@
 				7D23473D20CF962E00147762 /* CommonDefine.h */,
 				7D3C5AF71F6F65B60054964D /* DataManager.h */,
 				7D3C5AF81F6F65B60054964D /* DataManager.m */,
+				7D3CB34220D37EE800857A35 /* APPTool.h */,
+				7D3CB34320D37EE800857A35 /* APPTool.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -624,8 +626,6 @@
 			isa = PBXGroup;
 			children = (
 				7D87AF351F999AB700B69BAD /* ZBMacros.h */,
-				7D9D21E01F7FA8A800C8C067 /* ZBGlobalSettingsTool.h */,
-				7D9D21E11F7FA8A800C8C067 /* ZBGlobalSettingsTool.m */,
 			);
 			path = ZBTool;
 			sourceTree = "<group>";
@@ -851,7 +851,7 @@
 				7D6B31EB20D0C86F00199CEE /* RACChannelModel.m in Sources */,
 				7D23470420CF93C000147762 /* DetailViewController.m in Sources */,
 				7D9D22041F7FA8A800C8C067 /* ZBRequestManager.m in Sources */,
-				7D9D220C1F7FA8A800C8C067 /* ZBGlobalSettingsTool.m in Sources */,
+				7D3CB34420D37EE800857A35 /* APPTool.m in Sources */,
 				7D23477820CFC70700147762 /* DatabaseViewController.m in Sources */,
 				7D6B320D20D0FA0100199CEE /* ZBDataBaseManager.m in Sources */,
 				7D6B320020D0E6C300199CEE /* BaseCollectionViewCell.m in Sources */,

@@ -147,8 +147,6 @@
         _viewModel = [[RACChannelViewModel alloc] init];
     }
     return _viewModel;
- 
-    
 }
 #pragma mark - VTMagicReuseProtocol
 - (void)vtm_prepareForReuse {

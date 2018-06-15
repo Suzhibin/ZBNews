@@ -9,7 +9,7 @@
 #import "DetailViewController.h"
 #import <WebKit/WebKit.h>
 #import "ZBKit.h"
-
+#import "APPTool.h"
 @interface DetailViewController ()<WKNavigationDelegate,WKUIDelegate>
 //,
 /** 浏览器 */
@@ -47,7 +47,7 @@
     if (isExist) {
           SLog(@"已阅读");
     }else{
-        NSDictionary *dict=[self getObjectData:self.model];
+        NSDictionary *dict=[APPTool getObjectData:self.model];
        //  SLog(@"转成字典:%@",dict);
         SLog(@"newslId:%@",self.model.newsId);
         [[ZBDataBaseManager sharedInstance]table:TableName insertObj:dict ItemId:self.model.newsId isSuccess:^(BOOL isSuccess) {
@@ -83,7 +83,7 @@
             x.selected = YES;
             //收藏数据
             NSLog(@"收藏数据");
-            NSDictionary *dict=[self getObjectData:self.model];
+            NSDictionary *dict=[APPTool getObjectData:self.model];
             SLog(@"转成字典:%@",dict);
             [[ZBDataBaseManager sharedInstance]table:Sfavorites insertObj:dict ItemId:self.model.newsId isSuccess:^(BOOL isSuccess) {
                 if (isSuccess) {
@@ -169,7 +169,9 @@
 }
  // 类似 UIWebView 的- webView:didFailLoadWithError:页面加载失败时调用
 - (void)webView:(WKWebView*)webView didFailProvisionalNavigation:(WKNavigation*)navigation withError:(NSError*)error{
- 
+    if (self.activity.isAnimating) {
+        [self.activity stopAnimating];
+    }
     NSLog(@"didFailProvisionalNavigation");
     [UIApplication sharedApplication].networkActivityIndicatorVisible=NO;
 }
@@ -225,75 +227,6 @@
     
     return _progressView;
 }
-
-/**
- *  对象转换为字典
- *
- *  @param obj 需要转化的对象
- *
- *  @return 转换后的字典
- */
-- (NSDictionary*)getObjectData:(id)obj {
-    
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    unsigned int propsCount;
-    
-    objc_property_t *props = class_copyPropertyList([obj class], &propsCount);
-    
-    for(int i = 0;i < propsCount; i++) {
-        
-        objc_property_t prop = props[i];
-        NSString *propName = [NSString stringWithUTF8String:property_getName(prop)];
-        id value = [obj valueForKey:propName];
-        if(value == nil) {
-            
-            value = [NSNull null];
-        } else {
-            value = [self getObjectInternal:value];
-        }
-        [dic setObject:value forKey:propName];
-    }
-    
-    return dic;
-}
-
-- (id)getObjectInternal:(id)obj {
-    
-    if([obj isKindOfClass:[NSString class]]
-       ||
-       [obj isKindOfClass:[NSNumber class]]
-       ||
-       [obj isKindOfClass:[NSNull class]]) {
-        
-        return obj;
-        
-    }
-    if([obj isKindOfClass:[NSArray class]]) {
-        
-        NSArray *objarr = obj;
-        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:objarr.count];
-        
-        for(int i = 0; i < objarr.count; i++) {
-            
-            [arr setObject:[self getObjectInternal:[objarr objectAtIndex:i]] atIndexedSubscript:i];
-        }
-        return arr;
-    }
-    if([obj isKindOfClass:[NSDictionary class]]) {
-        
-        NSDictionary *objdic = obj;
-        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithCapacity:[objdic count]];
-        
-        for(NSString *key in objdic.allKeys) {
-            
-            [dic setObject:[self getObjectInternal:[objdic objectForKey:key]] forKey:key];
-        }
-        return dic;
-    }
-    return [self getObjectData:obj];
-    
-}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

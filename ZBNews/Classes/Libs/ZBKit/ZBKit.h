@@ -11,8 +11,6 @@
 
 /**网络请求框架*/
 #import "ZBNetworking.h"
-/**设置页面助手*/
-#import "ZBGlobalSettingsTool.h"
 /**宏助手*/
 #import "ZBMacros.h"
 /**数据库*/
