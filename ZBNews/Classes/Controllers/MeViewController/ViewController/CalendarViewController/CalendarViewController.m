@@ -33,9 +33,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
-- (NSString *)calendarPath{
-    return [[[ZBCacheManager sharedInstance]ZBKitPath]stringByAppendingPathComponent:@"calendar"];
-}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -77,8 +74,8 @@
 
 #pragma mark - <FSCalendarDelegate>
 - (BOOL)calendar:(FSCalendar *)calendar shouldSelectDate:(NSDate *)date atMonthPosition:(FSCalendarMonthPosition)monthPosition{
-    NSLog(@"should select date %@",[self.dateFormatter stringFromDate:date]);
-    NSLog(@"should  %@",[self.dateFormatter stringFromDate:calendar.currentPage]);
+    SLog(@"should select date %@",[self.dateFormatter stringFromDate:date]);
+    SLog(@"should  %@",[self.dateFormatter stringFromDate:calendar.currentPage]);
     return YES;
 }
 
@@ -99,20 +96,21 @@
         [calendar setCurrentPage:date animated:YES];
     }
     [self.dataArray removeAllObjects];
-    NSString *TableName=[NSString stringWithFormat:@"%@%@",[self calendarPath],[self.dateFormatter stringFromDate:date]];
-    NSLog(@"表名：%@",TableName);
-   //  self.dataArray=[[ZBDataBaseManager sharedInstance]getAllDataWithTable:TableName];
-    NSArray *keyArray = [[ZBCacheManager sharedInstance]getDiskCacheFileWithPath:TableName];
-    for (NSString *filePath in keyArray) {
-        
-        RACChannelModel* model= [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-        NSLog(@"title:%@",model.title);
+    NSString *TableName=[NSString stringWithFormat:@"%@%@",Scalendar,[self.dateFormatter stringFromDate:date]];
+
+    SLog(@"表名：%@",TableName);
+    NSArray *allData = [[ZBDataBaseManager sharedInstance]getAllDataWithTable:TableName];
+    [allData enumerateObjectsUsingBlock:^(ZBDataBaseModel *dbModel, NSUInteger idx, BOOL * _Nonnull stop) {
+        //   SLog(@"object:%@",dbModel.object);
+        RACChannelModel *model=[[RACChannelModel alloc]initWithDict:dbModel.object];
         [self.dataArray addObject:model];
-    }
+    }];
+    
     [self.tableView reloadData];
+    
 }
 - (void)calendarCurrentPageDidChange:(FSCalendar *)calendar{
-    NSLog(@"%s %@", __FUNCTION__, [self.dateFormatter stringFromDate:calendar.currentPage]);
+    SLog(@"%s %@", __FUNCTION__, [self.dateFormatter stringFromDate:calendar.currentPage]);
 }
 #pragma mark - <FSCalendarDataSource>
 /*
