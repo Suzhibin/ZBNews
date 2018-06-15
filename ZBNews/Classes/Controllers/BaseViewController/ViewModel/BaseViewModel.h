@@ -13,7 +13,7 @@
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "MenuInfo.h"
 #import "RACChannelModel.h"
-/** 缓存完成的后续操作Block */
+/** push完成的后续操作Block */
 typedef void(^pushCompletedBlock)(id  _Nullable x);
 
 @interface BaseViewModel : NSObject

@@ -127,7 +127,6 @@
 }
 - (void)createTable{
     UITableView* tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-(ZB_STATUS_HEIGHT+44)) style:UITableViewStylePlain];
-
     tableView.delegate=self;
     tableView.dataSource=self;
     tableView.rowHeight=124;
