@@ -22,8 +22,10 @@
     DetailViewController *detailsVC=[[DetailViewController alloc]init];
     detailsVC.model=model;
     // 设置代理信号
+   // @weakify(self)
     detailsVC.delegateSubject = [RACSubject subject];
     [detailsVC.delegateSubject subscribeNext:^(id  _Nullable x) {
+     //   @strongify(self)
         if (completion) {
             completion(x);
         }

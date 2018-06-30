@@ -28,7 +28,7 @@
         [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
             request.URLString=self.urlString;
             request.apiType=requestType;
-        }  success:^(id responseObj,apiType type){
+        }  success:^(id responseObj,apiType type,BOOL isCache){
             if (type==ZBRequestTypeRefresh) {
                 [self.channelList removeAllObjects];//清除数据 等待新数据的到来
             }
@@ -37,18 +37,17 @@
                 RACChannelModel *model=[[RACChannelModel alloc]initWithDict:dic];
                 [self.channelList addObject:model];
             }
+            if (isCache) {
+                SLog(@"%@-读缓存",menuInfo.title);
+            }else{
+                SLog(@"%@-重新请求",menuInfo.title);
+            }
             //发送信号
             [subscriber sendNext:self.channelList];
             [subscriber sendCompleted];
         } failure:^(NSError *error){
             [subscriber sendError:error];
             [subscriber sendCompleted];
-        }finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
-            if (isCache) {
-               SLog(@"%@-读缓存",menuInfo.title);
-            }else{
-                SLog(@"%@-重新请求",menuInfo.title);
-            }
         }];
         
         return nil;

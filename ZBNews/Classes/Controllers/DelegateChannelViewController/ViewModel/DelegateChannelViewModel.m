@@ -26,7 +26,7 @@
     [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=self.urlString;
         request.apiType=requestType;
-    }  success:^(id responseObj,apiType type){
+    }  success:^(id responseObj,apiType type,BOOL isCache){
         if (type==ZBRequestTypeRefresh) {
             [self.channelList removeAllObjects];//清除数据 等待新数据的到来
         }
@@ -35,19 +35,17 @@
             RACChannelModel *model=[[RACChannelModel alloc]initWithDict:dic];
             [self.channelList addObject:model];
         }
-        
+        if (isCache) {
+            SLog(@"%@-读缓存",menuInfo.title);
+        }else{
+            SLog(@"%@-重新请求",menuInfo.title);
+        }
         if([self.viewModelDelegate respondsToSelector:@selector(requestFinished:)]) {
             [self.viewModelDelegate requestFinished:self.channelList];
         }
     } failure:^(NSError *error){
         if([self.viewModelDelegate respondsToSelector:@selector(requestFailed:)]) {
             [self.viewModelDelegate requestFailed:error];
-        }
-    }finished:^(id responseObject, apiType type, NSError *error, BOOL isCache) {
-        if (isCache) {
-            SLog(@"%@-读缓存",menuInfo.title);
-        }else{
-            SLog(@"%@-重新请求",menuInfo.title);
         }
     }];
 }

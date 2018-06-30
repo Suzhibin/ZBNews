@@ -58,10 +58,10 @@ typedef NS_ENUM(NSInteger,MethodType) {
  请求参数的格式.
  */
 typedef NS_ENUM(NSUInteger, requestSerializerType) {
-    /** 设置请求参数为JSON格式*/
-    ZBJSONRequestSerializer,
     /** 设置请求参数为二进制格式*/
-    ZBHTTPRequestSerializer
+    ZBHTTPRequestSerializer,
+    /** 设置请求参数为JSON格式*/
+    ZBJSONRequestSerializer
 };
 
 /** 批量请求配置的Block */
@@ -69,11 +69,9 @@ typedef void (^batchRequestConfig)(ZBBatchRequest * batchRequest);
 /** 请求配置的Block */
 typedef void (^requestConfig)(ZBURLRequest * request);
 /** 请求成功的Block */
-typedef void (^requestSuccess)(id responseObject,apiType type);
+typedef void (^requestSuccess)(id responseObject,apiType type,BOOL isCache);
 /** 请求失败的Block */
 typedef void (^requestFailure)(NSError * error);
-/** 请求完成的Block */
-typedef void (^requestFinished)(id responseObject,apiType type,NSError * error,BOOL isCache);
 /** 请求进度的Block */
 typedef void (^progressBlock)(NSProgress * progress);
 /** 请求取消的Block */

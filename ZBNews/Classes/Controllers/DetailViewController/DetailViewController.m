@@ -217,6 +217,7 @@
     self.wkWebView.UIDelegate=nil;
     self.wkWebView.navigationDelegate=nil;
     self.wkWebView=nil;
+    SLog(@"%s",__func__);
 }
 - (UIProgressView*)progressView{
     if (_progressView == nil) {
