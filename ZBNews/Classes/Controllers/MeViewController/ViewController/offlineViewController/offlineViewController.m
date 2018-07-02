@@ -34,7 +34,8 @@
     
     //复用MainViewModel
     MainViewModel *viewModel=[[MainViewModel alloc]init];
-    [[viewModel requestMenuData]subscribeNext:^(id  _Nullable x) {
+    RACSignal *signal =[viewModel.command execute:nil];
+    [signal subscribeNext:^(id  _Nullable x) {
         self.dataArray=x;
         [self.tableView reloadData];
     }];

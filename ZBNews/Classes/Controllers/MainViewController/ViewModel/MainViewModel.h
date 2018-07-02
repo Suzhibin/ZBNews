@@ -10,6 +10,8 @@
 
 @interface MainViewModel : BaseViewModel
 
-- (RACSignal *)requestMenuData;
+@property(nonatomic,strong)RACCommand *command;
+ //注释掉 用command
+//- (RACSignal *)requestMenuData;
 
 @end

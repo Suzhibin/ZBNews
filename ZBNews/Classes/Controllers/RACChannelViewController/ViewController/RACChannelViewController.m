@@ -66,7 +66,8 @@
     [self request:_page requestType:ZBRequestTypeRefreshMore];
 }
 - (void)request:(NSInteger)page requestType:(apiType)requestType{
-    [[self.viewModel requestListDataWithPage:page menuInfo:_menuInfo requestType:requestType]subscribeNext:^(id  _Nullable x) {
+    RACSignal *signal =[self.viewModel.command execute:@{@"page":@(page),@"menuInfo":_menuInfo,@"requestType":@(requestType)}];
+    [signal subscribeNext:^(id  _Nullable x) {
         self.dataArray=x;
         [self.tableView reloadData];
         [self endRefresh];
@@ -74,6 +75,7 @@
         SLog(@"请求失败%@",error);
         [self endRefresh];
     }];
+  
 }
 #pragma mark tableView Delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

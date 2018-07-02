@@ -40,10 +40,17 @@
 #pragma mark - menuListdata
 - (void)generateData{
     MainViewModel *viewModel=[[MainViewModel alloc]init];
+    RACSignal *signal =[viewModel.command execute:nil];
+    [signal subscribeNext:^(id  _Nullable x) {
+        self.menuList=x;
+        [self.magicView reloadData];
+    }];
+    /*
     [[viewModel requestMenuData]subscribeNext:^(id  _Nullable x) {
         self.menuList=x;
         [self.magicView reloadData];
     }];
+     */
 }
 #pragma  mark - VTMagicViewDataSource
 - (NSArray<NSString *> *)menuTitlesForMagicView:(VTMagicView *)magicView {

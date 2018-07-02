@@ -12,8 +12,10 @@
 
 @property(nonatomic,copy)NSString *urlString;
 
-//网络请求
-- (RACSignal *)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(apiType)requestType;
+@property(nonatomic,strong)RACCommand *command;
+
+//网络请求 注释掉 用command
+//- (RACSignal *)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(apiType)requestType;
 
 //取消请求的方法
 - (void)cancelRequestWithMenuInfo:(MenuInfo*)menuInfo;
