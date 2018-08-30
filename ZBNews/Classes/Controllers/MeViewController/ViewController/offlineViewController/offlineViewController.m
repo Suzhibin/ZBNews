@@ -11,6 +11,7 @@
 #import "MenuInfo.h"
 #import "API_Constants.h"
 #import "MainViewModel.h"
+#import "ZBMacros.h"
 @interface offlineViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
@@ -84,11 +85,10 @@
 //懒加载
 - (UITableView *)tableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, ZB_STATUS_HEIGHT+44, SCREEN_WIDTH, SCREEN_HEIGHT-(ZB_STATUS_HEIGHT+44)) style:UITableViewStylePlain];
         _tableView.delegate=self;
         _tableView.dataSource=self;
         _tableView.tableFooterView=[[UIView alloc]init];
-         _tableView.contentInset =UIEdgeInsetsMake(0, 0,40,0);
     }
     
     return _tableView;

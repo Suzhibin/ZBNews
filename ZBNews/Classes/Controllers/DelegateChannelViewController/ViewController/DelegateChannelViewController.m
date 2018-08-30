@@ -142,8 +142,6 @@
         _viewModel.viewModelDelegate=self;
     }
     return _viewModel;
- 
-    //如有缓存使用缓存，无缓存重新加载
 }
 #pragma mark - VTMagicReuseProtocol
 - (void)vtm_prepareForReuse {
