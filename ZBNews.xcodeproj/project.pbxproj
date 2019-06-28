@@ -55,6 +55,7 @@
 		7D9D22041F7FA8A800C8C067 /* ZBRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CD1F7FA8A800C8C067 /* ZBRequestManager.m */; };
 		7D9D22051F7FA8A800C8C067 /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CF1F7FA8A800C8C067 /* ZBURLRequest.m */; };
 		7DC3DD0C20B297D500D28882 /* NSString+ZBUTF8Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC3DD0B20B297D500D28882 /* NSString+ZBUTF8Encoding.m */; };
+		9F9BC63F22C5C1D700AAB065 /* MenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F9BC63E22C5C1D700AAB065 /* MenuButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +171,8 @@
 		7DC3DD0A20B297D500D28882 /* NSString+ZBUTF8Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ZBUTF8Encoding.h"; sourceTree = "<group>"; };
 		7DC3DD0B20B297D500D28882 /* NSString+ZBUTF8Encoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ZBUTF8Encoding.m"; sourceTree = "<group>"; };
 		9EE67E6D7E38D28153EFE933 /* Pods-ZBNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNews/Pods-ZBNews.release.xcconfig"; sourceTree = "<group>"; };
+		9F9BC63D22C5C1D700AAB065 /* MenuButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
+		9F9BC63E22C5C1D700AAB065 /* MenuButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuButton.m; sourceTree = "<group>"; };
 		DEC1615C4BD8F7962001874B /* Pods_ZBNews.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZBNews.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -400,7 +403,7 @@
 		7D23470520CF93C700147762 /* MainViewController */ = {
 			isa = PBXGroup;
 			children = (
-				7D23474C20CF9D7700147762 /* View */,
+				9F9BC63C22C5C1C000AAB065 /* View */,
 				7D23474D20CF9D7800147762 /* ViewModel */,
 				7D23474420CF9D5300147762 /* Model */,
 				7D23474720CF9D5300147762 /* ViewController */,
@@ -442,13 +445,6 @@
 				7D23474920CF9D5300147762 /* MainViewController.m */,
 			);
 			path = ViewController;
-			sourceTree = "<group>";
-		};
-		7D23474C20CF9D7700147762 /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		7D23474D20CF9D7800147762 /* ViewModel */ = {
@@ -630,6 +626,15 @@
 			path = ZBTool;
 			sourceTree = "<group>";
 		};
+		9F9BC63C22C5C1C000AAB065 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				9F9BC63D22C5C1D700AAB065 /* MenuButton.h */,
+				9F9BC63E22C5C1D700AAB065 /* MenuButton.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		B388F96073442A5CDB9EDC1F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -727,6 +732,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -852,6 +858,7 @@
 				7D23470420CF93C000147762 /* DetailViewController.m in Sources */,
 				7D9D22041F7FA8A800C8C067 /* ZBRequestManager.m in Sources */,
 				7D3CB34420D37EE800857A35 /* APPTool.m in Sources */,
+				9F9BC63F22C5C1D700AAB065 /* MenuButton.m in Sources */,
 				7D23477820CFC70700147762 /* DatabaseViewController.m in Sources */,
 				7D6B320D20D0FA0100199CEE /* ZBDataBaseManager.m in Sources */,
 				7D6B320020D0E6C300199CEE /* BaseCollectionViewCell.m in Sources */,

@@ -13,6 +13,7 @@
 #import "DelegateChannelViewController.h"
 #import "MeViewController.h"
 #import "MainViewModel.h"
+#import "MenuButton.h"
 @interface MainViewController ()
 
 @property (nonatomic, strong)  NSMutableArray *menuList;
@@ -62,13 +63,14 @@
 }
 - (UIButton *)magicView:(VTMagicView *)magicView menuItemAtIndex:(NSUInteger)itemIndex{
     static NSString *itemIdentifier = @"itemIdentifier";
-    UIButton *menuItem = [magicView dequeueReusableItemWithIdentifier:itemIdentifier];
+    MenuButton *menuItem = [magicView dequeueReusableItemWithIdentifier:itemIdentifier];
     if (!menuItem) {
-        menuItem = [UIButton buttonWithType:UIButtonTypeCustom];
+        menuItem = [MenuButton buttonWithType:UIButtonTypeCustom];
         menuItem.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:16.f];
         [menuItem setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [menuItem setTitleColor:[UIColor greenColor] forState:UIControlStateSelected];
     }
+    menuItem.verticalLineHidden=(_menuList.count-1==itemIndex)?YES:NO;
     return menuItem;
 }
 - (UIViewController *)magicView:(VTMagicView *)magicView viewControllerAtPage:(NSUInteger)pageIndex{
