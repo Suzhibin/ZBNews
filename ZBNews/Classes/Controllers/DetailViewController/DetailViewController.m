@@ -73,7 +73,6 @@
     [favoritesButton setTitle:@"收藏" forState:UIControlStateNormal];
     if (  [[ZBDataBaseManager sharedInstance]isExistsWithItemId:self.model.newsId table:Sfavorites]){
         favoritesButton.selected=YES;
-        //  [btn setTitleColor:[UIColor brownColor] forState:UIControlStateSelected];
         favoritesButton.titleLabel.alpha = 0.5;
     }
     @weakify(self);

@@ -11,6 +11,7 @@ pod 'FSCalendar'
 pod 'Masonry'
 pod 'AFNetworking' 
 pod 'ReactiveObjC'
+pod 'FDFullscreenPopGesture'
 use_frameworks!
 
 end

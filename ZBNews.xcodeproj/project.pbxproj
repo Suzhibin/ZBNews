@@ -28,7 +28,6 @@
 		7D23477820CFC70700147762 /* DatabaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23476820CFC70600147762 /* DatabaseViewController.m */; };
 		7D23477A20CFC70700147762 /* offlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23476D20CFC70600147762 /* offlineViewController.m */; };
 		7D23477B20CFC70700147762 /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23477020CFC70600147762 /* CalendarViewController.m */; };
-		7D23478320CFD36B00147762 /* ZBSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D23478220CFD36A00147762 /* ZBSettingViewController.m */; };
 		7D2FFCCC20D2460D00F1CC86 /* MenuInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2FFCCB20D2460D00F1CC86 /* MenuInfo.m */; };
 		7D3C5B7C1F6F65B60054964D /* adData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D3C5AF51F6F65B60054964D /* adData.plist */; };
 		7D3C5B7D1F6F65B60054964D /* adData2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7D3C5AF61F6F65B60054964D /* adData2.plist */; };
@@ -55,6 +54,8 @@
 		7D9D22041F7FA8A800C8C067 /* ZBRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CD1F7FA8A800C8C067 /* ZBRequestManager.m */; };
 		7D9D22051F7FA8A800C8C067 /* ZBURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9D21CF1F7FA8A800C8C067 /* ZBURLRequest.m */; };
 		7DC3DD0C20B297D500D28882 /* NSString+ZBUTF8Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DC3DD0B20B297D500D28882 /* NSString+ZBUTF8Encoding.m */; };
+		9F697C3E22CC823C001F9C91 /* UIScrollView+ZBKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F697C3D22CC823C001F9C91 /* UIScrollView+ZBKit.m */; };
+		9F697C4122CC8354001F9C91 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F697C4022CC8354001F9C91 /* RootViewController.m */; };
 		9F9BC63F22C5C1D700AAB065 /* MenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F9BC63E22C5C1D700AAB065 /* MenuButton.m */; };
 /* End PBXBuildFile section */
 
@@ -119,7 +120,6 @@
 		7D23476D20CFC70600147762 /* offlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = offlineViewController.m; sourceTree = "<group>"; };
 		7D23476F20CFC70600147762 /* CalendarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarViewController.h; sourceTree = "<group>"; };
 		7D23477020CFC70600147762 /* CalendarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarViewController.m; sourceTree = "<group>"; };
-		7D23478220CFD36A00147762 /* ZBSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBSettingViewController.m; sourceTree = "<group>"; };
 		7D2FFCCA20D2460D00F1CC86 /* MenuInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuInfo.h; sourceTree = "<group>"; };
 		7D2FFCCB20D2460D00F1CC86 /* MenuInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuInfo.m; sourceTree = "<group>"; };
 		7D3C5AF51F6F65B60054964D /* adData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = adData.plist; sourceTree = "<group>"; };
@@ -127,7 +127,6 @@
 		7D3C5AF71F6F65B60054964D /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		7D3C5AF81F6F65B60054964D /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		7D3C5AF91F6F65B60054964D /* menu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = menu.plist; sourceTree = "<group>"; };
-		7D3C5B751F6F65B60054964D /* ZBSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBSettingViewController.h; sourceTree = "<group>"; };
 		7D3CB34220D37EE800857A35 /* APPTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APPTool.h; sourceTree = "<group>"; };
 		7D3CB34320D37EE800857A35 /* APPTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APPTool.m; sourceTree = "<group>"; };
 		7D4084B01DE83D370076C1C8 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -171,6 +170,10 @@
 		7DC3DD0A20B297D500D28882 /* NSString+ZBUTF8Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ZBUTF8Encoding.h"; sourceTree = "<group>"; };
 		7DC3DD0B20B297D500D28882 /* NSString+ZBUTF8Encoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ZBUTF8Encoding.m"; sourceTree = "<group>"; };
 		9EE67E6D7E38D28153EFE933 /* Pods-ZBNews.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZBNews.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZBNews/Pods-ZBNews.release.xcconfig"; sourceTree = "<group>"; };
+		9F697C3C22CC823C001F9C91 /* UIScrollView+ZBKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+ZBKit.h"; sourceTree = "<group>"; };
+		9F697C3D22CC823C001F9C91 /* UIScrollView+ZBKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+ZBKit.m"; sourceTree = "<group>"; };
+		9F697C3F22CC8354001F9C91 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		9F697C4022CC8354001F9C91 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		9F9BC63D22C5C1D700AAB065 /* MenuButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
 		9F9BC63E22C5C1D700AAB065 /* MenuButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuButton.m; sourceTree = "<group>"; };
 		DEC1615C4BD8F7962001874B /* Pods_ZBNews.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZBNews.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -443,6 +446,8 @@
 			children = (
 				7D23474820CF9D5300147762 /* MainViewController.h */,
 				7D23474920CF9D5300147762 /* MainViewController.m */,
+				9F697C3F22CC8354001F9C91 /* RootViewController.h */,
+				9F697C4022CC8354001F9C91 /* RootViewController.m */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -589,8 +594,6 @@
 		7D9D217E1F7FA8A800C8C067 /* ZBKit */ = {
 			isa = PBXGroup;
 			children = (
-				7D3C5B751F6F65B60054964D /* ZBSettingViewController.h */,
-				7D23478220CFD36A00147762 /* ZBSettingViewController.m */,
 				7D6B320A20D0FA0100199CEE /* ZBDataBaseManager */,
 				7D9D21B41F7FA8A800C8C067 /* ZBKit.h */,
 				7D9D21C31F7FA8A800C8C067 /* ZBNetworking */,
@@ -622,6 +625,8 @@
 			isa = PBXGroup;
 			children = (
 				7D87AF351F999AB700B69BAD /* ZBMacros.h */,
+				9F697C3C22CC823C001F9C91 /* UIScrollView+ZBKit.h */,
+				9F697C3D22CC823C001F9C91 /* UIScrollView+ZBKit.m */,
 			);
 			path = ZBTool;
 			sourceTree = "<group>";
@@ -787,8 +792,9 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-ZBNews/Pods-ZBNews-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ZBNews/Pods-ZBNews-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/FDFullscreenPopGesture/FDFullscreenPopGesture.framework",
 				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
 				"${BUILT_PRODUCTS_DIR}/FSCalendar/FSCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
@@ -800,6 +806,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FDFullscreenPopGesture.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
@@ -810,7 +817,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZBNews/Pods-ZBNews-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ZBNews/Pods-ZBNews-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A6105AFFE7621BFFAFE504FA /* [CP] Check Pods Manifest.lock */ = {
@@ -844,6 +851,7 @@
 				7D0339331DDEB4A3001C48A8 /* ViewController.m in Sources */,
 				7D6B320620D0EE4C00199CEE /* DelegateChannelSecondCell.m in Sources */,
 				7D2346ED20CF921500147762 /* BaseTableViewCell.m in Sources */,
+				9F697C3E22CC823C001F9C91 /* UIScrollView+ZBKit.m in Sources */,
 				7D23474B20CF9D5300147762 /* MainViewController.m in Sources */,
 				7D6B320320D0E70B00199CEE /* DelegateChannelFirstCell.m in Sources */,
 				7D3C5B7E1F6F65B60054964D /* DataManager.m in Sources */,
@@ -865,9 +873,9 @@
 				7D6B31FA20D0CBE000199CEE /* DelegateChannelViewController.m in Sources */,
 				7D23477B20CFC70700147762 /* CalendarViewController.m in Sources */,
 				7D9D22051F7FA8A800C8C067 /* ZBURLRequest.m in Sources */,
+				9F697C4122CC8354001F9C91 /* RootViewController.m in Sources */,
 				7D9D22031F7FA8A800C8C067 /* ZBRequestEngine.m in Sources */,
 				7D6B31F720D0CB4300199CEE /* RACChannelViewController.m in Sources */,
-				7D23478320CFD36B00147762 /* ZBSettingViewController.m in Sources */,
 				7D9D21FC1F7FA8A800C8C067 /* NullSafe.m in Sources */,
 				7D0339301DDEB4A3001C48A8 /* AppDelegate.m in Sources */,
 				7D03392D1DDEB4A3001C48A8 /* main.m in Sources */,

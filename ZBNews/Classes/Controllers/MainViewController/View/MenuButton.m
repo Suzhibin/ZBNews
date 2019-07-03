@@ -9,9 +9,7 @@
 #import "MenuButton.h"
 
 @interface MenuButton()
-
 @property (nonatomic, strong) UIView *verticalLineView;
-
 @end
 @implementation MenuButton
 - (instancetype)initWithFrame:(CGRect)frame {
