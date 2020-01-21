@@ -31,7 +31,6 @@
     self.titleLabel.text=channelModel.title;
     NSString *hitsStr=[NSString stringWithFormat:@"%@次浏览",channelModel.hits];
     self.descLabel.text=hitsStr;
-    SLog(@"channelModel.icon2222:%@",channelModel.icon);
     [self.iconImage sd_setImageWithURL:[NSURL URLWithString:channelModel.icon]placeholderImage:[UIImage imageNamed:@"back"]];
 }
 - (void)createUI{
@@ -53,8 +52,8 @@
 - (void)settingViewAtuoLayout{
     
     [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@30);
-        make.top.equalTo(@10);
+        make.left.equalTo(@(30));
+        make.top.equalTo(@(10));
         make.width.offset(84);
         make.height.offset(94);
     }];
@@ -62,7 +61,7 @@
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.iconImage.mas_right).offset(10);
         make.right.equalTo(self.contentView).offset(-30);
-        make.top.equalTo(@10);
+        make.top.equalTo(@(10));
         make.height.offset(60);
     }];
     

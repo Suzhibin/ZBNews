@@ -10,39 +10,35 @@
 #import "DelegateChannelFirstCell.h"
 #import "DelegateChannelSecondCell.h"
 @implementation DelegateChannelViewModel
-- (void)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(apiType)requestType{
-    self.urlString=[NSString stringWithFormat:NEWS_URL,menuInfo.menu_id,page];
-    
-    if (requestType==ZBRequestTypeCache) {
-        SLog(@"%@-预加载URL:%@",menuInfo.title,self.urlString);
-    }
-    if (requestType==ZBRequestTypeRefresh) {
-        SLog(@"%@-下拉URL:%@",menuInfo.title,self.urlString);
-    }
-    if (requestType==ZBRequestTypeRefreshMore) {
-        SLog(@"%@-上拉更多URL:%@",menuInfo.title,self.urlString);
-    }
-    
-    [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-        request.URLString=self.urlString;
-        request.apiType=requestType;
-    }  success:^(id responseObj,apiType type,BOOL isCache){
-        if (type==ZBRequestTypeRefresh) {
-            [self.channelList removeAllObjects];//清除数据 等待新数据的到来
+- (void)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(ZBApiType)requestType{
+    self.requestType=requestType;
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"id"] = menuInfo.menu_id;
+    parameters[@"p"] = @(page).stringValue;
+    self.task = [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+        request.URLString=@"/wnl/tag/page";
+        request.apiType=self.requestType;
+        request.parameters=parameters;
+    }  success:^(id responseObject,ZBURLRequest *request){
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            NSArray *array = (NSArray *)responseObject;
+            if (request.apiType==ZBRequestTypeRefreshAndCache) {
+                [self.channelList removeAllObjects];//清除数据 等待新数据的到来
+            }
+            for (NSDictionary *dic in array) {
+                RACChannelModel *model=[[RACChannelModel alloc]initWithDict:dic];
+                [self.channelList addObject:model];
+            }
+            if (request.isCache) {
+                SLog(@"%@-读缓存",menuInfo.title);
+            }else{
+                SLog(@"%@-重新请求",menuInfo.title);
+            }
+            if([self.viewModelDelegate respondsToSelector:@selector(requestFinished:)]) {
+                [self.viewModelDelegate requestFinished:self.channelList];
+            }
         }
-        NSArray *array = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-        for (NSDictionary *dic in array) {
-            RACChannelModel *model=[[RACChannelModel alloc]initWithDict:dic];
-            [self.channelList addObject:model];
-        }
-        if (isCache) {
-            SLog(@"%@-读缓存",menuInfo.title);
-        }else{
-            SLog(@"%@-重新请求",menuInfo.title);
-        }
-        if([self.viewModelDelegate respondsToSelector:@selector(requestFinished:)]) {
-            [self.viewModelDelegate requestFinished:self.channelList];
-        }
+      
     } failure:^(NSError *error){
         if([self.viewModelDelegate respondsToSelector:@selector(requestFailed:)]) {
             [self.viewModelDelegate requestFailed:error];
@@ -50,8 +46,10 @@
     }];
 }
 
-- (void)cancelRequestWithMenuInfo:(MenuInfo*)menuInfo{
-    [self cancelRequestWithURLString:self.urlString menuInfo:menuInfo];
+- (void)cancelRequest{
+    if (self.requestType!=ZBRequestTypeCache) {
+        [self.task cancel];
+    }
 }
 
 - (NSString *)dataCellIdentifier:(RACChannelModel *)model{

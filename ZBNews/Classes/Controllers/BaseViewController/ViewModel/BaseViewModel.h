@@ -17,11 +17,10 @@
 typedef void(^pushCompletedBlock)(id  _Nullable x);
 
 @interface BaseViewModel : NSObject
-@property (nonatomic,strong)NSMutableArray * menuList;
+@property (nonatomic,strong)NSMutableArray * _Nullable menuList;
 
-@property (nonatomic,strong)NSMutableArray * channelList;
+@property (nonatomic,strong)NSMutableArray * _Nullable channelList;
 //跳转
-- (void)pushModel:(RACChannelModel *)model controller:(UIViewController *)controller completion:(pushCompletedBlock)completion;
+- (void)pushModel:(RACChannelModel *_Nullable)model controller:(UIViewController *_Nullable)controller completion:(pushCompletedBlock _Nullable )completion;
 
-- (void)cancelRequestWithURLString:(NSString *)URLString menuInfo:(MenuInfo*)menuInfo;
 @end

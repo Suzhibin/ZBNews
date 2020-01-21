@@ -20,9 +20,16 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    NSString *caches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    SLog(@"Caches = %@",caches);
-    
+    NSString *cachePath = [[ZBCacheManager sharedInstance]ZBKitPath];
+    SLog(@"Caches = %@",cachePath);
+    //基础配置
+    [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
+        config.baseURL= server_URL;
+        config.baseTimeoutInterval=15;//超时时间
+        config.consoleLog=YES;//开log
+        config.baseUserInfo=@{@"info":@"ZBNews"};
+    }];
+
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor=[UIColor whiteColor];
 

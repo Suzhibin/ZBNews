@@ -125,11 +125,13 @@
     // self.magicView.itemSpacing = 20.f;//文本直接的距离
     // self.magicView.headerHidden = NO;//是否隐藏头部组件，默认YES
     // self.magicView.bounces = YES;//滑到边缘是否反弹
-    self.magicView.displayCentered=YES;//居中
-    self.magicView.previewItems=2;//导航菜单item的预览数，默认为1
+   
+   // self.magicView.previewItems=2;//导航菜单item的预览数，默认为1
+     self.magicView.displayCentered=YES;//居中
+     self.magicView.sliderWidth=30;
     // self.magicView.separatorHeight = 2.f;//导航分割线高度
     // self.magicView.separatorColor = [UIColor blueColor];//导航分割线高度颜色
-    self.magicView.separatorHidden = YES;//是否隐藏导航分割线
+   // self.magicView.separatorHidden = YES;//是否隐藏导航分割线
     // UIImageView *separatorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20, SCREEN_WIDTH, 44)];
     //separatorView.backgroundColor=[UIColor redColor];
     //[self.magicView setSeparatorView:separatorView];

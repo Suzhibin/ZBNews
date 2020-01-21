@@ -33,16 +33,6 @@
     [controller.navigationController pushViewController:detailsVC animated:YES];
 }
 
-- (void)cancelRequestWithURLString:(NSString *)URLString menuInfo:(MenuInfo*)menuInfo{
-    [ZBRequestManager cancelRequest:URLString completion:^(BOOL results, NSString *urlString) {
-        if (results==YES) {
-           SLog(@"\n 取消请求成功 \n 栏目:%@ \n id:%@ \n URL:%@",menuInfo.title,menuInfo.menu_id,urlString)
-        }else{
-            SLog(@"%@ 已经请求完毕无法取消",menuInfo.title);
-        }
-    }];
-}
-
 #pragma mark - 懒加载
 - (NSMutableArray *)menuList {
     if (!_menuList) {

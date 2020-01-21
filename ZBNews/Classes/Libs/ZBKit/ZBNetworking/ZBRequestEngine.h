@@ -8,43 +8,58 @@
 
 #import <AFNetworking/AFNetworking.h>
 #import "ZBRequestConst.h"
-/*
-    硬性设置：
-    1.服务器返回的数据 必须是二进制
-    2.证书设置
-    3.开启菊花
- */
-@interface ZBRequestEngine : AFHTTPSessionManager
+@class ZBConfig;
 
+@interface ZBRequestEngine : AFHTTPSessionManager
+NS_ASSUME_NONNULL_BEGIN
 + (instancetype)defaultEngine;
+
+/**
+ *  自定义请求 处理逻辑的方法 Block
+ */
+@property (nonatomic, copy) ZBRequestProcessBlock requestProcessHandler;
+/**
+ *  自定义响应 处理逻辑的方法 Block
+ */
+@property (nonatomic, copy) ZBResponseProcessBlock responseProcessHandler;
+
+/**
+ 公共基础配置
+ */
+- (void)setupBaseConfig:(void(^)(ZBConfig *config))block;
+
+/**
+ 公共基础配置与单个请求配置的兼容
+ */
+- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock;
 
 /**
  发起网络请求
 
  @param request ZBURLRequest
- @param zb_progress 进度
+ @param progress 进度
  @param success 成功回调
  @param failure 失败回调
  @return task
  */
-- (NSURLSessionDataTask *)dataTaskWithMethod:(ZBURLRequest *)request
-                             zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
-                              success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                              failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (NSURLSessionDataTask *_Nullable)dataTaskWithMethod:(ZBURLRequest *_Nullable)request
+                                          progress:(void (^_Nullable)(NSProgress * _Nullable))progress
+                                              success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
+                                              failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
 /**
  上传文件
 
  @param request ZBURLRequest
- @param zb_progress 进度
+ @param uploadProgressBlock 进度
  @param success 成功回调
  @param failure 失败回调
  @return task
  */
-- (NSURLSessionDataTask *)uploadWithRequest:(ZBURLRequest *)request
-                                zb_progress:(void (^)(NSProgress * _Nonnull))zb_progress
-                                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                                    failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (NSURLSessionUploadTask *_Nullable)uploadWithRequest:(ZBURLRequest *_Nullable)request
+                                progress:(void (^)(NSProgress * _Nonnull))uploadProgressBlock
+                                    success:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject))success
+                                    failure:(void (^_Nullable)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error))failure;
 
 /**
  下载文件
@@ -54,16 +69,27 @@
  @param completionHandler 回调
  @return task
  */
-- (NSURLSessionDownloadTask *)downloadWithRequest:(ZBURLRequest *)request
-                                         progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
-                                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
+- (NSURLSessionDownloadTask *_Nullable)downloadWithRequest:(ZBURLRequest *_Nullable)request
+                                                  progress:(void (^_Nullable)(NSProgress * _Nullable downloadProgress)) downloadProgressBlock
+                                         completionHandler:(void (^_Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /**
- 取消请求任务
- 
- @param urlString           协议接口
+   当前网络的状态值，-1 表示 `Unknown`，0 表示 `NotReachable，1 表示 `WWAN`，2 表示 `WiFi`
  */
-- (void)cancelRequest:(NSString *)urlString  completion:(cancelCompletedBlock)completion;
+- (NSInteger)networkReachability;
 
+/**
+ * 取消所有请求任务
+ */
+- (void)cancelAllRequest;
+
+/**
+ * 管理请求对象的生命周期
+ */
+- (void)setRequestObject:(id)obj forkey:(NSString *)key;
+- (void)removeRequestForkey:(NSString *)key;
+- (id _Nullable)objectRequestForkey:(NSString *)key;
+
+NS_ASSUME_NONNULL_END
 
 @end

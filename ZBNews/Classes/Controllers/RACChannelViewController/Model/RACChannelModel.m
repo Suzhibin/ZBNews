@@ -10,8 +10,6 @@
 
 @implementation RACChannelModel
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
-    
-     NSLog(@"undefinedKey:%@",key);
      if ([key isEqualToString:@"id"]) {
      self.newsId=value;
      }

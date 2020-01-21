@@ -19,13 +19,15 @@
 
 @interface DelegateChannelViewModel : BaseViewModel
 
-@property(nonatomic,copy)NSString *urlString;
+@property(nonatomic,strong)NSURLSessionTask *task;
+
+@property(nonatomic,assign)ZBApiType requestType;
 
 @property (weak,nonatomic)id<delegateChannelViewModelDelegate>viewModelDelegate;
 //网络请求
-- (void)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(apiType)requestType;
+- (void)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(ZBApiType)requestType;
 //取消请求
-- (void)cancelRequestWithMenuInfo:(MenuInfo*)menuInfo;
+- (void)cancelRequest;
 
 //获取对应额cell
 - (NSString *)dataCellIdentifier:(RACChannelModel *)model;

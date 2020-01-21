@@ -34,7 +34,7 @@
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.viewModel cancelRequestWithMenuInfo:_menuInfo]; // 取消不必要的网络请求
+    [self.viewModel cancelRequest]; // 取消不必要的网络请求
     [self endRefresh];
     self.tableView.scrollsToTop = NO;
 }
@@ -59,13 +59,13 @@
 }
 - (void)loadRefresh{
     _page=1;
-    [self request:_page requestType:ZBRequestTypeRefresh];
+    [self request:_page requestType:ZBRequestTypeRefreshAndCache];
 }
 - (void)loadMoreData{
     _page++;
     [self request:_page requestType:ZBRequestTypeRefreshMore];
 }
-- (void)request:(NSInteger)page requestType:(apiType)requestType{
+- (void)request:(NSInteger)page requestType:(ZBApiType)requestType{
     RACSignal *signal =[self.viewModel.command execute:@{@"page":@(page),@"menuInfo":_menuInfo,@"requestType":@(requestType)}];
     [signal subscribeNext:^(id  _Nullable x) {
         self.dataArray=x;

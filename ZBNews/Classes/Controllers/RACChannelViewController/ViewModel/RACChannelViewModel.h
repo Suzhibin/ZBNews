@@ -10,15 +10,17 @@
 
 @interface RACChannelViewModel : BaseViewModel
 
-@property(nonatomic,copy)NSString *urlString;
+@property(nonatomic,strong)NSURLSessionTask *task;
 
 @property(nonatomic,strong)RACCommand *command;
+
+@property(nonatomic,assign)ZBApiType requestType;
 
 //网络请求 注释掉 用command
 //- (RACSignal *)requestListDataWithPage:(NSInteger)page menuInfo:(MenuInfo*)menuInfo requestType:(apiType)requestType;
 
 //取消请求的方法
-- (void)cancelRequestWithMenuInfo:(MenuInfo*)menuInfo;
+- (void)cancelRequest;
 
 //获取对应额cell
 - (NSString *)dataCellIdentifier:(RACChannelModel *)model;

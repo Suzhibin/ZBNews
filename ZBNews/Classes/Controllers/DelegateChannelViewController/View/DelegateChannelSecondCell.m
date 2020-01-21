@@ -30,9 +30,9 @@
     [self.contentView addSubview:iconImage];
     self.iconImage=iconImage;
     [iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(@5);
-        make.left.equalTo(@0);
-        make.right.equalTo(@0);
+        make.top.equalTo(@(5));
+        make.left.equalTo(@(0));
+        make.right.equalTo(@(0));
         make.height.offset(60);
     }];
     UILabel *titleLabel=[[UILabel alloc]init];
@@ -43,8 +43,8 @@
   
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(iconImage.mas_bottom).offset(5);
-        make.left.equalTo(@0);
-        make.right.equalTo(@0);
+        make.left.equalTo(@(0));
+        make.right.equalTo(@(0));
         make.height.offset(35);
     }];
   

@@ -67,20 +67,20 @@
     
     
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@30);
+        make.left.equalTo(@(30));
         make.right.equalTo(self.contentView).offset(-30);
-        make.top.equalTo(@5);
+        make.top.equalTo(@(5));
         make.height.offset(20);
     }];
     
     [self.descLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@30);
+        make.left.equalTo(@(30));
         make.right.equalTo(self.contentView).offset(-30);
         make.top.equalTo(self.titleLabel.mas_bottom).offset(5);
         make.height.offset(20);
     }];
     [self.iconImage1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@30);
+        make.left.equalTo(@(30));
         make.top.equalTo(self.descLabel.mas_bottom).offset(5);
         make.width.offset(84);
         make.height.offset(64);

@@ -15,7 +15,7 @@
 @interface offlineViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataArray;
-@property (nonatomic,strong)ZBBatchRequest *request;
+@property (nonatomic,strong)NSMutableArray *offlineArray;
 @end
 
 @implementation offlineViewController
@@ -28,8 +28,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.dataArray=[[NSMutableArray alloc]init];
-    
-    self.request=[[ZBBatchRequest alloc]init];
 
     [self.view addSubview:self.tableView];
     
@@ -68,18 +66,18 @@
 - (void)switchValueChanged:(UISwitch *)sw{
 
     MenuInfo *model=[self.dataArray objectAtIndex:sw.tag];
-    NSInteger page=1;
-    NSString *url=[NSString stringWithFormat:NEWS_URL,model.menu_id,page];
+//    NSInteger page=1;
+//    NSString *url=[NSString stringWithFormat:NEWS_URL,model.menu_id,page];
     if (sw.isOn == YES) {
         //添加请求列队
-        [self.request addObjectWithUrl:url];
-        [self.request addObjectWithKey:model.title];
-        NSLog(@"离线请求的url:%@",self.request.batchUrlArray);
+        if ([self.offlineArray containsObject:model]==NO) {
+             [self.offlineArray addObject:model];
+        }
     }else{
         //删除请求列队
-        [self.request removeObjectWithUrl:url];
-        [self.request removeObjectWithKey:model.title];
-        NSLog(@"离线请求的url:%@",self.request.batchUrlArray);
+        if ([self.offlineArray containsObject:model]==YES) {
+             [self.offlineArray removeObject:model];
+        }
     }
 }
 //懒加载
@@ -100,21 +98,27 @@
     @weakify(self);
     [[downloadButton rac_signalForControlEvents:UIControlEventTouchUpInside]subscribeNext:^(__kindof UIControl * _Nullable x) {
         @strongify(self);
-        if (self.request.batchUrlArray.count==0) {
+        if (self.offlineArray.count==0) {
             NSLog(@"请添加栏目");
             
         }else{
-            NSLog(@"离线请求的栏目/url个数:%ld",self.request.batchUrlArray.count);
+            NSLog(@"离线请求的栏目/url个数:%ld",self.offlineArray.count);
             
-            for (NSString *name in self.request.batchKeyArray) {
-                NSLog(@"离线请求的name:%@",name);
+            for (MenuInfo *model in self.offlineArray) {
+                NSLog(@"离线请求的name:%@",model.title);
             }
-            [self.delegate downloadWithArray:self.request.batchUrlArray];
+            [self.delegate downloadWithArray:self.offlineArray];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }];
     UIBarButtonItem *downloadItem = [[UIBarButtonItem alloc] initWithCustomView:downloadButton];
     self.navigationItem.rightBarButtonItems = @[downloadItem];
+}
+- (NSMutableArray *)offlineArray{
+    if (!_offlineArray) {
+        _offlineArray=[[NSMutableArray alloc]init];
+    }
+    return _offlineArray;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

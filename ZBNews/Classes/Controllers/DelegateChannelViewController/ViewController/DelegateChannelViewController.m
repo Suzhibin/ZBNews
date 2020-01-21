@@ -33,7 +33,7 @@
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.viewModel cancelRequestWithMenuInfo:_menuInfo]; // 取消不必要的网络请求
+    [self.viewModel cancelRequest]; // 取消不必要的网络请求
     [self endRefresh];
     self.collectionView.scrollsToTop = NO;
 }
@@ -58,7 +58,7 @@
 }
 - (void)loadRefresh{
     _page=1;
-    [self.viewModel requestListDataWithPage:_page menuInfo:_menuInfo requestType:ZBRequestTypeRefresh];
+    [self.viewModel requestListDataWithPage:_page menuInfo:_menuInfo requestType:ZBRequestTypeRefreshAndCache];
 }
 - (void)loadMoreData{
     _page++;

@@ -24,7 +24,6 @@
 @property(nonatomic,strong)UIImageView *headImageView;
 @property(nonatomic,strong)UILabel *headerlabel;
 @property (nonatomic,strong)NSMutableArray *imageArray;
-@property (nonatomic,strong)ZBBatchRequest *batchRequest;
 @end
 
 @implementation MeViewController
@@ -122,24 +121,23 @@
 }
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
-    //离线请求 apiType:ZBRequestTypeOffline
-    [self requestOffline:offlineArray];
-}
 
-- (void)requestOffline:(NSMutableArray *)offlineArray{
-
-    self.batchRequest =[ZBRequestManager sendBatchRequest:^(ZBBatchRequest *  batchRequest){
+   [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *  batchRequest){
         
-        for (NSString *urlString in offlineArray) {
+        for (MenuInfo *model in offlineArray) {
+            NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+            parameters[@"id"] = model.menu_id;
+            parameters[@"p"] = @(1).stringValue;
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.URLString=urlString;
-            [batchRequest.urlArray addObject:request];
+            request.URLString=@"/wnl/tag/page";
+            request.parameters=parameters;
+            [batchRequest.requestArray addObject:request];
         }
         
-    }  success:^(id responseObj,apiType type,BOOL isCache){
+    }  success:^(id responseObject,ZBURLRequest *request){
             NSLog(@"添加了几个url  就会走几遍");
-            NSArray *array = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingMutableContainers error:nil];
-    
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            NSArray *array = (NSArray *)responseObject;
             //NEWSLog(@"contentlist:%@",contentlist);
             for (NSDictionary *dic in array) {
                 RACChannelModel *model=[[RACChannelModel alloc]initWithDict:dic];
@@ -150,97 +148,88 @@
                     model.icon_small3=[model.icon objectForKey:@"icon_small3"];
                 }
                 [self.imageArray addObject:model];
-                
+                           
                 if ([model.icon isKindOfClass:[NSDictionary class]]){
                     NSArray *imageArray=[NSArray arrayWithObjects:model.icon_small1,model.icon_small2,model.icon_small3, nil];
                     for (NSInteger i=0; i<imageArray.count; i++) {
                         [[SDImageCache sharedImageCache]diskImageExistsWithKey:[imageArray objectAtIndex:i] completion:^(BOOL isInCache){
                             if (isInCache) {
-            
                                 SLog(@"已经下载了");
- 
+                    
                             }else{
                                 [[SDWebImageManager sharedManager] loadImageWithURL:[NSURL URLWithString:[imageArray objectAtIndex:i]] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-                                    
+                                                       
                                 } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-                                    
+                                                       
                                 }];
-                                
+                                                   
                                 [[SDWebImageManager sharedManager] loadImageWithURL:[NSURL URLWithString:[imageArray objectAtIndex:i]] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-                                    
+                                                       
                                     SLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
-                                    SLog(@"targetURL:%@",targetURL);
-              
-
-                                    
+                                    SLog(@"targetURL:%@",targetURL);                 
                                 } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
                                     SLog(@"单个图片下载完成");
-                               
+                                                  
                                     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:3 inSection:0],nil] withRowAnimation:UITableViewRowAnimationFade];
-                                    
+                                                       
                                     //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                                     NSString *imageURLStr = [imageURL absoluteString];
                                     NSString *lastImage=[NSString stringWithFormat:@"%@",((RACChannelModel *)[self.imageArray lastObject]).icon_small3];
-                                    
+                                                       
                                     if ([imageURLStr isEqualToString:lastImage]) {
                                         SLog(@"下载完成");
                                         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:3 inSection:0],nil] withRowAnimation:UITableViewRowAnimationFade];
-                                        
+                                                           
                                         self.imageArray=nil;
                                     }
-                                    
+                                                       
                                     if (error) {
                                         SLog(@"下载失败");
-                                        
                                     }
-                                    
+                                                       
                                 }];
-                  
+                                     
                             }
 
                         }];
-       
-                    }
-                }else{
-                  
-                    [[SDImageCache sharedImageCache]diskImageExistsWithKey:model.icon completion:^(BOOL isInCache) {
-                        if (isInCache) {
-                            SLog(@"已经下载了");
+                          
+                   }
+            }else{
+                             
+                [[SDImageCache sharedImageCache]diskImageExistsWithKey:model.icon completion:^(BOOL isInCache) {
+                    if (isInCache) {
+                        SLog(@"已经下载了");
 
-                        }else{
-                            [[SDWebImageManager sharedManager] loadImageWithURL:[NSURL URLWithString:model.icon] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-                                SLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
-
-
+                    }else{
+                        [[SDWebImageManager sharedManager] loadImageWithURL:[NSURL URLWithString:model.icon] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+                            SLog(@"%@",[self progressStrWithSize:(double)receivedSize/expectedSize]);
                             } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
                                 SLog(@"单个图片下载完成");
-
                                 [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:3 inSection:0],nil] withRowAnimation:UITableViewRowAnimationFade];
                                 //让 下载的url与模型的最后一个比较，如果相同证明下载完毕。
                                 NSString *imageURLStr = [imageURL absoluteString];
                                 NSString *lastImage=[NSString stringWithFormat:@"%@",((RACChannelModel *)[self.imageArray lastObject]).icon];
-                                
+                                        
                                 if ([imageURLStr isEqualToString:lastImage]) {
                                     SLog(@"下载完成");
-                            
+                                       
                                     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:3 inSection:0],nil] withRowAnimation:UITableViewRowAnimationFade];
-                                    
+                                               
                                     self.imageArray=nil;
                                 }
-                                
+                                           
                                 if (error) {
                                     SLog(@"下载失败");
-                                    
                                 }
 
                             }];
-                           
+                                      
                         }
 
-                     }];
+                    }];
                 }
             }
-
+        }
     } failure:^(NSError *error){
         if (error.code==NSURLErrorCancelled)return;
         if (error.code==NSURLErrorTimedOut){
@@ -252,10 +241,10 @@
 }
 
 - (void)cancelClick{
-  [self.batchRequest cancelbatchRequestWithCompletion:nil];//取消所有网络请求
+    [ZBRequestManager cancelAllRequest];//取消所有网络请求
     [[SDWebImageManager sharedManager] cancelAll];
 
-    self.imageArray=nil;
+    [self.imageArray removeAllObjects];
     NSLog(@"取消下载");
 }
 - (NSMutableArray *)imageArray {

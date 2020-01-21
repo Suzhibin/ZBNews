@@ -14,8 +14,8 @@
 
 #if(SERVERTYPE == 0)
 
-
-#define NEWS_URL @"http://h5.jp.51wnl.com/wnl/tag/page?id=%@&p=%ld"
+#define server_URL @"http://h5.jp.51wnl.com"
+//#define NEWS_URL @"http://h5.jp.51wnl.com/wnl/tag/page?id=%@&p=%ld"
 
 #define Datail_URL @"http://h5.jp.51wnl.com/wnl/info/view?id=%@"
 

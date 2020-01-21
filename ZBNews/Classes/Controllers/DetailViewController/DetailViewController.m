@@ -127,8 +127,8 @@
     
     // 高端的自定义配置创建WKWebView
     self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, ZB_STATUS_HEIGHT+44, SCREEN_WIDTH, SCREEN_HEIGHT-(ZB_TABBAR_HEIGHT+44)) configuration:configur];
-     self.wkWebView.UIDelegate = self;
-     self.wkWebView.navigationDelegate = self;
+    self.wkWebView.UIDelegate = self;
+    self.wkWebView.navigationDelegate = self;
 
     SLog(@"新闻地址:%@",[NSString stringWithFormat:Datail_URL,self.model.newsId]);
 
