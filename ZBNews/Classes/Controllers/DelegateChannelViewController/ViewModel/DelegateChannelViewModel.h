@@ -19,7 +19,7 @@
 
 @interface DelegateChannelViewModel : BaseViewModel
 
-@property(nonatomic,strong)NSURLSessionTask *task;
+@property(nonatomic,assign)NSUInteger identifier;
 
 @property(nonatomic,assign)ZBApiType requestType;
 

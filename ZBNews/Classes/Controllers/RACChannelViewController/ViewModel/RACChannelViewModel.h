@@ -10,7 +10,7 @@
 
 @interface RACChannelViewModel : BaseViewModel
 
-@property(nonatomic,strong)NSURLSessionTask *task;
+@property(nonatomic,assign)NSUInteger identifier;
 
 @property(nonatomic,strong)RACCommand *command;
 

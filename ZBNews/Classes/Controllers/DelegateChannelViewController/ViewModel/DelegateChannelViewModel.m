@@ -15,7 +15,7 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"id"] = menuInfo.menu_id;
     parameters[@"p"] = @(page).stringValue;
-    self.task = [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
+    self.identifier = [ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
         request.URLString=@"/wnl/tag/page";
         request.apiType=self.requestType;
         request.parameters=parameters;
@@ -47,9 +47,7 @@
 }
 
 - (void)cancelRequest{
-    if (self.requestType!=ZBRequestTypeCache) {
-        [self.task cancel];
-    }
+    [ZBRequestManager cancelRequest:self.identifier];
 }
 
 - (NSString *)dataCellIdentifier:(RACChannelModel *)model{

@@ -237,7 +237,7 @@
         }else{
        
         }
-    }];
+    }finished:nil];
 }
 
 - (void)cancelClick{
