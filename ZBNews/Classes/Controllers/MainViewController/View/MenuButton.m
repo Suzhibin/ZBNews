@@ -27,7 +27,7 @@
     return self;
 }
 - (void)updateConstraints {
-    _verticalLineView.frame=CGRectMake(self.frame.size.width-1, 12, 1, 20);
+    _verticalLineView.frame=CGRectMake(self.frame.size.width-1, 22, 1, 20);
 
     [super updateConstraints];
 }

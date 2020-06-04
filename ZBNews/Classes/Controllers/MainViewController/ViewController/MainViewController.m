@@ -113,7 +113,7 @@
 
     self.magicView.needPreloading=YES;//预加载开关。 等于NO 点击菜单时无过度动画
     self.magicView.headerHeight = ZB_STATUS_HEIGHT+44;//头部组件的高度默认64
-    self.magicView.navigationHeight = 44;//顶部导航条的高度，默认是44
+    self.magicView.navigationHeight = 64;//顶部导航条的高度，默认是44
     self.magicView.navigationColor=[UIColor whiteColor];
    // self.magicView.againstStatusBar = NO;//顶部导航栏是否紧贴系统状态栏，即是否需要为状态栏留出20个点的区域，默认NO
     self.magicView.headerView.backgroundColor=[UIColor colorWithRed:0.93 green:0.93 blue:0.93 alpha:1.00];

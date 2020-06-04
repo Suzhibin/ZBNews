@@ -75,7 +75,7 @@
     if (indexPath.row==3) {
         cell.textLabel.text=@"清除缓存";
         CGFloat cacheSize=[[ZBCacheManager sharedInstance]getCacheSize];//json缓存文件大小
-        CGFloat sdimageSize = [[SDImageCache sharedImageCache]getSize];//图片缓存大小
+        CGFloat sdimageSize = [[SDImageCache sharedImageCache]totalDiskSize];//图片缓存大小
         CGFloat AppCacheSize=cacheSize+sdimageSize;
         AppCacheSize=AppCacheSize/1000.0/1000.0;
         

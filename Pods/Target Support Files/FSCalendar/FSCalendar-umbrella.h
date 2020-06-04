@@ -22,7 +22,7 @@
 #import "FSCalendarDynamicHeader.h"
 #import "FSCalendarExtensions.h"
 #import "FSCalendarHeaderView.h"
-#import "FSCalendarScopeHandle.h"
+#import "FSCalendarSeparatorDecorationView.h"
 #import "FSCalendarStickyHeader.h"
 #import "FSCalendarTransitionCoordinator.h"
 #import "FSCalendarWeekdayView.h"
