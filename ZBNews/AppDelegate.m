@@ -25,9 +25,9 @@
     //基础配置
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
         config.baseURL= server_URL;
-        config.baseTimeoutInterval=15;//超时时间
+        config.timeoutInterval=15;//超时时间
         config.consoleLog=YES;//开log
-        config.baseUserInfo=@{@"info":@"ZBNews"};
+        config.userInfo=@{@"info":@"ZBNews"};
     }];
 
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

@@ -122,7 +122,7 @@
 #pragma mark offlineDelegate
 - (void)downloadWithArray:(NSMutableArray *)offlineArray{
 
-   [ZBRequestManager sendBatchRequest:^(ZBBatchRequest *  batchRequest){
+   [ZBRequestManager requestBatchWithConfig:^(ZBBatchRequest *  batchRequest){
         
         for (MenuInfo *model in offlineArray) {
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
