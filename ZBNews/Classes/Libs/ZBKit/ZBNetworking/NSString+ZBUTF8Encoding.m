@@ -25,28 +25,30 @@
         NSString *parametersString;
         if ([parameters isKindOfClass:[NSDictionary class]]){
             NSMutableArray *array = [[NSMutableArray alloc] init];
-            if ([parameters isKindOfClass:[NSDictionary class]]){
-                for (NSString *key in parameters) {
-                    id obj = [parameters objectForKey:key];
-                    NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
-                    [array addObject:str];
-                }
-            }
-            parametersString = [array componentsJoinedByString:@"&"];
-        }else if ([parameters isKindOfClass:[NSArray class]]){
-            NSMutableArray *array = [[NSMutableArray alloc] init];
-            for (NSDictionary *dict in parameters) {
-                for (NSString *key in dict) {
-                    id obj = [dict objectForKey:key];
-                    NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
-                    [array addObject:str];
-                }
+            for (NSString *key in parameters) {
+                id obj = [parameters objectForKey:key];
+                NSString *str = [NSString stringWithFormat:@"%@=%@",key,obj];
+                [array addObject:str];
             }
             parametersString = [array componentsJoinedByString:@"&"];
         }else{
             parametersString =[NSString stringWithFormat:@"%@",parameters] ;
         }
         return [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@",parametersString]];
+    }
+}
+
+@end
+
+@implementation ZBRequestTool
+
++ (id)formaParameters:(id)parameters filtrationCacheKey:(NSArray *)filtrationCacheKey{
+    if ([parameters isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
+        [mutableParameters removeObjectsForKeys:filtrationCacheKey];
+        return [mutableParameters copy];
+    }else{
+        return parameters;
     }
 }
 

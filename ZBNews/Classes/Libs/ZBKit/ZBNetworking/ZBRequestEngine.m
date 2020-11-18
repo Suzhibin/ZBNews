@@ -179,7 +179,7 @@ NSString *const _delegate =@"_delegate";
     return downloadTask;
 }
 
-- (NSInteger)networkReachability {
+- (AFNetworkReachabilityStatus)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
 //请求参数的格式
@@ -283,14 +283,14 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (request.isBaseParameters && self.baseParameters.count > 0) {
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-        [parameters addEntriesFromDictionary:self.baseParameters];
-        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+        if ([request.parameters isKindOfClass:[NSDictionary class]]||request.parameters==nil){
+            NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+            [parameters addEntriesFromDictionary:self.baseParameters];
             if([request.parameters allValues].count > 0) {
                 [parameters addEntriesFromDictionary:request.parameters];
             }
+            request.parameters = parameters;
         }
-        request.parameters = parameters;
     }
     //=====================================================
     if (request.isBaseHeaders &&self.baseHeaders.count > 0) {
@@ -303,12 +303,14 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (self.baseFiltrationCacheKey.count>0) {
-        NSMutableArray *filtrationCacheKey=[NSMutableArray array];
-        [filtrationCacheKey addObjectsFromArray:self.baseFiltrationCacheKey];
-        if (request.filtrationCacheKey) {
-            [filtrationCacheKey addObjectsFromArray:request.filtrationCacheKey];
+        if ([request.parameters isKindOfClass:[NSDictionary class]]||request.parameters==nil){
+            NSMutableArray *filtrationCacheKey=[NSMutableArray array];
+            [filtrationCacheKey addObjectsFromArray:self.baseFiltrationCacheKey];
+            if (request.filtrationCacheKey) {
+                [filtrationCacheKey addObjectsFromArray:request.filtrationCacheKey];
+            }
+            request.filtrationCacheKey=filtrationCacheKey;
         }
-        request.filtrationCacheKey=filtrationCacheKey;
     }
     //=====================================================
     if (request.isRequestSerializer==NO) {
