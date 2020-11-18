@@ -24,7 +24,7 @@
     SLog(@"Caches = %@",cachePath);
     //基础配置
     [ZBRequestManager setupBaseConfig:^(ZBConfig * _Nullable config) {
-        config.baseURL= server_URL;
+        config.baseServer= server_URL;
         config.timeoutInterval=15;//超时时间
         config.consoleLog=YES;//开log
         config.userInfo=@{@"info":@"ZBNews"};

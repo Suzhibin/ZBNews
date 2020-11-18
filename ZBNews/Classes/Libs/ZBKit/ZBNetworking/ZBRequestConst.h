@@ -20,7 +20,6 @@ typedef NS_ENUM(NSInteger,ZBApiType) {
      没有缓存需求的，单独使用
      */
     ZBRequestTypeRefresh,
-    
     /**
      重新请求:   不读取缓存，但存储缓存
      可以与 ZBRequestTypeCache 配合使用
@@ -59,7 +58,7 @@ typedef NS_ENUM(NSInteger,ZBMethodType) {
 };
 /**
  请求参数的格式.
- 默认为HTTP.   default:ZBJSONRequestSerializer
+ 默认为JSON.   default:ZBJSONRequestSerializer
  */
 typedef NS_ENUM(NSUInteger, ZBRequestSerializerType) {
     /** 设置请求参数为JSON格式*/
@@ -89,30 +88,54 @@ typedef NS_ENUM(NSUInteger, ZBResponseKeepType) {
     ZBResponseKeepFirst,
     /** 使用最后一次请求结果*/
     ZBResponseKeepLast
-
 };
-//==================================================================
+/**
+ 操作状态
+ */
+typedef NS_ENUM(NSUInteger, ZBDownloadState) {
+    /** 开始请求*/
+    ZBDownloadStateStart,
+    /** 暂停请求*/
+    ZBDownloadStateStop,
+};
+//==================================================
 /** 请求配置的Block */
-typedef void (^ZBRequestConfigBlock)(ZBURLRequest *request);
+typedef void (^ZBRequestConfigBlock)(ZBURLRequest * _Nullable request);
 /** 请求成功的Block */
-typedef void (^ZBRequestSuccessBlock)(id responseObject,ZBURLRequest *request);
+typedef void (^ZBRequestSuccessBlock)(id _Nullable responseObject,ZBURLRequest * _Nullable request);
 /** 请求失败的Block */
-typedef void (^ZBRequestFailureBlock)(NSError *error);
+typedef void (^ZBRequestFailureBlock)(NSError * _Nullable error);
 /** 请求进度的Block */
-typedef void (^ZBRequestProgressBlock)(NSProgress * progress);
-/** 请求完成的Block */
-typedef void (^ZBRequestFinishedBlock)(id responseObject,NSError * error);
-//==================================================================
+typedef void (^ZBRequestProgressBlock)(NSProgress * _Nullable progress);
+/** 请求完成的Block 无论成功和失败**/
+typedef void (^ZBRequestFinishedBlock)(id _Nullable responseObject,NSError * _Nullable error,ZBURLRequest * _Nullable request);
+//==================================================
 /** 批量请求配置的Block */
 typedef void (^ZBBatchRequestConfigBlock)(ZBBatchRequest * _Nonnull batchRequest);
-/** 批量请求完成的Block */
-typedef void (^ZBBatchRequestFinishedBlock)(NSArray * _Nullable responseObjects,NSArray * _Nullable errors);
-//==================================================================
+/** 批量请求 全部完成的Block 无论成功和失败*/
+typedef void (^ZBBatchRequestFinishedBlock)(NSArray * _Nullable responseObjects,NSArray<NSError *> * _Nullable errors,NSArray<ZBURLRequest *> *_Nullable requests);
+//==================================================
 /** 请求 处理逻辑的方法 Block */
 typedef void (^ZBRequestProcessBlock)(ZBURLRequest * _Nullable request,id _Nullable __autoreleasing * _Nullable setObject);
 /** 响应 处理逻辑的方法 Block */
 typedef id _Nullable (^ZBResponseProcessBlock)(ZBURLRequest * _Nullable request, id _Nullable responseObject, NSError * _Nullable __autoreleasing * _Nullable error);
 /** 错误 处理逻辑的方法 Block */
 typedef void (^ZBErrorProcessBlock)(ZBURLRequest * _Nullable request, NSError * _Nullable error);
-//==================================================================
+//==================================================
+/** Request协议*/
+@protocol ZBURLRequestDelegate <NSObject>
+@required
+/** 请求成功的 代理方法*/
+- (void)request:(ZBURLRequest *_Nullable)request successForResponseObject:(id _Nullable)responseObject ;
+@optional
+/** 请求失败的 代理方法*/
+- (void)request:(ZBURLRequest *_Nullable)request failedForError:(NSError *_Nullable)error;
+/** 请求进度的 代理方法*/
+- (void)request:(ZBURLRequest *_Nullable)request forProgress:(NSProgress * _Nullable)progress;
+/** 请求完成的 代理方法 无论成功和失败**/
+- (void)request:(ZBURLRequest *_Nullable)request finishedForResponseObject:(id _Nullable)responseObject forError:(NSError *_Nullable)error ;
+/** 批量请求 全部完成的 代理方法，无论成功和失败*/
+- (void)requests:(NSArray<ZBURLRequest *> *_Nullable)requests batchFinishedForResponseObjects:(NSArray * _Nullable) responseObjects errors:(NSArray<NSError *> * _Nullable)errors;
+@end
+
 #endif /* ZBRequestConst_h */

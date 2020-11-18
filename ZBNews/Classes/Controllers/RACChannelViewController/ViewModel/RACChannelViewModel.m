@@ -27,7 +27,7 @@
                 parameters[@"id"] = menuInfo.menu_id;
                 parameters[@"p"] = @(page).stringValue;
                 self.identifier=[ZBRequestManager requestWithConfig:^(ZBURLRequest *request){
-                    request.URLString=@"/wnl/tag/page";
+                    request.url=@"/wnl/tag/page";
                     request.apiType=self.requestType;
                     request.parameters=parameters;
                 }  success:^(id responseObject,ZBURLRequest * _Nullable request){

@@ -15,17 +15,19 @@ NSString *const _successBlock =@"_successBlock";
 NSString *const _failureBlock =@"_failureBlock";
 NSString *const _finishedBlock =@"_finishedBlock";
 NSString *const _progressBlock =@"_progressBlock";
+NSString *const _delegate =@"_delegate";
 @interface ZBRequestEngine ()
-@property (nonatomic, copy, nullable) NSString *baseURLString;
+@property (nonatomic, copy, nullable) NSString *baseServerString;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, id> *baseParameters;
 @property (nonatomic, strong, nullable) NSMutableDictionary<NSString *, NSString *> *baseHeaders;
 @property (nonatomic, strong, nullable) NSDictionary *baseUserInfo;
 @property (nonatomic, strong, nullable) NSMutableArray *baseFiltrationCacheKey;
+@property (nonatomic, strong, nullable) NSMutableArray *responseContentTypes;
 @property (nonatomic, assign) NSTimeInterval baseTimeoutInterval;
 @property (nonatomic, assign) NSUInteger baseRetryCount;
-@property (nonatomic,assign) ZBRequestSerializerType baseRequestSerializer;
-@property (nonatomic,assign) ZBResponseSerializerType baseResponseSerializer;
-@property (nonatomic, assign)BOOL consoleLog;
+@property (nonatomic, assign) ZBRequestSerializerType baseRequestSerializer;
+@property (nonatomic, assign) ZBResponseSerializerType baseResponseSerializer;
+@property (nonatomic, assign) BOOL consoleLog;
 
 @end
 
@@ -44,19 +46,14 @@ NSString *const _progressBlock =@"_progressBlock";
 /*
    硬性设置：
    1.因为与缓存互通 服务器返回的数据格式 必须是二进制
-   2.证书设置
-   3.开启菊花
+   2.开启菊花
 */
 - (instancetype)init {
     self = [super init];
     if (self) {
-        //无条件地信任服务器端返回的证书。
-        self.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeNone];
-        self.securityPolicy = [AFSecurityPolicy defaultPolicy];
-        self.securityPolicy.allowInvalidCertificates = YES;
-        self.securityPolicy.validatesDomainName = NO;
         self.responseSerializer = [AFHTTPResponseSerializer serializer];
-        self.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip",nil];
+        [self.responseContentTypes addObjectsFromArray:@[@"text/html",@"application/json",@"text/json", @"text/plain",@"text/javascript",@"text/xml",@"image/*",@"multipart/form-data",@"application/octet-stream",@"application/zip"]];
+        self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
          _requestDic =[[NSMutableDictionary alloc] init];
     }
@@ -81,7 +78,7 @@ NSString *const _progressBlock =@"_progressBlock";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSString *URLString=[NSString zb_stringUTF8Encoding:request.URLString];
+    NSString *URLString=[NSString zb_stringUTF8Encoding:request.url];
     NSURLSessionDataTask *dataTask=nil;
     if (request.methodType==ZBMethodTypeGET) {
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
@@ -96,6 +93,7 @@ NSString *const _progressBlock =@"_progressBlock";
     }else{
         dataTask = [self GET:URLString parameters:request.parameters headers:nil progress:progress success:success failure:failure];
     }
+    [request setTask:dataTask];
     [request setIdentifier:dataTask.taskIdentifier];
     return request.identifier;
 }
@@ -109,7 +107,7 @@ NSString *const _progressBlock =@"_progressBlock";
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.URLString] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    NSURLSessionDataTask *uploadTask = [self POST:[NSString zb_stringUTF8Encoding:request.url] parameters:request.parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
         [request.uploadDatas enumerateObjectsUsingBlock:^(ZBUploadData *obj, NSUInteger idx, BOOL *stop) {
             if (obj.fileData) {
@@ -135,41 +133,50 @@ NSString *const _progressBlock =@"_progressBlock";
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         uploadProgressBlock ? uploadProgressBlock(uploadProgress) : nil;
     } success:success failure:failure];
-    
+    [request setTask:uploadTask];
     [request setIdentifier:uploadTask.taskIdentifier];
     return request.identifier;
 }
 
 #pragma mark - DownLoad
-- (NSUInteger)downloadWithRequest:(ZBURLRequest *)request
-                                             progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock
-                                    completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
+- (NSUInteger)downloadWithRequest:(ZBURLRequest *)request resumeData:(NSData *)resumeData savePath:(NSString *)savePath progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
     [self headersAndTimeConfig:request];
     [self printParameterWithRequest:request];
     
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.URLString]]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString zb_stringUTF8Encoding:request.url]]];
     
-    NSURL *downloadFileSavePath;
-    BOOL isDirectory;
-    if(![[NSFileManager defaultManager] fileExistsAtPath:request.downloadSavePath isDirectory:&isDirectory]) {
-        isDirectory = NO;
+    NSString *fileName = [urlRequest.URL lastPathComponent];
+    NSURL *downloadFileSavePath = [NSURL fileURLWithPath:[NSString pathWithComponents:@[savePath, fileName]] isDirectory:NO];
+    
+    NSURLSessionDownloadTask *downloadTask = nil;
+    if (resumeData.length>0) {
+        downloadTask = [self downloadWithResumeData:resumeData progress:^(NSProgress *downloadProgress) {
+            downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
+        } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+            return downloadFileSavePath;
+        } completionHandler:completionHandler];
+    }else{
+        downloadTask = [self downloadWithUrlRequest:urlRequest progress:^(NSProgress *downloadProgress) {
+            downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
+        } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+            return downloadFileSavePath;
+        } completionHandler:completionHandler];
     }
-    if (isDirectory) {
-        NSString *fileName = [urlRequest.URL lastPathComponent];
-        downloadFileSavePath = [NSURL fileURLWithPath:[NSString pathWithComponents:@[request.downloadSavePath, fileName]] isDirectory:NO];
-    } else {
-        downloadFileSavePath = [NSURL fileURLWithPath:request.downloadSavePath isDirectory:NO];
-    }
-    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithRequest:urlRequest progress:^(NSProgress * _Nonnull downloadProgress) {
-        downloadProgressBlock ? downloadProgressBlock(downloadProgress) : nil;
-    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-        return downloadFileSavePath;
-    } completionHandler:completionHandler];
     
     [downloadTask resume];
-    
+    [request setTask:downloadTask];
     [request setIdentifier:downloadTask.taskIdentifier];
     return request.identifier;
+}
+
+- (NSURLSessionDownloadTask *)downloadWithUrlRequest:(NSURLRequest *)urlRequest progress:(void (^)(NSProgress *downloadProgress))downloadProgressBlock destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
+    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithRequest:urlRequest progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
+    return downloadTask;
+}
+
+- (NSURLSessionDownloadTask *)downloadWithResumeData:(NSData *_Nonnull)resumeData progress:(void (^)(NSProgress *downloadProgress)) downloadProgressBlock destination:(NSURL * (^)(NSURL *targetPath, NSURLResponse *response))destination completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler{
+    NSURLSessionDownloadTask *downloadTask = [self downloadTaskWithResumeData:resumeData progress:downloadProgressBlock destination:destination completionHandler:completionHandler];
+    return downloadTask;
 }
 
 - (NSInteger)networkReachability {
@@ -187,13 +194,13 @@ NSString *const _progressBlock =@"_progressBlock";
             [self.requestSerializer setValue:value forHTTPHeaderField:field];
         }];
     }
-    self.requestSerializer.timeoutInterval=request.timeoutInterval?request.timeoutInterval:30;
+    self.requestSerializer.timeoutInterval=request.timeoutInterval;
 }
 
 #pragma mark - 其他配置
 - (void)setupBaseConfig:(ZBConfig *)config{
-    if (config.baseURL) {
-        self.baseURLString=config.baseURL;
+    if (config.baseServer) {
+        self.baseServerString=config.baseServer;
     }
     if (config.timeoutInterval) {
         self.baseTimeoutInterval=config.timeoutInterval;
@@ -219,10 +226,15 @@ NSString *const _progressBlock =@"_progressBlock";
     if (config.userInfo) {
         self.baseUserInfo=config.userInfo;
     }
+    if (config.responseContentTypes.count>0) {
+        [self.responseContentTypes addObjectsFromArray:config.responseContentTypes];
+        self.responseSerializer.acceptableContentTypes = [NSSet setWithArray:self.responseContentTypes];
+    }
+  
     self.consoleLog=config.consoleLog;
 }
 
-- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock{
+- (void)configBaseWithRequest:(ZBURLRequest *)request progressBlock:(ZBRequestProgressBlock)progressBlock successBlock:(ZBRequestSuccessBlock)successBlock failureBlock:(ZBRequestFailureBlock)failureBlock finishedBlock:(ZBRequestFinishedBlock)finishedBlock target:(id<ZBURLRequestDelegate>)target{
     if (successBlock) {
         [request setValue:successBlock forKey:_successBlock];
     }
@@ -235,14 +247,31 @@ NSString *const _progressBlock =@"_progressBlock";
     if (progressBlock) {
         [request setValue:progressBlock forKey:_progressBlock];
     }
-     //=====================================================
-    NSURL *baseURL = [NSURL URLWithString:self.baseURLString];
+    if (target) {
+        [request setValue:target forKey:_delegate];
+    }
+    //=====================================================
+    if (request.methodType==ZBMethodTypeUpload) {
+        request.apiType=ZBRequestTypeRefresh;
+        request.keepType=ZBResponseKeepFirst;
+    }
+    if (request.methodType==ZBMethodTypeDownLoad) {
+        request.apiType=ZBRequestTypeRefresh;
+        if (request.downloadState==ZBDownloadStateStart) {
+            request.keepType=ZBResponseKeepFirst;
+        }
+    }
+    //=====================================================
+    if (request.isBaseServer && request.server.length == 0&& self.baseServerString.length > 0) {
+        request.server=self.baseServerString;
+    }
+    NSURL *baseURL = [NSURL URLWithString:request.server];
             
     if ([[baseURL path] length] > 0 && ![[baseURL absoluteString] hasSuffix:@"/"]) {
                    baseURL = [baseURL URLByAppendingPathComponent:@""];
     }
      
-    request.URLString= [[NSURL URLWithString:request.URLString relativeToURL:baseURL] absoluteString];
+    request.url= [[NSURL URLWithString:request.url relativeToURL:baseURL] absoluteString];
     //=====================================================
     if (self.baseTimeoutInterval) {
         NSTimeInterval timeout;
@@ -253,16 +282,18 @@ NSString *const _progressBlock =@"_progressBlock";
         request.timeoutInterval=timeout;
     }
     //=====================================================
-    if (self.baseParameters.count > 0) {
+    if (request.isBaseParameters && self.baseParameters.count > 0) {
         NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
         [parameters addEntriesFromDictionary:self.baseParameters];
-        if (request.parameters.count > 0) {
-            [parameters addEntriesFromDictionary:request.parameters];
+        if ([request.parameters isKindOfClass:[NSDictionary class]]){
+            if([request.parameters allValues].count > 0) {
+                [parameters addEntriesFromDictionary:request.parameters];
+            }
         }
         request.parameters = parameters;
     }
     //=====================================================
-    if (self.baseHeaders.count > 0) {
+    if (request.isBaseHeaders &&self.baseHeaders.count > 0) {
         NSMutableDictionary *headers = [NSMutableDictionary dictionary];
         [headers addEntriesFromDictionary:self.baseHeaders];
         if (request.headers) {
@@ -322,11 +353,10 @@ NSString *const _progressBlock =@"_progressBlock";
 
 - (void)printParameterWithRequest:(ZBURLRequest *)request{
     if (request.consoleLog==YES) {
-        NSString *address=[NSString zb_urlString:request.URLString appendingParameters:request.parameters];
         NSString *requestStr=request.requestSerializer==ZBHTTPRequestSerializer ?@"HTTP":@"JOSN";
         NSString *responseStr=request.responseSerializer==ZBHTTPResponseSerializer ?@"HTTP":@"JOSN";
-        NSLog(@"\n\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",address,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
-   }
+        NSLog(@"\n------------ZBNetworking------request info------begin------\n-URLAddress-: %@ \n-parameters-:%@ \n-Header-: %@\n-userInfo-: %@\n-timeout-:%.2f\n-requestSerializer-:%@\n-responseSerializer-:%@\n------------ZBNetworking------request info-------end-------",request.url,request.parameters, self.requestSerializer.HTTPRequestHeaders,request.userInfo,self.requestSerializer.timeoutInterval,requestStr,responseStr);
+    }
 }
 
 #pragma mark - request 生命周期管理
@@ -337,9 +367,10 @@ NSString *const _progressBlock =@"_progressBlock";
 }
 
 - (void)removeRequestForkey:(NSString *)key{
-    if(!key)return;
     if ([self objectRequestForkey:key]) {
         [_requestDic removeObjectForKey:key];
+    }else{
+        [_requestDic removeAllObjects];
     }
 }
 
@@ -355,7 +386,6 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     return _baseParameters;
 }
-
 - (NSMutableDictionary<NSString *, NSString *> *)baseHeaders {
     if (!_baseHeaders) {
         _baseHeaders = [NSMutableDictionary dictionary];
@@ -368,5 +398,10 @@ NSString *const _progressBlock =@"_progressBlock";
     }
     return _baseFiltrationCacheKey;
 }
-
+- (NSMutableArray *)responseContentTypes {
+    if (!_responseContentTypes) {
+        _responseContentTypes = [NSMutableArray array];
+    }
+    return _responseContentTypes;
+}
 @end

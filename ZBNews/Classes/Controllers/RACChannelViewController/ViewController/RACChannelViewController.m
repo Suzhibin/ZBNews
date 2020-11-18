@@ -34,12 +34,12 @@
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.viewModel cancelRequest]; // 取消不必要的网络请求
-    [self endRefresh];
     self.tableView.scrollsToTop = NO;
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    [self.viewModel cancelRequest]; // 取消不必要的网络请求
+    [self endRefresh];
     //   [self savePageInfo];  // //保存页面数据 VTMagic官方Dome 的方法
 }
 - (void)viewDidLoad {

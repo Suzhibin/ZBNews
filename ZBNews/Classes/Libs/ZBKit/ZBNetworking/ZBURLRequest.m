@@ -19,6 +19,10 @@
     _apiType=ZBRequestTypeRefresh;
     _retryCount=0;
     _identifier = 0;
+    
+    _isBaseServer=YES;
+    _isBaseParameters=YES;
+    _isBaseHeaders=YES;
     return self;
 }
 
@@ -32,11 +36,12 @@
     _isResponseSerializer=YES;
 }
 
-- (void)cleanAllBlocks {
+- (void)cleanAllCallback{
     _successBlock = nil;
     _failureBlock = nil;
     _finishedBlock = nil;
     _progressBlock = nil;
+    _delegate=nil;
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key{
@@ -101,28 +106,29 @@
 }
 - (void)onFinishedRequest:(ZBURLRequest*)request response:(id)responseObject error:(NSError *)error finished:(ZBBatchRequestFinishedBlock _Nullable )finished{
     NSUInteger index = [_requestArray indexOfObject:request];
-    NSMutableDictionary  *dict=[NSMutableDictionary dictionary];
     if (responseObject) {
-         [dict setObject:responseObject forKey:@"responseObject"];
-         [dict setObject:request forKey:@"request"];
-         [_responseArray replaceObjectAtIndex:index withObject:dict];
+         [_responseArray replaceObjectAtIndex:index withObject:responseObject];
     }else{
          _failed = YES;
-         [dict setObject:error forKey:@"error"];
-         [dict setObject:request forKey:@"request"];
          if (error) {
-             [_responseArray replaceObjectAtIndex:index withObject:dict];
+             [_responseArray replaceObjectAtIndex:index withObject:error];
          }
     }
     _batchRequestCount++;
     if (_batchRequestCount == _requestArray.count) {
         if (!_failed) {
+            if (request.delegate&&[request.delegate respondsToSelector:@selector(requests:batchFinishedForResponseObjects:errors:)]) {
+                [request.delegate requests:_requestArray batchFinishedForResponseObjects:_responseArray errors:nil];
+            }
             if (finished) {
-                finished(_responseArray,nil);
+                finished(_responseArray,nil,_requestArray);
             }
         }else{
+            if (request.delegate&&[request.delegate respondsToSelector:@selector(requests:batchFinishedForResponseObjects:errors:)]) {
+                [request.delegate requests:_requestArray batchFinishedForResponseObjects:nil errors:_responseArray];
+            }
             if (finished) {
-                finished(nil,_responseArray);
+                finished(nil,_responseArray,_requestArray);
             }
         }
     }
@@ -170,12 +176,12 @@
 #pragma mark - ZBConfig
 
 @implementation ZBConfig
-- (void)setrequestSerializer:(ZBRequestSerializerType)requestSerializer{
+- (void)setRequestSerializer:(ZBRequestSerializerType)requestSerializer{
     _requestSerializer=requestSerializer;
     _isRequestSerializer=YES;
 }
 
-- (void)setresponseSerializer:(ZBResponseSerializerType)responseSerializer{
+- (void)setResponseSerializer:(ZBResponseSerializerType)responseSerializer{
     _responseSerializer=responseSerializer;
     _isResponseSerializer=YES;
 }

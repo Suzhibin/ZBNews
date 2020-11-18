@@ -129,7 +129,7 @@
             parameters[@"id"] = model.menu_id;
             parameters[@"p"] = @(1).stringValue;
             ZBURLRequest *request=[[ZBURLRequest alloc]init];
-            request.URLString=@"/wnl/tag/page";
+            request.url=@"/wnl/tag/page";
             request.parameters=parameters;
             [batchRequest.requestArray addObject:request];
         }
