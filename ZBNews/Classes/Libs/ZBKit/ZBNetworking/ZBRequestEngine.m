@@ -179,7 +179,7 @@ NSString *const _delegate =@"_delegate";
     return downloadTask;
 }
 
-- (AFNetworkReachabilityStatus)networkReachability {
+- (NSInteger)networkReachability {
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
 //请求参数的格式
@@ -283,7 +283,7 @@ NSString *const _delegate =@"_delegate";
     }
     //=====================================================
     if (request.isBaseParameters && self.baseParameters.count > 0) {
-        if ([request.parameters isKindOfClass:[NSDictionary class]]||request.parameters==nil){
+        if ([request.parameters isKindOfClass:[NSDictionary class]]){
             NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
             [parameters addEntriesFromDictionary:self.baseParameters];
             if([request.parameters allValues].count > 0) {

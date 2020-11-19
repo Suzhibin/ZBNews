@@ -47,7 +47,7 @@
         NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionaryWithDictionary:parameters];
         [mutableParameters removeObjectsForKeys:filtrationCacheKey];
         return [mutableParameters copy];
-    }else{
+    }else {
         return parameters;
     }
 }
