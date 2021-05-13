@@ -109,8 +109,12 @@
 }
 #pragma mark - UI
 - (void)endRefresh{
-    [self.header endRefreshing];// 下拉结束刷新
-    [self.footer endRefreshing];// 上拉结束刷新
+    if (self.header.isRefreshing==YES) {
+        [self.header endRefreshing];// 下拉结束刷新
+    }
+    if (self.footer.isRefreshing==YES) {
+        [self.footer endRefreshing];// 上拉结束刷新
+    }
 }
 - (void)createRefresh{
     __weak __typeof(self) weakSelf = self;
